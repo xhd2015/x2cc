@@ -1,0 +1,183 @@
+g++ -I include -I /home/13774/x2-devel/include -std=c++14 -D CODE64 -c src/GrammaUtils.cpp -o gen/GrammaUtils.o
+#ld gen/LexicalParser.o gen/SemanticParser.o gen/GrammaUtils.o gen/mainTest.o -o gen/mainTest.out
+g++ gen/LexicalParser.o gen/SemanticParser.o gen/GrammaUtils.o gen/mainTest.o -o gen/mainTest.out
+gen/mainTest.out
+( -1 , EMPTY , <EMPTY> ) 
+( 0 , TERMINATOR , a ) 
+( 1 , TERMINATOR , b ) 
+( 2 , VARIABLE , S ) 
+( 3 , VARIABLE , B ) 
+( 4 , VARIABLE , C ) 
+( 5 , VARIABLE , D ) 
+( 6 , TERMINATOR , c ) 
+( 7 , VARIABLE , F ) 
+( 8 , TERMINATOR , <END> ) 
+
+S is at 2
+S -> B B 
+
+B -> a B 
+B -> b 
+B -> <EMPTY> 
+
+C -> D S B a 
+C -> D S B a 
+C -> D S B b 
+C -> D S S b 
+
+D -> D a 
+D -> D b 
+D -> S B 
+D -> B S 
+
+F -> c 
+
+
+S can be empty?1
+reduce all left factors
+S -> B B 
+
+B -> a B 
+B -> b 
+B -> <EMPTY> 
+
+C -> D S C1' 
+
+D -> S B 
+D -> B S 
+D -> D D1' 
+
+F -> c 
+
+C1' -> S b 
+C1' -> B C1'1' 
+
+C1'1' -> a 
+C1'1' -> b 
+
+D1' -> b 
+D1' -> a 
+
+
+reduce left recursive
+S -> B B 
+
+B -> a B 
+B -> b 
+B -> <EMPTY> 
+
+C -> D S C1' 
+
+D -> a B B B D_ 
+D -> b B B D_ 
+D -> B B D_ 
+D -> a B S D_ 
+D -> b S D_ 
+D -> S D_ 
+
+F -> c 
+
+C1' -> a B B b 
+C1' -> b B b 
+C1' -> B b 
+C1' -> a B C1'1' 
+C1' -> b C1'1' 
+C1' -> C1'1' 
+
+C1'1' -> a 
+C1'1' -> b 
+
+D1' -> b 
+D1' -> a 
+
+D_ -> <EMPTY> 
+D_ -> D1' 
+
+
+eliminate duplication
+S -> B B 
+
+B -> a B 
+B -> b 
+B -> <EMPTY> 
+
+C -> D S C1' 
+
+D -> a B B B D_ 
+D -> b B B D_ 
+D -> B B D_ 
+D -> a B S D_ 
+D -> b S D_ 
+D -> S D_ 
+
+F -> c 
+
+C1' -> a B B b 
+C1' -> b B b 
+C1' -> B b 
+C1' -> a B C1'1' 
+C1' -> b C1'1' 
+C1' -> C1'1' 
+
+C1'1' -> a 
+C1'1' -> b 
+
+D1' -> b 
+D1' -> a 
+
+D_ -> <EMPTY> 
+D_ -> D1' 
+
+
+calculating FIRST set
+S{
+		<EMPTY>, a, b, 
+}
+B{
+		<EMPTY>, a, b, 
+}
+C{
+		<EMPTY>, a, b, 
+}
+D{
+		<EMPTY>, a, b, 
+}
+F{
+		c, 
+}
+C1'{
+		<EMPTY>, a, b, 
+}
+C1'1'{
+		a, b, 
+}
+D1'{
+		a, b, 
+}
+D_{
+		<EMPTY>, a, b, 
+}
+
+calculating FOLLOW set
+S{
+		a, b, <END>, 
+}
+B{
+		a, b, <END>, 
+}
+D{
+		a, b, 
+}
+C1'{
+		
+}
+C1'1'{
+		
+}
+D1'{
+		a, b, 
+}
+D_{
+		a, b, 
+}
+
