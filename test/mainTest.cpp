@@ -159,6 +159,56 @@ void testGramma()
   });
   std::cout << strfollwset << std::endl;
 
+  //========拓广的LR文法
+  LRGramma lrg(
+	  {
+		  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},
+		  {GrammaSymbols::TYPE_VAR,"E"}, //0
+		  {GrammaSymbols::TYPE_VAR,"T"}, //1
+		  {GrammaSymbols::TYPE_VAR,"F"}, //2
+		  {GrammaSymbols::TYPE_TERM,"("}, //3
+		  {GrammaSymbols::TYPE_TERM,")"}, //4
+		  {GrammaSymbols::TYPE_TERM,"+"},//5
+		  {GrammaSymbols::TYPE_TERM,"*"},//6
+		  {GrammaSymbols::TYPE_TERM,"id"}//7
+	  },
+	  {
+			  {0,{0,5,1}},
+			  {0,{1}},
+			  {1,{1,6,2}},
+			  {1,{2}},
+			  {2,{3,0,4}},
+			  {2,{7}}
+	  },
+	  0,
+	  "E'"
+  );
+  std::cout << "LRGramma(this example can be found in Aho's dragon book,page 155)" << std::endl;
+  std::cout << lrg.Gramma::toString() << std::endl;
+//  lrg.setDotString("<DOT>");
+
+  //=======辅助函数 : 产生某个符号的项目集
+  int iEd=lrg.gsyms.findSymbolIndex("E'");
+  auto itemone = std::make_tuple(iEd,0,0);//E' -> .E
+  LRGramma::ClosureType C=std::move(lrg.getClosure(itemone));
+  std::cout << "Closure of E'->.E " << std::endl;
+  std::cout << lrg.toString(C)<<std::endl;
+
+  //========辅助函数：产生一个项集的GOTO集
+  int iE=lrg.gsyms.findSymbolIndex("E");
+  LRGramma::ClosureType GOTO=std::move(lrg.getGoto(C, iE));
+  std::cout << "GOTO of CLOSURE({E'->.E})" << std::endl;
+  std::cout << lrg.toString(GOTO);
+  std::cout <<"inputing '+',getting next GOTO" << std::endl;
+  int iplus=lrg.gsyms.findSymbolIndex("+");
+  GOTO=std::move(lrg.getGoto(GOTO, iplus));
+  std::cout << lrg.toString(GOTO) << std::endl;
+
+  //=========规范集项目族
+  std::cout << "CLOSURES & GOTO" << std::endl;
+  auto tup= lrg.getAllClosures();
+  std::cout << lrg.toString(tup) << std::endl;
+
   //===========do you agree with me?
 
 

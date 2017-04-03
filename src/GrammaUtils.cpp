@@ -35,16 +35,6 @@ namespace x2
   {
 
   }
-  GrammaSymbols::GrammaSymbols(std::initializer_list<std::pair<int,std::string> >&& list):
-      max(0)
-  {
-    this->add(TYPE_EMPTY, "EMPTY");
-    auto it=begin(list),itend=end(list);
-    for(;it!=itend;it++)
-      {
-	add(it->first,std::move(it->second));
-      }
-  }
 
   GrammaSymbols::GrammaSymbols(const std::initializer_list<std::pair<int,std::string> >& list):
       max(0)
@@ -58,6 +48,26 @@ namespace x2
 //	add(it->first,static_cast<const std::string&&>(it->second));//std::move可能失败，这是因为list本身不是一个const对象
       }
   }
+  GrammaSymbols::GrammaSymbols(std::initializer_list<std::pair<int,std::string> >&& list):
+      max(0)
+  {
+    this->add(TYPE_EMPTY, "EMPTY");
+    auto it=begin(list),itend=end(list);
+    for(;it!=itend;it++)
+      {
+	add(it->first,std::move(it->second));
+      }
+  }
+
+  GrammaSymbols & GrammaSymbols::operator=(const GrammaSymbols & gs)
+  {
+	  new (this) GrammaSymbols(gs);
+  }
+  GrammaSymbols & GrammaSymbols::operator=(GrammaSymbols && gs)
+  {
+	  new (this) GrammaSymbols(gs);
+  }
+
   int GrammaSymbols::add(int type,std::string &&s)
   {
     int no;
@@ -191,7 +201,7 @@ namespace x2
     auto it=prodlist.begin(),itend=prodlist.end();
     for(;it!=itend;it++)
       {
-	addProduction(it->first,it->second);
+    	addProduction(it->first,it->second);
       }
   }
   Gramma::Gramma(std::initializer_list<std::pair<int,std::string> > &&list,
@@ -809,6 +819,351 @@ namespace x2
 
      }
    return s;
+ }
+
+ //============class LRGramma
+ LRGramma::LRGramma(const Gramma& g,int oristart,const std::string & strstart):
+		 dotString(".")
+ {
+	 gsyms = g.gsyms;
+	 prods = g.prods;
+
+	 sstart = gsyms.addVar(strstart);
+	 GrammaSentence gs={oristart};
+	 addProduction(sstart,std::move(gs));
+ }
+ LRGramma::LRGramma(Gramma&& g,int oristart,const std::string & strstart):
+				 dotString(".")
+ {
+	 gsyms = std::move(g.gsyms);
+	 prods = std::move(g.prods);
+
+	 sstart = gsyms.addVar(strstart);
+	 GrammaSentence gs={oristart};
+	 addProduction(sstart,std::move(gs));
+ }
+ LRGramma::LRGramma(const std::initializer_list<std::pair<int,std::string> > &list,
+	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,const std::string & strstart):
+				 dotString(".")
+ {
+	 gsyms = list;
+	auto it=prodlist.begin(),itend=prodlist.end();
+	for(;it!=itend;it++)
+	  {
+		addProduction(it->first,it->second);
+	  }
+
+	 sstart = gsyms.addVar(strstart);
+	 GrammaSentence tempgs={oristart};
+	 addProduction(sstart,std::move(tempgs));
+ }
+ LRGramma::LRGramma(const GrammaSymbols & gs,const ProductionsType & prods,int oristart,const std::string & strstart):
+				 dotString(".")
+ {
+	 this->gsyms=gs;
+	 this->prods=prods;
+
+	 sstart = gsyms.addVar(strstart);
+	 GrammaSentence tempgs={oristart};
+	 addProduction(sstart,std::move(tempgs));
+ }
+ LRGramma::LRGramma(const GrammaSymbols & gs,ProductionsType && prods,int oristart,const std::string & strstart):
+				 dotString(".")
+ {
+	 this->gsyms=gs;
+	 this->prods=prods;
+
+	 sstart = gsyms.addVar(strstart);
+	 GrammaSentence tempgs={oristart};
+	 addProduction(sstart,std::move(tempgs));
+ }
+ LRGramma::LRGramma( GrammaSymbols && gs,const ProductionsType & prods,int oristart,const std::string & strstart):
+				 dotString(".")
+ {
+	 this->gsyms=gs;
+	 this->prods=prods;
+
+	 sstart = gsyms.addVar(strstart);
+	 GrammaSentence tempgs={oristart};
+	 addProduction(sstart,std::move(tempgs));
+ }
+ LRGramma::LRGramma(GrammaSymbols && gs,ProductionsType && prods,int oristart,const std::string & strstart):
+				 dotString(".")
+ {
+	 this->gsyms=gs;
+	 this->prods=prods;
+
+	 sstart = gsyms.addVar(strstart);
+	 GrammaSentence tempgs={oristart};
+	 addProduction(sstart,std::move(tempgs));
+ }
+ std::tuple<LRGramma::ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> LRGramma::getAllClosures()
+ {
+	 ClosuresVector itemsets;//项目族
+//	 std::map<ItemType,int>		C0;//ItemType --> {ItemType}
+	 std::map<std::pair<int,int>,int> C2;
+	 std::set<int>		iC; //the concanical closure
+
+	 ItemType tempitem=std::make_tuple(getGStart(),0,0);
+	 ClosureType temp;
+	 temp.insert(tempitem);
+//	 itemsets.push_back(temp); //S' -> .S
+//	 int C0_tempitem = itemsets.size() - 1;
+//	 C0[tempitem] = C0_tempitem;
+	 itemsets.push_back(getClosure(temp));
+	 int iC_C0_tempitem = itemsets.size() - 1;
+	 iC.insert(iC_C0_tempitem);
+
+//	 std::cout << "init, [0] are" << std::endl;
+//	 std::cout << toString(itemsets[0]) << std::endl;
+//	 std::cout << toString(itemsets[1]) << std::endl;
+
+//	 while(getchar()!='\n');
+	 bool hasnew=true;
+	 while(hasnew)
+	 {
+		 hasnew=false;
+		 for(int iic:iC)//iC中所有已经求出的CLOSUER
+		 {
+			 ClosureType &curClo = itemsets[iic];
+//			 std::cout << "current closure  at " << iic  << " is "<< std::endl;
+//			 std::cout << toString(curClo) << std::endl;
+
+//			 while(getchar()!='\n');
+			 for(auto &eachItem : curClo)//对curClo中的.的每个后继符号x，将GOTO(curClo,x)在不属于C1的情况下加入C1中
+			 {
+//				 std::cout << "current production is " << toString(eachItem) << std::endl;
+				 int x=getFirstSymbolAfterDot(eachItem);
+//				 std::cout << "current expect SYMBOL is " << gsyms.getString(x) << std::endl;
+				 if(x!=gsyms.findEmpty())//不是空符号
+				 {
+					 auto iic_x_key=std::pair<int,int>(iic,x);
+					 auto itgoto=C2.find(iic_x_key);
+					 if(itgoto==C2.end())//如果 GOTO(curClo,x)尚未存在,则求其CLOSUER
+					 {
+//						 std::cout << "curClo is " << std::endl << toString(curClo) << std::endl;
+//						 std::cout << "goto not present "<<std::endl;
+						 ClosureType iic_x_goto=getGoto(curClo,x);
+						 //===如果iic_x_goto与当前求出的某个集合相等，就不需要添加
+						 auto itemit=std::find(itemsets.begin(),itemsets.end(),iic_x_goto);
+						 int iic_x_key_index;
+						 if(itemit==itemsets.end())
+						 {
+//							 std::cout << "after goto in vector" << std::endl;
+							 itemsets.push_back(iic_x_goto); //curClo has changed, because itemsets are changing, so any memory reference is not good
+							 iic_x_key_index = (int)itemsets.size() - 1;
+							 iC.insert(iic_x_key_index);  //加入集合之中,此时集合已经改变，需要重新提起遍历过程
+//							 std::cout << "GOTO(curClo," << gsyms.getString(x) << ") = " << std::endl
+//									 << toString(itemsets[iic_x_key_index]) << std::endl;
+							 hasnew=true;
+							 break; //everything has changed
+						 }else{
+//							 std::cout << "found duplication" << std::endl;
+//							 while(getchar()!='\n');
+							 iic_x_key_index = itemit - itemsets.begin();
+						 }
+						 C2[iic_x_key] = iic_x_key_index; //记录GOTO(curClo,x)
+//
+					 }
+				 }
+			 }
+			 if(hasnew)break;
+		 }
+	 }
+	 //使用增强版的goto：
+	 // 能够同itemsets，C0，C1,C2进行协作
+	 return make_tuple(itemsets,iC,C2);
+ }
+ /**
+  * if not set, then set
+  *   at the end,get
+  */
+ int 	LRGramma::getClosureInVector(const ItemType& i,ClosuresVector &itemsets, std::map<ItemType,int>& C0)
+ {
+	 auto it=C0.find(i);
+	 std::cout << "get closure of " << toString(i) << std::endl;
+	 if(it==C0.end()) //not found
+	 {
+		 ClosureType C=std::move(getClosure(i));
+		 itemsets.push_back(C);
+		 std::cout << "new a closure at " << itemsets.size() - 1 << " is " << std::endl;
+		 std::cout << toString(itemsets[itemsets.size() - 1]) << std::endl;
+		 return (C0[i] = (int)itemsets.size() - 1);
+	 }else{
+		 std::cout << "get existing closure at " << it->second << " is " << std::endl;
+		 std::cout << toString(itemsets[it->second]) << std::endl;
+//		 while(getchar()!='\n');
+		 return it->second;
+	 }
+ }
+ typename LRGramma::ClosureType LRGramma::getClosure(const ItemType& i)
+ {
+	 ClosureType C;
+	 getClosure(i,C);
+	 return C;
+ }
+ void	LRGramma::getClosure(const ItemType& i,ClosureType& C)
+ {
+	 C.insert(i);
+	 std::map<int,bool> added;
+	 for(auto &it:prods)
+	 {
+		 added[it.first]=false;
+	 }
+	 bool hasnew=true;
+	 while(hasnew)
+	 {
+		 hasnew=false;
+		 for(auto & cit : C)
+		 {
+			 int v = getFirstSymbolAfterDot(cit);
+			 if(gsyms.isSymbolVar(v) && !added[v])
+			 {
+				 size_type sz=prods[v].size();
+				 for(size_type i=0;i<sz;i++)
+				 {
+					 ItemType tempItem(v,i,0);
+					 if(C.find(tempItem)==C.end())
+					 {
+						 C.insert(std::move(tempItem));
+						 hasnew=true;
+					 }
+				 }
+				 added[v]=true;
+			 }
+		 }
+	 }
+ }
+
+ typename LRGramma::ClosureType LRGramma::getClosure(const ClosureType & C)
+ {
+	 ClosureType sumC;
+	 for(auto &cit:C)
+	 {
+		 getClosure(cit,sumC);
+	 }
+	 return sumC;
+ }
+ typename LRGramma::ClosureType LRGramma::getGotoInVector(int iclo,int x, ClosuresVector& itemsets, std::map<ItemType,int>	&	C0)
+ {
+	 ClosureType GOTO;
+	 bool hasnew=true;
+	 std::cout << "getting GOTO for ( " << std::endl;
+	 std::cout << toString(itemsets[iclo]) << std::endl << " ," << gsyms.getString(x) << ")" << std::endl;
+	 while(hasnew)
+	 {
+		 hasnew=false;
+		 ClosureType curset=itemsets[iclo];
+		 for(auto &item:curset)
+		 {
+			 std::cout << "current item is " << toString(item) << std::endl;
+			 if(getFirstSymbolAfterDot(item)!=x)continue;
+			 auto I=std::make_tuple(std::get<0>(item),
+					 std::get<1>(item),
+					 std::get<2>(item)+1);
+			 ClosureType iClosure = itemsets[getClosureInVector(I,itemsets,C0)];
+			 std::cout << "finding a closure for GOTO is "<< toString(iClosure) << std::endl;
+			 if(!std::includes(GOTO.begin(), GOTO.end(),
+					 iClosure.begin(),iClosure.end()))
+			 {
+				 std::cout << "not containing,insert." << std::endl;
+				 GOTO.insert(iClosure.begin(),iClosure.end());
+				 hasnew=true;
+			 }else{
+				 std::cout << "already containing" << std::endl;
+			 }
+			 while(getchar()!='\n');
+		 }
+		 std::cout << "loop once, hasnew = " << hasnew << std::endl;
+		 while(getchar()!='\n');
+	 }
+	 return GOTO;
+
+ }
+ typename LRGramma::ClosureType LRGramma::getGoto(const ClosureType & items,int x)
+ {
+//	 std::cout << "wait,size is" << items.size() << std::endl;
+//	 while(getchar()!='\n');
+
+//	 std::cout << "getting goto of " << toString(items) << std::endl;
+//	 while(getchar()!='\n');
+	 ClosureType GOTO;
+	 bool hasnew=true;
+//	 std::map<int,bool> added;
+//	 for(auto &it:prods)
+//		 added[it.first]=false;
+	 while(hasnew)
+	 {
+		 hasnew=false;
+		 for(auto &item : items)
+		 {
+			 if(getFirstSymbolAfterDot(item)!=x)continue;
+			 auto I=std::make_tuple(std::get<0>(item),
+					 std::get<1>(item),
+					 std::get<2>(item)+1);
+			 ClosureType iClosure = getClosure(I);
+			 if(!std::includes(GOTO.begin(), GOTO.end(),
+					 iClosure.begin(),iClosure.end()))
+			 {
+				 GOTO.insert(iClosure.begin(),iClosure.end());
+				 hasnew=true;
+			 }
+		 }
+	 }
+	 return GOTO;
+ }
+ int  LRGramma::getFirstSymbolAfterDot(const ItemType & i)
+ {
+	 //<v,index,dotindex>
+	 const GrammaSentence & gs=prods[std::get<0>(i)][std::get<1>(i)];
+	 int dotIndex=std::get<2>(i);
+	 if(dotIndex < (int)gs.getLength())
+		 return gs.syms[dotIndex];
+	 else
+		  return gsyms.findEmpty();
+ }
+ std::string LRGramma::toString(const ItemType& item)
+ {
+	 std::string s;
+	 GrammaSentence &gs=prods[std::get<0>(item)][std::get<1>(item)];
+	 s+=gsyms.getString(std::get<0>(item)) + " -> ";
+	 size_type doti=(size_type)std::get<2>(item);
+	 size_type i=0,sz=gs.getLength();
+	 for(;i<doti;i++)s+=gsyms.getString(gs.syms[i]) + " ";
+	 s+= dotString + " ";
+	 for(;i<sz;i++)s+=gsyms.getString(gs.syms[i]) + " ";
+	 return s;
+ }
+ std::string LRGramma::toString(const ClosureType& closure)
+ {
+	 std::string s;
+//	 std::cout << "entering" << std::endl;
+	 std::for_each(closure.begin(),closure.end(),[this,&s](const ItemType&  i)
+			 {
+		 	 	 s += this->toString(i) + "\n";
+			 }
+			 );
+//	 std::cout << "return " << std::endl;
+	 return s;
+ }
+ std::string LRGramma::toString(const  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> & tups)
+ {
+	 auto &vec=std::get<0>(tups);
+	 auto &iC=std::get<1>(tups);
+	 auto C2=std::get<2>(tups);
+	 std::string s;
+	 s+= std::string("CLOSURES:\n");
+	 for(auto i:iC)
+	 {
+		 s += std::to_string(i)+": { \n" + toString(vec[i]) + "}\n\n";
+	 }
+	 s+=std::string("GOTO:\n");
+	 for(auto &p:C2)
+	 {
+		 s += std::string("<") + std::to_string(p.first.first) + ", " + gsyms.getString(p.first.second) + "> =  "+
+				 std::to_string(p.second) + "\n";
+	 }
+	 return s;
  }
 
 

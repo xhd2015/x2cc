@@ -15,6 +15,7 @@
 #include <def.h>
 #include <iostream>
 #include <algorithm>
+#include <tuple>
 namespace x2
 {
   //=======================
@@ -77,6 +78,8 @@ namespace x2
     GrammaSymbols(GrammaSymbols &&gsyms);
     GrammaSymbols(const std::initializer_list<std::pair<int,std::string> >& list);
     GrammaSymbols(std::initializer_list<std::pair<int,std::string> >&& list);
+    GrammaSymbols & operator=(const GrammaSymbols & gs);
+    GrammaSymbols & operator=(GrammaSymbols && gs);
 
     AS_MACRO int addTerm(std::string &&s);
     AS_MACRO int addTerm(const std::string &s);//return the index that generated
@@ -241,15 +244,79 @@ namespace x2
   public:
     GrammaSymbols gsyms;
     ProductionsType prods;
-    SetsType	first;
-    SetsType	follow;
+//    SetsType	first;
+//    SetsType	follow;
   };
 
   /**
    * LRGramma
    */
-  class LRGramma{
+  class LRGramma:public Gramma{
+  public:
+	  typedef std::tuple<int,int,int>	ItemType;
+	  /**
+	   * 这里的ClosureType和教材上类型有所不同，教材上的类型是
+	   *  	std::map<std::set<ItemType>,std::set<ItemType>> ClosureType
+	   * 这里为了方便，先定义单个项的闭包
+	   * 如果是多个项
+	   *   Closure(I1,I2,...,In) = Closure(I1) u Closure(I2) u ... u Closure(In)
+	   *
+	   */
+	  typedef std::set<ItemType> ClosureType;
+	  typedef std::vector<ClosureType> ClosuresVector;//对所有的项目集进行管理，所有的运算基于闭包在ClosuresVector中的下标
 
+
+	  LRGramma()=default;
+
+	  //======从一个现有的一般性文法构造一个LRGramma文法
+	  LRGramma(const Gramma& g,int oristart,const std::string & strstart);
+	  LRGramma(Gramma&& g,int oristart,const std::string & strstart);
+	  LRGramma(const std::initializer_list<std::pair<int,std::string> > &list,
+		   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,const std::string & strstart);
+	  LRGramma(const GrammaSymbols & gs,const ProductionsType & prods,int oristart,const std::string & strstart);
+	  LRGramma(const GrammaSymbols & gs,ProductionsType && prods,int oristart,const std::string & strstart);
+	  LRGramma( GrammaSymbols && gs,const ProductionsType & prods,int oristart,const std::string & strstart);
+	  LRGramma(GrammaSymbols && gs,ProductionsType && prods,int oristart,const std::string & strstart);
+
+	  /**
+	   * return a tuple
+	   * 		tuple[0] : contains closures that indexes in tuple[1] & tuple[2] point to
+	   * 		tuple[1] : a set of integers, those integers denote the concanical item sets of the gramma
+	   * 		tuple[2] : the goto map. the key type is pair<int,int>, the first int denotes a closure in tuple[0],the second is a possible gramma symbol.
+	   *
+	   *  call toString(tup) to dump those information.
+	   */
+	  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> getAllClosures();
+
+	  /**
+	   * HIGH-WAY getClosure ==  shut down//deprecated
+	   * 可能产生新的闭包
+	   */
+	  int 			getClosureInVector(const ItemType& i,ClosuresVector &itemsets, std::map<ItemType,int>&		C0);
+	  ClosureType getClosure(const ItemType& i);
+	  void			getClosure(const ItemType& i,ClosureType& C);//adding to C
+	  ClosureType getClosure(const ClosureType & C);
+	  /**
+	   * HIGH-WAY getGoto == shut down//deprecated
+	   */
+	  ClosureType getGotoInVector(int iclo,int x, ClosuresVector& itemsets, std::map<ItemType,int>	&	C0);
+	  ClosureType getGoto(const ClosureType & items,int x);
+	  int			getClosure(int i);//求下标i对应的项目集
+	  int		  getFirstSymbolAfterDot(const ItemType & i);
+
+	  AS_MACRO int	getGStart()const;
+
+
+	  std::string toString(const ItemType& item);
+	  std::string toString(const ClosureType& closure);
+	  std::string toString(const  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> & tups);
+	  std::string toStringSet(int i);
+	  AS_MACRO void		  setDotString(const std::string & s);
+
+  public:
+	  int sstart;//拓广之后的start
+	  std::map<int ,int> cachedClosureMap;//if [i,j] exists, then  j is i's closure
+	  std::string dotString;
   };
 
   //===========function macrso
@@ -409,6 +476,15 @@ namespace x2
 	s+=head + " -> " + this->toString(gs) + "\n";
     });
     return s;
+  }
+  //============class LRGramma
+  int			LRGramma::getGStart()const
+  {
+	  return sstart;
+  }
+  void		  LRGramma::setDotString(const std::string & s)
+  {
+	  this->dotString=s;
   }
 
 } /* namespace x2 */
