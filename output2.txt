@@ -1,0 +1,379 @@
+g++ -I include -I /home/13774/x2-devel/include -std=c++14 -D CODE64 -g -c src/GrammaUtils.cpp -o gen/GrammaUtils.o
+g++ -I include -I /home/13774/x2-devel/include -std=c++14 -D CODE64 -g -c test/mainTest.cpp -o gen/mainTest.o
+#ld gen/LexicalParser.o gen/SemanticParser.o gen/GrammaUtils.o gen/mainTest.o -o gen/mainTest.out
+g++ gen/LexicalParser.o gen/SemanticParser.o gen/GrammaUtils.o gen/mainTest.o -o gen/mainTest.out
+gen/mainTest.out
+( -1 , EMPTY , <EMPTY> ) 
+( 0 , TERMINATOR , a ) 
+( 1 , TERMINATOR , b ) 
+( 2 , VARIABLE , S ) 
+( 3 , VARIABLE , B ) 
+( 4 , VARIABLE , C ) 
+( 5 , VARIABLE , D ) 
+( 6 , TERMINATOR , c ) 
+( 7 , VARIABLE , F ) 
+( 8 , TERMINATOR , <END> ) 
+
+S is at 2
+S -> B B 
+
+B -> a B 
+B -> b 
+B -> <EMPTY> 
+
+C -> D S B a 
+C -> D S B a 
+C -> D S B b 
+C -> D S S b 
+
+D -> D a 
+D -> D b 
+D -> S B 
+D -> B S 
+
+F -> c 
+
+
+S can be empty?1
+reduce all left factors
+S -> B B 
+
+B -> a B 
+B -> b 
+B -> <EMPTY> 
+
+C -> D S C1' 
+
+D -> S B 
+D -> B S 
+D -> D D1' 
+
+F -> c 
+
+C1' -> S b 
+C1' -> B C1'1' 
+
+C1'1' -> a 
+C1'1' -> b 
+
+D1' -> b 
+D1' -> a 
+
+
+reduce left recursive
+S -> B B 
+
+B -> a B 
+B -> b 
+B -> <EMPTY> 
+
+C -> D S C1' 
+
+D -> a B B B D_ 
+D -> b B B D_ 
+D -> B B D_ 
+D -> a B S D_ 
+D -> b S D_ 
+D -> S D_ 
+
+F -> c 
+
+C1' -> a B B b 
+C1' -> b B b 
+C1' -> B b 
+C1' -> a B C1'1' 
+C1' -> b C1'1' 
+C1' -> C1'1' 
+
+C1'1' -> a 
+C1'1' -> b 
+
+D1' -> b 
+D1' -> a 
+
+D_ -> <EMPTY> 
+D_ -> D1' 
+
+
+eliminate duplication
+S -> B B 
+
+B -> a B 
+B -> b 
+B -> <EMPTY> 
+
+C -> D S C1' 
+
+D -> a B B B D_ 
+D -> b B B D_ 
+D -> B B D_ 
+D -> a B S D_ 
+D -> b S D_ 
+D -> S D_ 
+
+F -> c 
+
+C1' -> a B B b 
+C1' -> b B b 
+C1' -> B b 
+C1' -> a B C1'1' 
+C1' -> b C1'1' 
+C1' -> C1'1' 
+
+C1'1' -> a 
+C1'1' -> b 
+
+D1' -> b 
+D1' -> a 
+
+D_ -> <EMPTY> 
+D_ -> D1' 
+
+
+calculating FIRST set
+S{
+		<EMPTY>, a, b, 
+}
+B{
+		<EMPTY>, a, b, 
+}
+C{
+		<EMPTY>, a, b, 
+}
+D{
+		<EMPTY>, a, b, 
+}
+F{
+		c, 
+}
+C1'{
+		<EMPTY>, a, b, 
+}
+C1'1'{
+		a, b, 
+}
+D1'{
+		a, b, 
+}
+D_{
+		<EMPTY>, a, b, 
+}
+
+calculating FOLLOW set
+S{
+		a, b, <END>, 
+}
+B{
+		a, b, <END>, 
+}
+D{
+		a, b, 
+}
+C1'{
+		
+}
+C1'1'{
+		
+}
+D1'{
+		a, b, 
+}
+D_{
+		a, b, 
+}
+
+LRGramma(this example can be found in Aho's dragon book,page 155)
+E -> E + T 
+E -> T 
+
+T -> T * F 
+T -> F 
+
+F -> ( E ) 
+F -> id 
+
+E' -> E 
+
+
+CLOSURES & GOTO
+CLOSURES:
+0: { 
+E -> . E + T 
+E -> . T 
+T -> . T * F 
+T -> . F 
+F -> . ( E ) 
+F -> . id 
+E' -> . E 
+}
+
+1: { 
+E -> E . + T 
+E' -> E . 
+}
+
+2: { 
+E -> T . 
+T -> T . * F 
+}
+
+3: { 
+T -> F . 
+}
+
+4: { 
+E -> . E + T 
+E -> . T 
+T -> . T * F 
+T -> . F 
+F -> . ( E ) 
+F -> ( . E ) 
+F -> . id 
+}
+
+5: { 
+F -> id . 
+}
+
+6: { 
+E -> E + . T 
+T -> . T * F 
+T -> . F 
+F -> . ( E ) 
+F -> . id 
+}
+
+7: { 
+T -> T * . F 
+F -> . ( E ) 
+F -> . id 
+}
+
+8: { 
+E -> E . + T 
+F -> ( E . ) 
+}
+
+9: { 
+E -> E + T . 
+T -> T . * F 
+}
+
+10: { 
+T -> T * F . 
+}
+
+11: { 
+F -> ( E ) . 
+}
+
+GOTO:
+<0, E> =  1
+<0, T> =  2
+<0, F> =  3
+<0, (> =  4
+<0, id> =  5
+<1, +> =  6
+<2, *> =  7
+<4, E> =  8
+<4, T> =  2
+<4, F> =  3
+<4, (> =  4
+<4, id> =  5
+<6, T> =  9
+<6, F> =  3
+<6, (> =  4
+<6, id> =  5
+<7, F> =  10
+<7, (> =  4
+<7, id> =  5
+<8, )> =  11
+<8, +> =  6
+<9, *> =  7
+
+LR1 Gramma(this example can be found in Aho's dragon book,page 169)
+S -> C C 
+
+C -> c C 
+C -> d 
+
+S' -> S 
+
+
+CLOSURES:
+0: { 
+[S -> . C C , $]
+[C -> . c C , c]
+[C -> . c C , d]
+[C -> . d , c]
+[C -> . d , d]
+[S' -> . S , $]
+}
+
+1: { 
+[S -> C . C , $]
+[C -> . c C , $]
+[C -> . d , $]
+}
+
+2: { 
+[C -> . c C , c]
+[C -> . c C , d]
+[C -> c . C , c]
+[C -> c . C , d]
+[C -> . d , c]
+[C -> . d , d]
+}
+
+3: { 
+[C -> d . , c]
+[C -> d . , d]
+}
+
+4: { 
+[S' -> S . , $]
+}
+
+5: { 
+[S -> C C . , $]
+}
+
+6: { 
+[C -> . c C , $]
+[C -> c . C , $]
+[C -> . d , $]
+}
+
+7: { 
+[C -> d . , $]
+}
+
+8: { 
+[C -> c C . , c]
+[C -> c C . , d]
+}
+
+9: { 
+}
+
+10: { 
+[C -> c C . , $]
+}
+
+GOTO:
+<0, S> =  4
+<0, C> =  1
+<0, c> =  2
+<0, d> =  3
+<1, C> =  5
+<1, c> =  6
+<1, d> =  7
+<2, C> =  8
+<2, c> =  2
+<2, d> =  3
+<4, $> =  9
+<6, C> =  10
+<6, c> =  6
+<6, d> =  7
+
+ENDED

@@ -219,6 +219,7 @@ namespace x2
      */
     void reduceLeftFactor(int i,int j);
     SetsType calcFirst();
+    std::set<int> calcFirst(const GrammaSentence & gs,int start,int end,const SetsType& firstset);//根据句型获得FIRST集
     SetsType calcFollow(int start,int end);
     SetsType calcFollow(const SetsType& firstset,int start,int end);
 
@@ -230,6 +231,8 @@ namespace x2
     AS_MACRO std::string toString(int i)const;
     AS_MACRO std::string toString(const GrammaSentence &gs)const;
     AS_MACRO std::string toString(int i,const std::vector<GrammaSentence>& gss)const;
+    std::string toString(const SetsType& set)const;
+    std::string toString(const std::set<int> & set)const;
 
 //    void addTerm();// 2 --> 345 list of int
 //    void addVar();
@@ -253,6 +256,8 @@ namespace x2
    */
   class LRGramma:public Gramma{
   public:
+	  typedef LRGramma This;
+	  typedef Gramma	Father;
 	  typedef std::tuple<int,int,int>	ItemType;
 	  /**
 	   * 这里的ClosureType和教材上类型有所不同，教材上的类型是
@@ -269,14 +274,14 @@ namespace x2
 	  LRGramma()=default;
 
 	  //======从一个现有的一般性文法构造一个LRGramma文法
-	  LRGramma(const Gramma& g,int oristart,const std::string & strstart);
-	  LRGramma(Gramma&& g,int oristart,const std::string & strstart);
+	  LRGramma(const Gramma& g,int oristart,int oriend,const std::string & strstart);
+	  LRGramma(Gramma&& g,int oristart,int oriend,const std::string & strstart);
 	  LRGramma(const std::initializer_list<std::pair<int,std::string> > &list,
-		   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,const std::string & strstart);
-	  LRGramma(const GrammaSymbols & gs,const ProductionsType & prods,int oristart,const std::string & strstart);
-	  LRGramma(const GrammaSymbols & gs,ProductionsType && prods,int oristart,const std::string & strstart);
-	  LRGramma( GrammaSymbols && gs,const ProductionsType & prods,int oristart,const std::string & strstart);
-	  LRGramma(GrammaSymbols && gs,ProductionsType && prods,int oristart,const std::string & strstart);
+		   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,int oriend,const std::string & strstart);
+	  LRGramma(const GrammaSymbols & gs,const ProductionsType & prods,int oristart,int oriend,const std::string & strstart);
+	  LRGramma(const GrammaSymbols & gs,ProductionsType && prods,int oristart,int oriend,const std::string & strstart);
+	  LRGramma( GrammaSymbols && gs,const ProductionsType & prods,int oristart,int oriend,const std::string & strstart);
+	  LRGramma(GrammaSymbols && gs,ProductionsType && prods,int oristart,int oriend,const std::string & strstart);
 
 	  /**
 	   * return a tuple
@@ -302,11 +307,14 @@ namespace x2
 	  ClosureType getGotoInVector(int iclo,int x, ClosuresVector& itemsets, std::map<ItemType,int>	&	C0);
 	  ClosureType getGoto(const ClosureType & items,int x);
 	  int			getClosure(int i);//求下标i对应的项目集
-	  int		  getFirstSymbolAfterDot(const ItemType & i);
+
+	  AS_MACRO int		  getFirstSymbolAfterDot(const ItemType & i);
+	  int				  getNthSymboleAfterDot(const ItemType & i,unsigned int j);
 
 	  AS_MACRO int	getGStart()const;
+	  AS_MACRO int getGEnd()const;
 
-
+	  AS_MACRO		std::string toString()const;
 	  std::string toString(const ItemType& item);
 	  std::string toString(const ClosureType& closure);
 	  std::string toString(const  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> & tups);
@@ -315,8 +323,43 @@ namespace x2
 
   public:
 	  int sstart;//拓广之后的start
-	  std::map<int ,int> cachedClosureMap;//if [i,j] exists, then  j is i's closure
+	  int send;//必须定义结束符号
 	  std::string dotString;
+  };
+
+  /**
+   * LR1 Gramma
+   *   each item is a 4-tuple: LR0Item plus a terminator
+   */
+  class LR1Gramma:public LRGramma{
+  public:
+	  typedef LR1Gramma	This;
+	  typedef LRGramma	Father;
+	  typedef std::tuple<int,int,int,int> ItemType;
+	  typedef std::set<ItemType> 		ClosureType;
+	  typedef std::vector<ClosureType>	ClosuresVector;
+	  typedef std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> InfoType;
+  public:
+	  AS_MACRO LR1Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
+		   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,int oriend,const std::string & strstart);
+
+	  ClosureType	getClosure(const ItemType& i);
+	  ClosureType	getClosure(const ItemType& i,const Gramma::SetsType &firstset);
+	  void			getClosure(const ItemType& i,ClosureType& C,const Gramma::SetsType &firstset);
+	  ClosureType	getClosure(const ClosureType & C,const Gramma::SetsType &firstset);
+	  ClosureType	getGoto(const ClosureType& clo,int x,const Gramma::SetsType &firstset);
+	  /**
+	   * insert i in C, if really updated,return true;
+	   */
+	  AS_MACRO static bool			doInsert(ClosureType & C,const ItemType &i);
+	  InfoType				getAllClosures();
+	  AS_MACRO int		  getFirstSymbolAfterDot(const ItemType & i);
+	  int		  getNthSymboleAfterDot(const ItemType & i,unsigned int j);
+
+	  AS_MACRO std::string toString()const;
+	  std::string toString(const ItemType& i);
+	  std::string toString(const ClosureType& closure);
+	  std::string toString(const InfoType& info);
   };
 
   //===========function macrso
@@ -478,13 +521,50 @@ namespace x2
     return s;
   }
   //============class LRGramma
+  int  LRGramma::getFirstSymbolAfterDot(const ItemType & i)
+  {
+ 	 return getNthSymboleAfterDot(i,1);
+  }
   int			LRGramma::getGStart()const
   {
 	  return sstart;
   }
+  int LRGramma::getGEnd()const
+  {
+	  return send;
+  }
+  std::string LRGramma::toString()const
+  {
+	  return Gramma::toString();
+  }
   void		  LRGramma::setDotString(const std::string & s)
   {
 	  this->dotString=s;
+  }
+
+  //===========class LR1Gramma
+  LR1Gramma::LR1Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
+  		   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,int oriend,const std::string & strstart):
+  				   LRGramma(list,prodlist,oristart,oriend,strstart)
+	{
+
+	}
+  /**
+   * return false (means no update)
+   */
+  AS_MACRO bool	LR1Gramma::doInsert(ClosureType & C,const ItemType &i)
+  {
+	  if(C.find(i)!=C.end())return false;
+	  C.insert(i);
+	  return true;
+  }
+  int		  LR1Gramma::getFirstSymbolAfterDot(const ItemType & i)
+  {
+ 	 return getNthSymboleAfterDot(i,1);
+  }
+  std::string LR1Gramma::toString()const
+  {
+	  return LRGramma::toString();
   }
 
 } /* namespace x2 */

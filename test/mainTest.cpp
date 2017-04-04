@@ -37,7 +37,7 @@ int main()
 //    testString();
 //    testNumber();
 //  testNote();
-  testGramma();
+   testGramma();
 }
 void testGramma()
 {
@@ -70,7 +70,7 @@ void testGramma()
 	     {7,{6}},//F->c
 	     });
 
-  //S->BB B->aB B->b  S->BBC C->BS , 这种文法可能引起空判定无限递归
+  //S->BB B->aB B->b  S->BBC C->BS , 这种文法可能引起空判定无限递归,but it will not now.
 //  g.syms.push_back(GrammaSymbol(GrammaSymbol::SYM_EMPTY));
 
   //==========打印符号表
@@ -136,15 +136,7 @@ void testGramma()
   //===========计算FIRST集
   std::cout << "calculating FIRST set" <<std::endl;
   Gramma::SetsType firstset=std::move(g.calcFirst());
-  std::string strfirstset;
-  std::for_each(firstset.begin(),firstset.end(),[&strfirstset,&g](const Gramma::SetsType::value_type &it){
-    strfirstset += g.gsyms.getString(it.first) + "{\n\t\t";
-    std::for_each(it.second.begin(),it.second.end(), [&strfirstset,&g](int i){
-      strfirstset += g.gsyms.getString(i) + ", ";
-    });
-    strfirstset += std::string("\n}\n");
-  });
-  std::cout << strfirstset << std::endl;
+  std::cout << g.toString(firstset) << std::endl;
 
   //==========计算FOLLOW集
   std::cout << "calculating FOLLOW set" << std::endl;
@@ -170,7 +162,8 @@ void testGramma()
 		  {GrammaSymbols::TYPE_TERM,")"}, //4
 		  {GrammaSymbols::TYPE_TERM,"+"},//5
 		  {GrammaSymbols::TYPE_TERM,"*"},//6
-		  {GrammaSymbols::TYPE_TERM,"id"}//7
+		  {GrammaSymbols::TYPE_TERM,"id"},//7
+		  {GrammaSymbols::TYPE_TERM,"$"},//8
 	  },
 	  {
 			  {0,{0,5,1}},
@@ -181,36 +174,103 @@ void testGramma()
 			  {2,{7}}
 	  },
 	  0,
+	  8,
 	  "E'"
   );
+//  LRGramma lrg(
+//	  {
+//		  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},
+//		  {GrammaSymbols::TYPE_VAR,"S"}, //0
+//		  {GrammaSymbols::TYPE_VAR,""}, //1
+//		  {GrammaSymbols::TYPE_VAR,""}, //2
+//		  {GrammaSymbols::TYPE_TERM,"0"}, //3
+//		  {GrammaSymbols::TYPE_TERM,"1"}, //4
+//		  {GrammaSymbols::TYPE_TERM,"+"},//5
+//		  {GrammaSymbols::TYPE_TERM,"*"},//6
+//		  {GrammaSymbols::TYPE_TERM,"id"}//7
+//	  },
+//	  {
+//			  {0,{3,0,4}},
+//			  {0,{3,4}},
+//	  },
+//	  0,
+//	  "S'"
+//  );
+
   std::cout << "LRGramma(this example can be found in Aho's dragon book,page 155)" << std::endl;
   std::cout << lrg.Gramma::toString() << std::endl;
 //  lrg.setDotString("<DOT>");
 
   //=======辅助函数 : 产生某个符号的项目集
-  int iEd=lrg.gsyms.findSymbolIndex("E'");
-  auto itemone = std::make_tuple(iEd,0,0);//E' -> .E
-  LRGramma::ClosureType C=std::move(lrg.getClosure(itemone));
-  std::cout << "Closure of E'->.E " << std::endl;
-  std::cout << lrg.toString(C)<<std::endl;
-
-  //========辅助函数：产生一个项集的GOTO集
-  int iE=lrg.gsyms.findSymbolIndex("E");
-  LRGramma::ClosureType GOTO=std::move(lrg.getGoto(C, iE));
-  std::cout << "GOTO of CLOSURE({E'->.E})" << std::endl;
-  std::cout << lrg.toString(GOTO);
-  std::cout <<"inputing '+',getting next GOTO" << std::endl;
-  int iplus=lrg.gsyms.findSymbolIndex("+");
-  GOTO=std::move(lrg.getGoto(GOTO, iplus));
-  std::cout << lrg.toString(GOTO) << std::endl;
+//  int iEd=lrg.gsyms.findSymbolIndex("E'");
+//  auto itemone = std::make_tuple(iEd,0,0);//E' -> .E
+//  LRGramma::ClosureType C=std::move(lrg.getClosure(itemone));
+//  std::cout << "Closure of E'->.E " << std::endl;
+//  std::cout << lrg.toString(C)<<std::endl;
+//
+//  //========辅助函数：产生一个项集的GOTO集
+//  int iE=lrg.gsyms.findSymbolIndex("E");
+//  LRGramma::ClosureType GOTO=std::move(lrg.getGoto(C, iE));
+//  std::cout << "GOTO of CLOSURE({E'->.E})" << std::endl;
+//  std::cout << lrg.toString(GOTO);
+//  std::cout <<"inputing '+',getting next GOTO" << std::endl;
+//  int iplus=lrg.gsyms.findSymbolIndex("+");
+//  GOTO=std::move(lrg.getGoto(GOTO, iplus));
+//  std::cout << lrg.toString(GOTO) << std::endl;
 
   //=========规范集项目族
   std::cout << "CLOSURES & GOTO" << std::endl;
   auto tup= lrg.getAllClosures();
   std::cout << lrg.toString(tup) << std::endl;
 
-  //===========do you agree with me?
 
+  //=========LR1 文法
+  LR1Gramma lr1g({
+	  {
+			  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},
+			  {GrammaSymbols::TYPE_VAR,"S"}, //0
+			  {GrammaSymbols::TYPE_VAR,"C"}, //1
+			  {GrammaSymbols::TYPE_VAR,"F"}, //2
+			  {GrammaSymbols::TYPE_TERM,"c"}, //3
+			  {GrammaSymbols::TYPE_TERM,"d"}, //4
+			  {GrammaSymbols::TYPE_TERM,"+"},//5
+			  {GrammaSymbols::TYPE_TERM,"*"},//6
+			  {GrammaSymbols::TYPE_TERM,"id"},//7
+			  {GrammaSymbols::TYPE_TERM,"$"},//8
+		  },
+		  {
+				  {0,{1,1}},//S->CC
+				  {1,{3,1}}, //C->cC
+				  {1,{4}},//C->d
+		  },
+		  0,
+		  8,
+		  "S'"
+  });
+  std::cout << "LR1 Gramma(this example can be found in Aho's dragon book,page 169)" << std::endl;
+  std::cout << lr1g.toString() << std::endl;
+  //=======辅助函数 : 产生某个符号的项目集
+//  int i1Ed=lr1g.gsyms.findSymbolIndex("S'");
+//  int i1End=lr1g.gsyms.findSymbolIndex("$");
+//  int i1E=lr1g.gsyms.findSymbolIndex("S");
+//  auto i1temone = std::make_tuple(i1Ed,0,0,i1End);//E' -> .E
+//  LR1Gramma::ClosureType C=std::move(lr1g.getClosure(i1temone));
+//  std::cout << "Closure of " <<lr1g.toString(i1temone) << std::endl;
+//  std::cout << lr1g.toString(C)<<std::endl;
+//
+//
+//  i1temone=std::make_tuple(i1E,0,0,i1End);
+//  std::cout << "Closure of " << lr1g.toString(i1temone) << std::endl;//E->
+//  std::cout << "<end" << std::endl;
+//  C=lr1g.getClosure(i1temone);
+//  std::cout << lr1g.toString(C) << std::endl;
+
+  //=========规范集项目族
+  auto lr1info=lr1g.getAllClosures();
+  std::cout << lr1g.toString(lr1info) << std::endl;
+
+  //===========do you agree with me?
+  std::cout << "ENDED" << std::endl;
 
 
 
