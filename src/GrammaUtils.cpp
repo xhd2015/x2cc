@@ -10,6 +10,7 @@
 #include <new>
 #include <iterator> //for inserter
 #include <set>
+#include <queue>
 
 namespace x2
 {
@@ -62,10 +63,12 @@ namespace x2
   GrammaSymbols & GrammaSymbols::operator=(const GrammaSymbols & gs)
   {
 	  new (this) GrammaSymbols(gs);
+	  return *this;
   }
   GrammaSymbols & GrammaSymbols::operator=(GrammaSymbols && gs)
   {
 	  new (this) GrammaSymbols(gs);
+	  return *this;
   }
 
   int GrammaSymbols::add(int type,std::string &&s)
@@ -149,6 +152,7 @@ namespace x2
   GrammaSentence& GrammaSentence::operator=(const GrammaSentence& gs)
   {
     new (this) GrammaSentence(gs);
+    return *this;
   }
   void GrammaSentence::replaceFirst(const GrammaSentence& gs,int empty)
   {
@@ -360,24 +364,25 @@ namespace x2
   void Gramma::eliminateDuplication(int i)
   {
       for(size_type j=0;j<prods[i].size();j++)
-	{
-	  for(size_type k=j+1;k<prods[i].size();k++)
-	    {
-	      bool eq=true;
-	      for(int z=0;z<prods[i][j].syms.size();z++)
-		{
-		  if(z >= prods[i][k].syms.size() || prods[i][j].syms[z] != prods[i][k].syms[z])
-		    {
-		      eq=false;break;
-		    }
-		}
-	      if(eq)
-		{
-		  prods[i].erase(prods[i].begin() + k);
-		  k--;
-		}
-	    }
-	}
+      {
+		  for(size_type k=j+1;k<prods[i].size();k++)
+			{
+			  bool eq=true;
+			  if(prods[i][j].syms.size()!=prods[i][k].syms.size())continue;
+			  for(int z=0;z<(int)prods[i][j].syms.size();z++)
+				{
+				  if(prods[i][j].syms[z] != prods[i][k].syms[z])
+					{
+					  eq=false;break;
+					}
+				}
+			  if(eq)
+				{
+				  prods[i].erase(prods[i].begin() + k);
+				  k--;
+				}
+			}
+      }
   }
 //  void Gramma::eliminateDuplication(std::vector<GrammaSentence>& data)
 //  {
@@ -497,7 +502,7 @@ namespace x2
     for(int subi : subset)
       {
 	 std::vector<int> vec;//call each time
-	if(end < data[subi].getLength())
+	if(end < (int)data[subi].getLength())
 	  {
 	    //copy
 	     std::copy( data[subi].syms.begin() + end,data[subi].syms.end(),std::inserter(vec, vec.begin()) );
@@ -558,7 +563,7 @@ namespace x2
 
 //	    printf("subset i = %d\n",it);
 	    int curSym;
-	    if( i < data[it].syms.size() )
+	    if( i < (int)data[it].syms.size() )
 	      {
 		curSym = data[it].syms[i];
 		auto mit = setMap.find(curSym);
@@ -575,13 +580,13 @@ namespace x2
 		int j=i,k=i;
 		while(it != sz)
 		  {
-		    if( i < data[it].syms.size() && data[it].syms[i] == curSym )setMap[curSym].push_back(it);
+		    if( i < (int)data[it].syms.size() && data[it].syms[i] == curSym )setMap[curSym].push_back(it);
 		    it++;
 		  }
 		for(;;k++)
 		  for(auto itt:setMap[curSym])
 		    {
-		      if( k >= data[itt].syms.size() ||
+		      if( k >= (int)data[itt].syms.size() ||
 			  data[itt].syms[k]!=data[setMap[curSym][0]].syms[k])
 			{
 			  goto end;
@@ -868,7 +873,7 @@ namespace x2
 
  //============class LRGramma
  LRGramma::LRGramma(const Gramma& g,int oristart,int oriend,const std::string & strstart):
-		 dotString("."),send(oriend)
+		send(oriend),dotString(".")
  {
 	 gsyms = g.gsyms;
 	 prods = g.prods;
@@ -878,7 +883,7 @@ namespace x2
 	 addProduction(sstart,std::move(gs));
  }
  LRGramma::LRGramma(Gramma&& g,int oristart,int oriend,const std::string & strstart):
-				 dotString("."),send(oriend)
+		send(oriend),dotString(".")
  {
 	 gsyms = std::move(g.gsyms);
 	 prods = std::move(g.prods);
@@ -889,7 +894,7 @@ namespace x2
  }
  LRGramma::LRGramma(const std::initializer_list<std::pair<int,std::string> > &list,
 	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,int oriend,const std::string & strstart):
-				 dotString("."),send(oriend)
+		send(oriend),dotString(".")
  {
 	 gsyms = list;
 	auto it=prodlist.begin(),itend=prodlist.end();
@@ -903,7 +908,7 @@ namespace x2
 	 addProduction(sstart,std::move(tempgs));
  }
  LRGramma::LRGramma(const GrammaSymbols & gs,const ProductionsType & prods,int oristart,int oriend,const std::string & strstart):
-				 dotString("."),send(oriend)
+		send(oriend),dotString(".")
  {
 	 this->gsyms=gs;
 	 this->prods=prods;
@@ -913,7 +918,7 @@ namespace x2
 	 addProduction(sstart,std::move(tempgs));
  }
  LRGramma::LRGramma(const GrammaSymbols & gs,ProductionsType && prods,int oristart,int oriend,const std::string & strstart):
-				 dotString("."),send(oriend)
+		send(oriend),dotString(".")
  {
 	 this->gsyms=gs;
 	 this->prods=prods;
@@ -923,7 +928,7 @@ namespace x2
 	 addProduction(sstart,std::move(tempgs));
  }
  LRGramma::LRGramma( GrammaSymbols && gs,const ProductionsType & prods,int oristart,int oriend,const std::string & strstart):
-				 dotString("."),send(oriend)
+		send(oriend),dotString(".")
  {
 	 this->gsyms=gs;
 	 this->prods=prods;
@@ -933,7 +938,7 @@ namespace x2
 	 addProduction(sstart,std::move(tempgs));
  }
  LRGramma::LRGramma(GrammaSymbols && gs,ProductionsType && prods,int oristart,int oriend,const std::string & strstart):
-				 dotString("."),send(oriend)
+		send(oriend), dotString(".")
  {
 	 this->gsyms=gs;
 	 this->prods=prods;
@@ -988,8 +993,12 @@ namespace x2
 					 {
 //						 std::cout << "curClo is " << std::endl << toString(curClo) << std::endl;
 //						 std::cout << "goto not present "<<std::endl;
+
+						 //===========求得GOTO集
 						 ClosureType iic_x_goto=getGoto(curClo,x);
 						 //===如果iic_x_goto与当前求出的某个集合相等，就不需要添加
+
+						 //=========判断求得的GOTO集合是否已经存在与序列中，如果不存在就加入，否则仅仅记录GOTO的映射关系
 						 auto itemit=std::find(itemsets.begin(),itemsets.end(),iic_x_goto);
 						 int iic_x_key_index;
 						 if(itemit==itemsets.end())
@@ -1008,8 +1017,9 @@ namespace x2
 							 iic_x_key_index = itemit - itemsets.begin();
 						 }
 						 C2[iic_x_key] = iic_x_key_index; //记录GOTO(curClo,x)
-//
 					 }
+
+
 				 }
 			 }
 			 if(hasnew)break;
@@ -1167,7 +1177,7 @@ namespace x2
 	 int symIndex = dotIndex + j -1;
 	 if(symIndex< (int)gs.getLength())
 		 return gs.syms[symIndex];
-	 else if(std::get<0>(i) == getGStart() && j==(int)gs.getLength()) //start的末尾是结束符号
+	 else if(std::get<0>(i) == getGStart() && j==gs.getLength()) //start的末尾是结束符号
 		 return getGEnd();
 	 else
 		  return gsyms.findEmpty();
@@ -1233,69 +1243,52 @@ namespace x2
  }
  void	LR1Gramma::getClosure(const ItemType& i,ClosureType& C,const Gramma::SetsType &firstset)
  {
+	 //====初始化集合只有一个元素 i中的产生式
 	 C.insert(i);
-	 std::map<int,bool> added;
-	 for(auto &it:prods)
+
+	 std::set<std::pair<int,int>> added;//记录 S->B.AC 中 A的所有产生式是否已经加入,默认情况下是false,连i的表达式都是false
+	 std::queue<ItemType>	waits;
+	 std::set<ItemType>		processed;//for time complexity to O(1)(hashset) or O(logn)(treeset)
+	 waits.push(i);
+
+	 while(!waits.empty())
 	 {
-		 added[it.first]=false;
-	 }
-	 bool hasnew=true;
-	 while(hasnew)
-	 {
-		 hasnew=false;
-		 for(auto & cit : C)
+		 const auto &cit=waits.front();
+		 waits.pop();
+		 if(processed.find(cit)!=processed.end())continue;
+
+		 //========add (v,i,0,FIRST(sym cit[3])) 获取句型sym,cit[3]的FIRST集
+		 GrammaSentence& gs=prods[std::get<0>(cit)][std::get<1>(cit)];
+
+		 //=====在已有的firstset的基础上计算first(beta)，并且如果beta能够为空，将a加入其中
+		 std::set<int> fsets=Gramma::calcFirst(gs,std::get<2>(cit)+1,(int)gs.getLength() ,firstset);
+		 auto itempty=fsets.find(gsyms.findEmpty());
+		 if(itempty!=fsets.end())//移除empty
 		 {
-//			 std::cout << "current Item Set:" << std::endl;
-//			 std::cout << toString(cit) << std::endl;
-
-
-			 //========add (v,i,0,FIRST(sym cit[3])) 获取句型sym,cit[3]的FIRST集
-			 GrammaSentence& gs=prods[std::get<0>(cit)][std::get<1>(cit)];
-//			 std::cout << "current gs is "<<Gramma::toString(gs)<<std::endl;
-//					 std::cout << "before get FIRST"<<std::endl;
-			 std::set<int> fsets=Gramma::calcFirst(gs,std::get<2>(cit)+1,(int)gs.getLength() ,firstset);
-			 if(fsets.find(gsyms.findEmpty())!=fsets.end())
-			 {
-				 fsets.insert(std::get<3>(cit));
-				 fsets.erase(fsets.find(gsyms.findEmpty())); //移除empty
-			 }
-
-			 int v = getFirstSymbolAfterDot(cit);
-			 if(gsyms.isSymbolVar(v) && !added[v])
-			 {
-				 size_type sz=prods[v].size();
-				 ClosureType tempClo;
-				 for(size_type i=0;i<sz;i++)//将.后面的所有表达式加入SET中
-				 {
-
-//					 std::cout << "get first set of sentence:" << Gramma::toString(fsets) << std::endl;
-
-					 for(int fsym:fsets)
-					 {
-						 ItemType tempItem(v,i,0,fsym);
-//						 std::cout << "adding " << std::endl;
-//						 std::cout << toString(tempItem) << std::endl;
-						 tempClo.insert(tempItem);
-					 }
-				 }
-				 added[v]=true;
-				 if(!std::includes(C.begin(),C.end(), tempClo.begin(), tempClo.end()))
-				 {
-//					 std::cout << "current C is " << std::endl << toString(C) << std::endl;
-//					 std::cout << "to be added tempClo is " << std::endl << toString(tempClo) << "<end " << std::endl;
-					 C.insert(tempClo.begin(), tempClo.end());
-					 hasnew=true;
-					 break;
-				 }
-
-			 }
-//			 std::cout << "loop once end, hasnew = "<<hasnew << std::endl;
-			 if(hasnew)break; //C has been modified
+			 fsets.erase(itempty);
+			 fsets.insert(std::get<3>(cit));
 		 }
+		 //=====当前表达式 A->C.BD 中的v=B
+		 int v = getFirstSymbolAfterDot(cit);
+		 if(gsyms.isSymbolVar(v))
+		 {
+			 size_type sz=prods[v].size();
+			 //===将v->..的所有表达式加入SET中
+			 for(int fsym:fsets)
+			 {
+				 if(added.find({v,fsym})!=added.end())continue;
+				 for(size_type i=0;i<sz;i++)
+				 {
+					 ItemType tempItem(v,i,0,fsym);
+					 //if(C.find(tempItem)==C.end())//prevent repeat ; NOTE set is no repeat
+					 C.insert(tempItem);
+					 waits.push(tempItem);
+				 }
+				 added.insert({v, fsym});
+			 }
+		 }
+		 processed.insert(cit);
 	 }
-//	 std::cout << "end getClosure " << std::endl;
-//	 std::cout << toString(C) << std::endl;
-
  }
  typename LR1Gramma::ClosureType	LR1Gramma::getClosure(const ClosureType & C,const Gramma::SetsType &firstset)
  {
@@ -1331,61 +1324,67 @@ namespace x2
  }
  typename LR1Gramma::InfoType LR1Gramma::getAllClosures()
  {
-	 LR1Gramma::ClosuresVector itemsets;//项目族
-	std::map<std::pair<int,int>,int> C2;
-	std::set<int>		iC;
+	 LR1Gramma::ClosuresVector itemsets;//记录所有产生的Closure
+	std::map<std::pair<int,int>,int> C2;//记录GOTO关系
+	std::set<int>		iC;//记录所有的规范Closure
 
 	 Gramma::SetsType calcedFirst = this->Gramma::calcFirst();
-//	 std::cout << "after get FIRST" << std::endl;
-//	 std::cout << Gramma::toString(calcedFirst) << std::endl;
 
-	 ItemType tempitem=std::make_tuple(getGStart(),0,0,getGEnd());
+	 ItemType tempitem=std::make_tuple(getGStart(),0,0,getGEnd());//由拓广文法的唯一产生式得到CLOSURE 0
 	 ClosureType temp;
 	 temp.insert(tempitem);
 	 itemsets.push_back(getClosure(temp,calcedFirst));
 	 int iC_C0_tempitem = itemsets.size() - 1;
 	 iC.insert(iC_C0_tempitem);
 
-	 bool hasnew=true;
-	 while(hasnew)
+	 std::queue<int> waits;
+	 std::set<int>   processed;
+	 waits.push(iC_C0_tempitem);
+	 while(!waits.empty())
 	 {
-		 hasnew=false;
-		 for(int iic:iC)//iC中所有已经求出的CLOSUER
+		 int iic=waits.front();
+		 waits.pop();
+		 if(processed.find(iic)!=processed.end())continue;
+
+		 //取出当前的Closure
+		 ClosureType &curClo = itemsets[iic];
+
+		 //对当前Closure的每个后继符号.x
+		 //如果GOTO(curClo,x)不属于
+		 LR1Gramma::ClosuresVector tempitmes;
+		 for(auto &eachItem : curClo)
 		 {
-			 ClosureType &curClo = itemsets[iic];
-			 for(auto &eachItem : curClo)//对curClo中的.的每个后继符号x，将GOTO(curClo,x)在不属于C1的情况下加入C1中
+			 int x=getFirstSymbolAfterDot(eachItem);
+			 //==如果不是空符号则求其Closure,并检查这个Closure是否已经存在于现有的Closure中，如果不存在，就将其加入
+			 if(x!=gsyms.findEmpty() && C2.find({iic,x})==C2.end())
 			 {
-				 int x=getFirstSymbolAfterDot(eachItem);
-				 if(x!=gsyms.findEmpty())//不是空符号
+				 //===avoid S'->S.,$ to generate EMPTY
+				 if(std::get<0>(eachItem)==getGStart() && x==getGEnd())continue;
+
+				 ClosureType iic_x_goto=getGoto(curClo,x,calcedFirst);//获取Closure
+				 auto itemit=std::find(itemsets.begin(),itemsets.end(),iic_x_goto);//检查其是否已经存在
+				 int iic_x_key_index;
+				 if(itemit==itemsets.end())
 				 {
-					 auto iic_x_key=std::pair<int,int>(iic,x);
-					 auto itgoto=C2.find(iic_x_key);
-					 if(itgoto==C2.end())//如果 GOTO(curClo,x)尚未存在,则求其CLOSUER
+					 if((itemit=std::find(tempitmes.begin(),tempitmes.end(),iic_x_goto))==tempitmes.end())
 					 {
-						 ClosureType iic_x_goto=getGoto(curClo,x,calcedFirst);
-//						 std::cout << "get GOTO of (" << toString(curClo) <<", "<< gsyms.getString(x) << "):" << std::endl;
-//						 std::cout << toString(iic_x_goto) << std::endl;
-						 //===如果iic_x_goto与当前求出的某个集合相等，就不需要添加
-						 auto itemit=std::find(itemsets.begin(),itemsets.end(),iic_x_goto);
-						 int iic_x_key_index;
-						 if(itemit==itemsets.end())
-						 {
-//							 std::cout << "adding new" << std::endl;
-							 itemsets.push_back(iic_x_goto); //curClo has changed, because itemsets are changing, so any memory reference is not good
-							 iic_x_key_index = (int)itemsets.size() - 1;
-							 iC.insert(iic_x_key_index);  //加入集合之中,此时集合已经改变，需要重新提起遍历过程
-							 hasnew=true;
-							 break; //everything has changed
-						 }else{
-							 iic_x_key_index = itemit - itemsets.begin();
-						 }
-						 C2[iic_x_key] = iic_x_key_index; //记录GOTO(curClo,x)
-//
+						 tempitmes.push_back(std::move(iic_x_goto));
+						 iic_x_key_index =(int)( (tempitmes.size()-1) + itemsets.size());
+					 }else{
+						 iic_x_key_index = (int) (itemsets.size() + (itemit-tempitmes.begin()));
 					 }
+					 iC.insert(iic_x_key_index);
+					 waits.push(iic_x_key_index);
+				 }else{
+					 iic_x_key_index = itemit - itemsets.begin();
 				 }
+				 C2[{iic,x}] = iic_x_key_index; //记录GOTO(curClo,x)
 			 }
-			 if(hasnew)break;
 		 }
+		 itemsets.insert(itemsets.end(),
+				 std::move_iterator<LR1Gramma::ClosuresVector::iterator>(tempitmes.begin()),
+				 std::move_iterator<LR1Gramma::ClosuresVector::iterator>(tempitmes.end()));//itemsets changed but delayed until here
+		 processed.insert(iic);
 	 }
 	 return std::make_tuple(itemsets,iC,C2);
  }
@@ -1404,7 +1403,7 @@ namespace x2
 	 int symIndex = dotIndex + j -1;
 	 if(symIndex< (int)gs.getLength())
 		 return gs.syms[symIndex];
-	 else if(std::get<0>(i) == getGStart() && j==(int)gs.getLength()) //start的末尾是结束符号
+	 else if(std::get<0>(i) == getGStart() && j==gs.getLength()) //start的末尾是结束符号
 		 return getGEnd();
 	 else
 		  return gsyms.findEmpty();

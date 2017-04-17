@@ -6,16 +6,19 @@
 CPP_SRCS += \
 ../src/GrammaUtils.cpp \
 ../src/LexicalParser.cpp \
+../src/NFAUtils.cpp \
 ../src/SemanticParser.cpp 
 
 OBJS += \
 ./src/GrammaUtils.o \
 ./src/LexicalParser.o \
+./src/NFAUtils.o \
 ./src/SemanticParser.o 
 
 CPP_DEPS += \
 ./src/GrammaUtils.d \
 ./src/LexicalParser.d \
+./src/NFAUtils.d \
 ./src/SemanticParser.d 
 
 

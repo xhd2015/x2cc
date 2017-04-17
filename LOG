@@ -1,0 +1,2 @@
+2017-04-17 22:13:42		Corrected the CLOSURE Calculation.Recording array 'added' is valid for LR(0),but not for LR(1)
+						Use `queue to replace `hasnew	to improve much performance in  void	LR1Gramma::getClosure(const ItemType& i,ClosureType& C,const Gramma::SetsType &firstset)

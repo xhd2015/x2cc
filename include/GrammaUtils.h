@@ -312,7 +312,7 @@ namespace x2
 	  int				  getNthSymboleAfterDot(const ItemType & i,unsigned int j);
 
 	  AS_MACRO int	getGStart()const;
-	  AS_MACRO int getGEnd()const;
+	  AS_MACRO int  getGEnd()const;
 
 	  AS_MACRO		std::string toString()const;
 	  std::string toString(const ItemType& item);

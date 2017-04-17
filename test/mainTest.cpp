@@ -29,15 +29,44 @@ void testNote();
 void testRecursiveMacro();
 void testGramma();
 
+void testGramma();
+//LR(1) Grammar Only
+void testLR1();
 
 int main()
 {
-//  testFile();
-//  testParseWord();
-//    testString();
-//    testNumber();
-//  testNote();
-   testGramma();
+//	testGramma();
+	testLR1();
+
+}
+void testLR1()
+{
+	LR1Gramma lr1g(
+				  {
+						  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},//-1
+						  {GrammaSymbols::TYPE_VAR,"S"}, //0
+						  {GrammaSymbols::TYPE_VAR,"L"}, //1
+						  {GrammaSymbols::TYPE_VAR,"R"}, //2
+						  {GrammaSymbols::TYPE_TERM,"="}, //3
+						  {GrammaSymbols::TYPE_TERM,"*"}, //4
+						  {GrammaSymbols::TYPE_TERM,"i"},//5
+						  {GrammaSymbols::TYPE_TERM,"$"},//6
+					  },
+					  {
+							  {0,{1,3,2}},//S->L=R
+							  {0,{2}}, //S->R
+							  {1,{4,2}},//L->*R
+							  {1,{5}},//L->i
+							  {2,{1}},//R->L
+					  },
+					  0,
+					  6,
+					  "S'"
+			);
+	std::cout << lr1g.toString()<<std::endl;
+	auto lr1info=lr1g.getAllClosures();
+	std::cout << lr1g.toString(lr1info) << std::endl;
+
 }
 void testGramma()
 {
@@ -226,7 +255,7 @@ void testGramma()
 
   //=========LR1 文法
   LR1Gramma lr1g({
-	  {
+
 			  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},
 			  {GrammaSymbols::TYPE_VAR,"S"}, //0
 			  {GrammaSymbols::TYPE_VAR,"C"}, //1
@@ -246,7 +275,7 @@ void testGramma()
 		  0,
 		  8,
 		  "S'"
-  });
+  );
   std::cout << "LR1 Gramma(this example can be found in Aho's dragon book,page 169)" << std::endl;
   std::cout << lr1g.toString() << std::endl;
   //=======辅助函数 : 产生某个符号的项目集
@@ -276,110 +305,110 @@ void testGramma()
 
 
 }
-#define A(i,j) i() k
-void testRecursiveMacro()
-{
-
-}
-void testNote()
-{
-  LexicalParser lp;
-  const char *wordbuf="//0x4e5fz*\n0x\\/";
-  size_t index=0;
-  int type;
-  std::string s;
-//  lp.parseNote(wordbuf, index, strlen(wordbuf),s,type);
-//  cout << LexicalParser::isInWord(' ')<<endl;
-//  return;
-  auto hmap=LexicalParser::getHumanReadable();
-
-  cout << "("<<hmap[type]<<","<<s<<")"<<endl;
-}
-
-void testNumber()
-{
-  LexicalParser lp;
-  const char *wordbuf="0x4e5fz0x";
-  size_t index=0;
-  int type;
-  std::string s;
-//  lp.parseNumber(wordbuf, index, strlen(wordbuf),s,type);
-//  cout << LexicalParser::isInWord(' ')<<endl;
-//  return;
-  auto hmap=LexicalParser::getHumanReadable();
-
-  cout << "("<<hmap[type]<<","<<s<<")"<<endl;
-}
-void testString()
-{
-  LexicalParser lp;
-  const char *wordbuf="\"eu\\x68asdf \" d";
-  size_t index=0;
-  int type;
-  std::string s;
-//  lp.parseString(wordbuf, index, strlen(wordbuf),s,type);
-//  cout << LexicalParser::isInWord(' ')<<endl;
-//  return;
-  auto hmap=LexicalParser::getHumanReadable();
-
-  cout << "("<<hmap[type]<<","<<s<<")"<<endl;
-}
-
-void testParseWord()
-{
-  LexicalParser lp;
-  const char *wordbuf="xU_hand23ed ll0";
-  size_t index=0;
-  int type;
-  std::string s;
-//  lp.parseId(wordbuf, index, strlen(wordbuf),s,type);
-//  cout << LexicalParser::isInWord(' ')<<endl;
-//  return;
-  auto hmap=LexicalParser::getHumanReadable();
-
-  cout << "("<<hmap[type]<<","<<s<<")"<<endl;
-}
-
-void testFile()
-{
-	LexicalParser lp;
-//	const char* str="0x899aad";
-//	size_t n=strlen(str);
-//	lp.parseNumber(str,n);
-//	const char* strbuf="\"ab\\b\\\nadafd\"";
+//#define A(i,j) i() k
+//void testRecursiveMacro()
+//{
+//
+//}
+//void testNote()
+//{
+//  LexicalParser lp;
+//  const char *wordbuf="//0x4e5fz*\n0x\\/";
+//  size_t index=0;
+//  int type;
+//  std::string s;
+////  lp.parseNote(wordbuf, index, strlen(wordbuf),s,type);
+////  cout << LexicalParser::isInWord(' ')<<endl;
+////  return;
+//  auto hmap=LexicalParser::getHumanReadable();
+//
+//  cout << "("<<hmap[type]<<","<<s<<")"<<endl;
+//}
+//
+//void testNumber()
+//{
+//  LexicalParser lp;
+//  const char *wordbuf="0x4e5fz0x";
+//  size_t index=0;
+//  int type;
+//  std::string s;
+////  lp.parseNumber(wordbuf, index, strlen(wordbuf),s,type);
+////  cout << LexicalParser::isInWord(' ')<<endl;
+////  return;
+//  auto hmap=LexicalParser::getHumanReadable();
+//
+//  cout << "("<<hmap[type]<<","<<s<<")"<<endl;
+//}
+//void testString()
+//{
+//  LexicalParser lp;
+//  const char *wordbuf="\"eu\\x68asdf \" d";
+//  size_t index=0;
+//  int type;
+//  std::string s;
+////  lp.parseString(wordbuf, index, strlen(wordbuf),s,type);
+////  cout << LexicalParser::isInWord(' ')<<endl;
+////  return;
+//  auto hmap=LexicalParser::getHumanReadable();
+//
+//  cout << "("<<hmap[type]<<","<<s<<")"<<endl;
+//}
+//
+//void testParseWord()
+//{
+//  LexicalParser lp;
+//  const char *wordbuf="xU_hand23ed ll0";
+//  size_t index=0;
+//  int type;
+//  std::string s;
+////  lp.parseId(wordbuf, index, strlen(wordbuf),s,type);
+////  cout << LexicalParser::isInWord(' ')<<endl;
+////  return;
+//  auto hmap=LexicalParser::getHumanReadable();
+//
+//  cout << "("<<hmap[type]<<","<<s<<")"<<endl;
+//}
+//
+//void testFile()
+//{
+//	LexicalParser lp;
+////	const char* str="0x899aad";
+////	size_t n=strlen(str);
+////	lp.parseNumber(str,n);
+////	const char* strbuf="\"ab\\b\\\nadafd\"";
+////	size_t index=0;
+////	size_t len=strlen(strbuf);
+////	lp.parseString(strbuf, index, len);
+////	const char *file="examples/normal_test1.cpp";
+//	const char *file="examples/define_test1.cpp";
+//	FILE *fp=fopen(file,"r+");
+//	assert(fp!=NULL);
+//	size_t readlen=fread(buffer,sizeof(char),BUFLEN,fp);
+////	std::string t(buffer,readlen);
 //	size_t index=0;
-//	size_t len=strlen(strbuf);
-//	lp.parseString(strbuf, index, len);
-//	const char *file="examples/normal_test1.cpp";
-	const char *file="examples/define_test1.cpp";
-	FILE *fp=fopen(file,"r+");
-	assert(fp!=NULL);
-	size_t readlen=fread(buffer,sizeof(char),BUFLEN,fp);
-//	std::string t(buffer,readlen);
-	size_t index=0;
-	LexicalParser::WordStream stream;
-	LexicalParser::TransMap		humanInfo=LexicalParser::getHumanReadable();
-	lp.parseWords(stream,buffer, index, BUFLEN);
-	printf("As a result,we get stream :\n<start>\n");
-	LexicalParser::WordStream::iterator it=stream.begin(),itend=stream.end();
-	while(it!=itend)
-	{
-//	    if(it->second!=LexicalParser::TYPE_SPACE && it->first.size()==1 && LexicalParser::isInSpace(it->first[0]))
-//	      printf("%s ",it->first.c_str());
-//	    else
-	      printf("%s ",humanInfo[it->second].c_str());
-	    it++;
-	}
-	printf("\n<end>\n");
-	printf("is that proper for you to do syntax analyze?\n");
-
-	//===Do define macro expansions
-	LL1Macro llm(stream,0);
-	llm.S();
-
-}
-
-
-
-
-
+//	LexicalParser::WordStream stream;
+//	LexicalParser::TransMap		humanInfo=LexicalParser::getHumanReadable();
+//	lp.parseWords(stream,buffer, index, BUFLEN);
+//	printf("As a result,we get stream :\n<start>\n");
+//	LexicalParser::WordStream::iterator it=stream.begin(),itend=stream.end();
+//	while(it!=itend)
+//	{
+////	    if(it->second!=LexicalParser::TYPE_SPACE && it->first.size()==1 && LexicalParser::isInSpace(it->first[0]))
+////	      printf("%s ",it->first.c_str());
+////	    else
+//	      printf("%s ",humanInfo[it->second].c_str());
+//	    it++;
+//	}
+//	printf("\n<end>\n");
+//	printf("is that proper for you to do syntax analyze?\n");
+//
+//	//===Do define macro expansions
+//	LL1Macro llm(stream,0);
+//	llm.S();
+//
+//}
+//
+//
+//
+//
+//
