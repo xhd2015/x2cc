@@ -95,22 +95,97 @@ void testStreamFA()
 
 	//===========定义一个符号管理器
 	//EMPTY & UNDEFINED
-	FiniteAutomataManager<char> faman((char)-1,(char)-2,
-			{ 'a','b','c','d','e','f','g','h','i','j','k',
-					' ','\t','\n','\r',
-					';',',','.','?'},
-			{"qStart","qID","qStr","qChar","q4","q5","q6"}
-	);
-
-	std::cout << faman.toString() << std::endl;
+//	FiniteAutomataManager<char> faman((char)-1,(char)-2,
+//			{ 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w','x','y','z',
+//			'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+//				'~','`','!','@','#','$','%','^','&','*','(',')','_','+','-','=','{','}',
+//				'[',']','\\','|',':',';','"','\'',',','<','.','>','/','?',
+//					' ','\t','\n','\r'},
+//			/**
+//			 * qStart also carries single character
+//			 */
+//			{"qStart","qID","qStr","qChar","qHexNum","qBinNum","qDecNum","qError","qSingleLineNote","qMultiLineNote"}
+//
+//	);
+//
+//	std::cout << faman.toString() << std::endl;
 
 
 	//==========定义一个FA, 当然是选择原谅这个DFA、了
 	//FiniteAutomata<char> fa(faman,0,{1,1});
-	DeterminasticFA<char> dfa(std::move(faman),"qStart",{"qStart"});
-	dfa.addTransition("qStart", 'a', "qID");
+	DeterminasticFA<char> dfa((char)-1,(char)-2,"qStart",{"qStart"});
+	/*
+	 * 如果一个符号不存在，就将其加入
+	 *
+	 * 高级自动机提议： 可以使用通配符，但在内部仍然使用原始的单个状态对应;这样做空间复杂度增加
+	 * 比如使用 undefined通配符，采取默认的动作
+	 * 使用组通配符 -1,-2
+	 *
+	 */
+	dfa.addGroup("ALL", { 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','v','w','x','y','z',
+			'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+			'0','1','2','3','4','5','6','7','8','9',
+			' ','~','`','!','@','#','$','%','^','&','*','(',')','_','+','-','=','{','}',
+				'[',']','\\','|',':',';','"','\'',',','<','.','>','/','?',
+					' ','\t','\n','\r'});
+	dfa.addGroup("DECNUM", {'0','1','2','3','4','5','6','7','8','9',});
+	dfa.addGroupUnion("HEXNUM", "DECNUM",{'a','b','c','d','e','f','A','B','C','D','E','F',});
+	dfa.addGroup("BINNUM", {'0','1'});
 
-	std::cout << dfa.FiniteAutomata::toString() << std::endl;
+	dfa.addGroup("LOWERALPHA", { 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'});
+	dfa.addGroup("UPPERALPHA", { 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',});
+	dfa.addGroup("UNDERSCORE", {'_'});
+	dfa.addGroup("NOMACRO-SPACE",{'\n','\t','\r',' '});
+	dfa.addGroupUnion("WORD",{"DECNUM","LOWERALPHA","UPPERALPHA","UNDERSCORE"});
+	dfa.addGroup("SINGLE",{
+			'~','!','@','#','$','%','^','&','*','-','+','=','{','}','[',']','<','>','(',')',
+	});
+
+
+
+	//=====start
+	dfa.addTransitionByGroup("qStart","SINGLE", "qStart");
+	//======特殊起始符号
+	/**
+	 *   凡是特殊符号必然至少是单个符号，也必须经过单个符号引导。
+	 */
+	dfa.addTransition("qStart", '/', "qNoteStart");
+	dfa.addTransition("qStart", '\\', "qStartTransfer");
+	dfa.addTransition("qStart",'#',"qMacros");
+	dfa.addTransition("qStart", '"', "qString");
+	dfa.addTransition("qStart",'\'',"qChar");
+	dfa.addTransition("qStart", '0', "qNumber");
+	dfa.addTransitionByGroup("qNumber","DECNUM", "qDecNum");
+	dfa.addTransitionByGroup("qStart", "WORD", "qID");
+
+	//=====id
+	dfa.addTransitionByGroup("qID", "WORD","qID");
+	dfa.addTransition("qID", '\\', "qIDTransfer");
+
+	//===transfer
+	dfa.addTransitionByGroup("qStartTransfer","ALL","qID");
+
+	//===string
+
+	//====char
+
+	//=====number
+	dfa.addTransitionByGroup("qDecNum","DECNUM","qDecNum");
+	dfa.addTransitionUndefined("qDecNum", "ALL", "DECNUM","qStart");
+
+	//====note
+	dfa.addTransition("qNoteStart", '/', "qSingleLineNote");
+	dfa.addTransition("qNoteStart", '*', "qMultiLineNote");
+
+	dfa.addTransition("qSingleLineNote", '\n', "qStart");
+
+	dfa.addTransition("qMultiLineNote", '*', "qMultiLineEnding");
+	dfa.addTransition("qMultiLineEnding", '/', "qStart");
+	dfa.addTransitionUndefined("qMultiLineEnding", "ALL", {'/'}, "qMultiLineNote");
+
+
+
+//	std::cout << dfa.FiniteAutomata::toString() << std::endl;
 	std::cout << "\n\n\nInplace toString :" << std::endl << dfa.toString() << std::endl;
 
 	dfa.next('a');
@@ -132,24 +207,37 @@ void testStreamFA()
 		MyLexer(DeterminasticFA<char> & dfa):dfa(dfa),info(-2,"UNDEFINED",{
 				{TYPE_STRING,"STRING"},
 				{TYPE_ID,"ID"}
-		}){}
+		}),index(-1){}
 		virtual void process(int curState,const char& in)
 		{
+
+//			{"qStart","qID","qStr","qChar","qHexNum","qBinNum","qDecNum","qError","qSingleLineNote","qMultiLineNote"}
+			/**
+			 * 只处理那些合法的输入
+			 */
 			std::string strCur=dfa.queryState(curState);
 			if(strCur=="qStart")
 			{
 				if(in=='"')
 				{
 					this->cachedStream.push_back({"",TYPE_STRING});
+					index++;
 				}else if(in >='a' && in <='z'){
 					this->cachedStream.push_back({ {in}, TYPE_ID });
+					index++;
 				}
 			}else if(strCur=="qID"){
+
+			}else if(strCur=="qHexNum" || strCur=="qBinNum" ||strCur=="qDecNum"){
+				if(in!='_')
+						this->cachedStream[index].first.push_back(in);
+			}else if(strCur=="qSingleLineNote"){
 
 			}
 		}
 		DeterminasticFA<char>& dfa;
 		MutualMap<int,std::string> info;
+		int index;
 	}myLexp(dfa);
 
 	DeterminasticFA<char>::InputStreamType in={'a','b'};

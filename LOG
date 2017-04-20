@@ -5,5 +5,5 @@
 2017-04-18 18:00:30		LR(1) AnalyzeTable can process corrupted/ambiguous grammar such as E->E+E|E*E|(E)|id, making it more functional
 2017-04-19 12:03:29		MutualMap<T1,T2>	added.
 2017-04-20 18:53:26		Through 2 days, a DFA is created.It is designed in general purpose.So it can be used in Lexical Parsing,Grammar Translation...
-
+2017-04-21 00:50:11		A new power concept added : group of FA. Group is a very powerful description tool for transitions.
 

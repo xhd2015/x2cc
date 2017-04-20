@@ -45,6 +45,11 @@ public:
 	const T1&	get(const T2& t2)const;
 	const T2&   get(const T1& t1)const;
 	/**
+	 * get,if non-exist, add it
+	 */
+	const T1&	getAdd(const T2& t2,const T1& t1);
+	const T2&	getAdd(const T1& t1,const T2& t2);
+	/**
 	 * if any one is present,return failed,else return succeed
 	 */
 	bool add(const T1& t1,const T2& t2);
@@ -114,6 +119,22 @@ inline const T2& MutualMap<T1, T2>::get(const T1& t1)const
 {
 	const auto &it=m1.find(t1);
 	if(it==m1.end())return failedT2;
+	return it->second;
+}
+
+template<class T1, class T2>
+inline const T1& MutualMap<T1, T2>::getAdd(const T2& t2,const T1& t1)
+{
+	const auto &it=m2.find(t2);
+	if(it==m2.end()){this->add(t2, t1);return t1;}
+	return it->second;
+}
+
+template<class T1, class T2>
+inline const T2& MutualMap<T1, T2>::getAdd(const T1& t1,const T2& t2)
+{
+	const auto &it=m1.find(t1);
+	if(it==m1.end()){this->add(t1,t2);return t2;}
 	return it->second;
 }
 
