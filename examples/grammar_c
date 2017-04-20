@@ -1,0 +1,29 @@
+
+declare grammar LR(0) #希望按照LR(0)的格式处理这个语法
+declare start START
+declare end END
+declare extended-start START-ALL
+declare terminator a,b,c,d e f g h \, ' ', //定义终结符号
+
+//支持三种格式的注释
+
+ID -> VAR
+ID -> TYPE
+ID -> FUNC #不要以空格结束
+ID -> MODIFIER #unsiged int #
+
+TYPE -> INNER_TYPE
+
+INNER_TYPE -> char
+INNER_TYPE -> int
+INNER_TYPE -> float
+
+EXP -> NUM_EXP
+EXP -> CHAR_EXP
+EXP -> BOOL_EXP
+EXP -> STRING_EXP
+
+STATEMENT -> UNKNOWN
+
+START -> ALL
+ALL -> EMPTY

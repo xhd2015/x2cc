@@ -6,6 +6,7 @@ GrammaUtils
 		
 	使用相同代码的函数（如果你修改一个，就得修改另一个；最后检查时，必须保证两者内容相同）：
 		LRGramma中的toString系列、getClosure,getNthSymbolAfterDot 和LR1Gramma 相对应的同名方法
+	如何生成分析表？对于所有的LR系列语法，都是通过遍历每个项集中，检查项集中项的类型，主要看.的位置
 	
 	可能的优化措施：
 		在Gramma,LRGramma,LR1Gramma中，大部分使用 ”Util nothing changed“的作为终结条件的算法时，都会涉及对当前正在遍历的结构进行修改；而这种修改大部分情况下都会引起当前迭代器
@@ -13,6 +14,9 @@ GrammaUtils
 		优化的基本思想是，每次集合改变时，我都知道下一次需要进行修改的元素有哪些；因此我不必重头遍历整个原来的集合
 		优化措施1： 使用一个集合暂存将要添加的修改，在本次遍历结束后再将它们加入到原集合中；然后设置新的待遍历的集合；重复上述过程  --- 已经更改数个函数，使用了processed和waits结构
 		
+		在GrammaSymbols中
+			在void GrammaSymbols::deleteNo(int no)中
+				erase之后可能需要进行内存释放
 		在 LRGramma中，
 			在getAllClosures（）中
 				在求得GOTO集之后，使用了 ‘==’ 判断求得的集合与当前的所有集合进行比较，这一过程是非常低效的； 应当还有其他的判断方法和去重方法。如果等到有一天发现这个方法是瓶颈时，再优化。

@@ -3,6 +3,7 @@
 	<name>compiler-debug</name>
 	<comment></comment>
 	<projects>
+		<project>leetcode</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

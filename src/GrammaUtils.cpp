@@ -11,48 +11,57 @@
 #include <iterator> //for inserter
 #include <set>
 #include <queue>
+#include <unordered_map>
+#include <unordered_set>
+#include <sstream>
+#include <fstream>
 
 namespace x2
 {
-  std::string	GrammaSymbols::UNDEFINED="UNDEFINED";
+	//========static members
+  std::string	GrammaSymbols::UNDEFINED_STRING="UNDEFINED";
+  std::string 	GrammaSymbols::EMPTY_STRING="EMPTY";
+  int			GrammaSymbols::EMPTY_INDEX=-1,
+		  	  	  GrammaSymbols::UNDEFINED_INDEX=-2;
+
   std::map<int,std::string> GrammaSymbols::TYPES_INFO={
       {TYPE_EMPTY,"EMPTY"},
       {TYPE_UNDEFINED,"UNDEFINED"},
       {TYPE_TERM,"TERMINATOR"},
       {TYPE_VAR,"VARIABLE"},
   };
-  //=======class GrammaSymbols
-//  GrammaSymbols::GrammaSymbols(const GrammaSymbols &gsyms):
-//      max(gsyms.max),
-//      typeInfo(gsyms.typeInfo),
-//      typeString(gsyms.typeString)
-//  {
-//
-//  }
+  std::unordered_map<int,std::string> LR1Gramma::ACTION_INFO_STRING={
+		  {ACTION_ACCEPT,"ACCEPT"},
+		  {ACTION_SHIFT_IN,"SHIFT"},
+		  {ACTION_ERROR,"ERROR"},
+		  {ACTION_REDUCE,"REDUCE"},
+  };
+
+
+  //=======functions
   GrammaSymbols::GrammaSymbols(GrammaSymbols &&gsyms):
       max(gsyms.max),
-      typeInfo(std::move(gsyms.typeInfo)),
-      typeString(std::move(gsyms.typeString))
+      symInfo(std::move(gsyms.symInfo)),
+      symString(std::move(gsyms.symString)),
+  	  stringSym(std::move(gsyms.stringSym))
   {
 
   }
 
   GrammaSymbols::GrammaSymbols(const std::initializer_list<std::pair<int,std::string> >& list):
-      max(0)
+		GrammaSymbols()
   {
-    this->add(TYPE_EMPTY, "EMPTY");
     auto it=begin(list),itend=end(list);
     for(;it!=itend;it++)
       {
 //	std::cout << it->first << "," << it->second <<std::endl;
-	add(it->first,std::move(it->second));
+    	add(it->first,std::move(it->second));
 //	add(it->first,static_cast<const std::string&&>(it->second));//std::move可能失败，这是因为list本身不是一个const对象
       }
   }
   GrammaSymbols::GrammaSymbols(std::initializer_list<std::pair<int,std::string> >&& list):
-      max(0)
+		GrammaSymbols()
   {
-    this->add(TYPE_EMPTY, "EMPTY");
     auto it=begin(list),itend=end(list);
     for(;it!=itend;it++)
       {
@@ -71,59 +80,72 @@ namespace x2
 	  return *this;
   }
 
-  int GrammaSymbols::add(int type,std::string &&s)
-  {
-    int no;
-    if(type==TYPE_EMPTY)//empty exist already
-	  no=-1;
-      else
-	  no=max++;
-    TypeInfo::iterator it=typeInfo.find(no);
-    if(it!=typeInfo.end())it->second=type;
-    else	typeInfo[no]=type;
-
-    typeString[no]=std::move(s);
-//    printf("add at %d,type is %d,string is %.*s \n",no,typeInfo[no],typeString[no]);
-    return no;
-  }
   int GrammaSymbols::add(int type,const std::string &s)
   {
     int no;
     if(type==TYPE_EMPTY)//empty exist already
-	  no=-1;
-      else
+    	no=EMPTY_INDEX;
+    else if(type==TYPE_UNDEFINED)
+      no=UNDEFINED_INDEX;
+    else
 	  no=max++;
-    TypeInfo::iterator it=typeInfo.find(no);
-    if(it!=typeInfo.end())it->second=type;
-    else	typeInfo[no]=type;
-
-    typeString[no]=std::move(s);
-//    printf("add at %d,type is %d,string is %.*s \n",no,typeInfo[no],typeString[no]);
-    return no;
+   return add(type,no,s);
   }
+  /**
+   * if index already exist, return a index may be used
+   */
+  int GrammaSymbols::add(int type,int index,const std::string &s)
+  {
+	  TypeInfo::iterator it=symInfo.find(index);
+	  if(it!=symInfo.end())return max;
+
+	  symInfo[index]=type;
+	  if(index==max)max++;
+
+	  symString[index]=s;
+	  stringSym[s] = index;
+	  return index;
+  }
+//  int GrammaSymbols::addAlways(int type,int index,const std::string &s)
+//  {
+//	  	  int no=index;
+//	    TypeInfo::iterator it=typeInfo.find(no);
+//	    if(it==typeInfo.end())no=max++;
+//
+//	    if(no==max)
+//
+//	    symString[no]=s;
+//	    stringSym[s] = no;
+//	//    printf("add at %d,type is %d,string is %.*s \n",no,typeInfo[no],typeString[no]);
+//	    return no;
+//  }
   void GrammaSymbols::deleteNo(int no)
   {
-    if(no==-1)return;//you can not delete EMPTY
-    TypeInfo::iterator it=typeInfo.find(no);
-    if(it!=typeInfo.end())
+    if(no==EMPTY_INDEX || no==UNDEFINED_INDEX)return;//you can not delete EMPTY
+    TypeInfo::iterator it=symInfo.find(no);
+    if(it!=symInfo.end())
       {
-	if(no==max)max--;
-	it->second = TYPE_UNDEFINED;
+    	auto itstr=symString.find(no);
+    	auto itsym=stringSym.find(itstr->second);
+
+    	if(no==max)max--;
+    	symInfo.erase(it);
+    	symString.erase(itstr);
+    	stringSym.erase(itsym);
+//    	itstr->second.std::string::~string();
+//    	itsym->first.std::string::~string();
       }
   }
   const std::string& GrammaSymbols::getString(int i)const
   {
-    TypeInfo::const_iterator it=typeInfo.find(i);
-    if(it!=typeInfo.end())
-      {
-	return this->typeString.at(i);
-      }
-    return GrammaSymbols::UNDEFINED;
+    TypeInfo::const_iterator it=symInfo.find(i);
+    if(it!=symInfo.end())  	return this->symString.at(i);
+    return GrammaSymbols::UNDEFINED_STRING;
   }
   std::string	GrammaSymbols::toString()const
   {
     std::string s;
-    std::for_each(std::begin(this->typeInfo),std::end(this->typeInfo),[&s,this](const TypeInfo::value_type &item){
+    std::for_each(std::begin(this->symInfo),std::end(this->symInfo),[&s,this](const TypeInfo::value_type &item){
       s+=std::string() + "( " +std::to_string(item.first) + " , " + GrammaSymbols::TYPES_INFO[item.second ] +" , "+ this->getString(item.first) + std::string(" ) \n");
     });
     return s;
@@ -238,6 +260,50 @@ namespace x2
   	addProduction(it->first,std::move(it->second));
         }
     }
+  Gramma::Gramma(const std::string &file)
+  {
+	 std::ifstream in(file);
+	  new (this) Gramma(in);
+	  in.close();
+  }
+  Gramma::Gramma(std::istream & in):
+		  Gramma()
+  {
+	  std::string s;
+	  std::set<int>	typeSure;
+	  typeSure.insert(GrammaSymbols::EMPTY_INDEX);
+	  typeSure.insert(GrammaSymbols::UNDEFINED_INDEX);
+	  while(!in.eof())
+	  {
+		  std::getline(in, s);
+		  std::stringstream ss(s);
+		  std::string var;
+		  ss>>var;
+		  int start=gsyms.findAdd(var);
+		  typeSure.insert(start);
+		  GrammaSentence gs;
+
+		  ss>>var; //discard
+		  if(ss.eof())continue;
+		  bool	inNote=false;
+		  while(!ss.eof())
+		  {
+			  ss>>var;
+			 // std::cout << "var is \""<<var<<"\""<<std::endl;
+			  if(var[0]=='#')
+				  inNote=!inNote;
+			  if(!inNote && var[0]!='#')
+				  gs.syms.push_back(gsyms.findAdd(var));
+		  }
+		  if(gs.syms.size()==0)//such as A-> or A->EMPTY
+			  gs.syms.push_back(gsyms.findEmpty());
+		  addProduction(start,gs);
+	  }
+	  for(auto &p:gsyms.symInfo) //correct type
+		  if(typeSure.find(p.first)==typeSure.end())
+			  p.second=GrammaSymbols::TYPE_TERM;
+
+  }
   void Gramma::addProduction(int i,const GrammaSentence &gs)
   {
     ProductionsType::iterator it=this->prods.find(i);
@@ -735,14 +801,14 @@ namespace x2
 	 if(set.empty())set.insert(gsyms.findEmpty());
 	 return set;
  }
- typename Gramma::SetsType Gramma::calcFollow(const SetsType& firstset,int start,int end)
+ typename Gramma::SetsType Gramma::calcFollow(const SetsType& firstset,int startSym,int endSym)
  {
    SetsType s;
    SetsType deps;// calculate the dependency of i, i's FOLLOW change --> deps[i]'s FOLLOW change
 
    //========初始化开始符号和结束符号
-   s[start]=std::set<int>();
-   s[start].insert(end);
+   s[startSym]=std::set<int>();
+   s[startSym].insert(endSym);
 
    //========将FIRST集加入FOLLOW集中
    for(auto &it:prods)
@@ -1182,10 +1248,10 @@ namespace x2
 	 else
 		  return gsyms.findEmpty();
  }
- std::string LRGramma::toString(const ItemType& item)
+ std::string LRGramma::toString(const ItemType& item)const
  {
 	 std::string s;
-	 GrammaSentence &gs=prods[std::get<0>(item)][std::get<1>(item)];
+	 const GrammaSentence &gs=prods.at(std::get<0>(item))[std::get<1>(item)];
 	 s+=gsyms.getString(std::get<0>(item)) + " -> ";
 	 size_type doti=(size_type)std::get<2>(item);
 	 size_type i=0,sz=gs.getLength();
@@ -1194,7 +1260,7 @@ namespace x2
 	 for(;i<sz;i++)s+=gsyms.getString(gs.syms[i]) + " ";
 	 return s;
  }
- std::string LRGramma::toString(const ClosureType& closure)
+ std::string LRGramma::toString(const ClosureType& closure)const
  {
 	 std::string s;
 //	 std::cout << "entering" << std::endl;
@@ -1206,7 +1272,7 @@ namespace x2
 //	 std::cout << "return " << std::endl;
 	 return s;
  }
- std::string LRGramma::toString(const  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> & tups)
+ std::string LRGramma::toString(const  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> & tups)const
  {
 	 auto &vec=std::get<0>(tups);
 	 auto &iC=std::get<1>(tups);
@@ -1246,7 +1312,7 @@ namespace x2
 	 //====初始化集合只有一个元素 i中的产生式
 	 C.insert(i);
 
-	 std::set<std::pair<int,int>> added;//记录 S->B.AC 中 A的所有产生式是否已经加入,默认情况下是false,连i的表达式都是false
+	 std::set<std::pair<int,int>> added;//记录 S->B.AC 中 A的所有产生式是否已经加入,默认情况下是false
 	 std::queue<ItemType>	waits;
 	 std::set<ItemType>		processed;//for time complexity to O(1)(hashset) or O(logn)(treeset)
 	 waits.push(i);
@@ -1325,6 +1391,7 @@ namespace x2
  typename LR1Gramma::InfoType LR1Gramma::getAllClosures()
  {
 	 LR1Gramma::ClosuresVector itemsets;//记录所有产生的Closure
+	 std::map<ClosureType,int>		itemsetsRecord;//辅助记录,为了更快的查找时间
 	std::map<std::pair<int,int>,int> C2;//记录GOTO关系
 	std::set<int>		iC;//记录所有的规范Closure
 
@@ -1334,6 +1401,8 @@ namespace x2
 	 ClosureType temp;
 	 temp.insert(tempitem);
 	 itemsets.push_back(getClosure(temp,calcedFirst));
+	 itemsetsRecord[itemsets[0]]=0;
+
 	 int iC_C0_tempitem = itemsets.size() - 1;
 	 iC.insert(iC_C0_tempitem);
 
@@ -1351,7 +1420,9 @@ namespace x2
 
 		 //对当前Closure的每个后继符号.x
 		 //如果GOTO(curClo,x)不属于
-		 LR1Gramma::ClosuresVector tempitmes;
+		 std::map<ClosureType,int> tempitems;
+		 int						curIndex=0;
+		 int base=(int)itemsets.size();
 		 for(auto &eachItem : curClo)
 		 {
 			 int x=getFirstSymbolAfterDot(eachItem);
@@ -1362,31 +1433,94 @@ namespace x2
 				 if(std::get<0>(eachItem)==getGStart() && x==getGEnd())continue;
 
 				 ClosureType iic_x_goto=getGoto(curClo,x,calcedFirst);//获取Closure
-				 auto itemit=std::find(itemsets.begin(),itemsets.end(),iic_x_goto);//检查其是否已经存在
+				 auto itemit=itemsetsRecord.find(iic_x_goto);//检查其是否已经存在
 				 int iic_x_key_index;
-				 if(itemit==itemsets.end())
+				 if(itemit==itemsetsRecord.end())
 				 {
-					 if((itemit=std::find(tempitmes.begin(),tempitmes.end(),iic_x_goto))==tempitmes.end())
+					 if( (itemit=tempitems.find(iic_x_goto))==tempitems.end())
 					 {
-						 tempitmes.push_back(std::move(iic_x_goto));
-						 iic_x_key_index =(int)( (tempitmes.size()-1) + itemsets.size());
+						 iic_x_key_index = base + curIndex;
+						 itemsetsRecord[iic_x_goto]=iic_x_key_index;
+						 tempitems[iic_x_goto]=curIndex++;
 					 }else{
-						 iic_x_key_index = (int) (itemsets.size() + (itemit-tempitmes.begin()));
+						 iic_x_key_index = base + itemit->second;
 					 }
 					 iC.insert(iic_x_key_index);
 					 waits.push(iic_x_key_index);
 				 }else{
-					 iic_x_key_index = itemit - itemsets.begin();
+					 iic_x_key_index = itemit->second;
 				 }
 				 C2[{iic,x}] = iic_x_key_index; //记录GOTO(curClo,x)
 			 }
 		 }
-		 itemsets.insert(itemsets.end(),
-				 std::move_iterator<LR1Gramma::ClosuresVector::iterator>(tempitmes.begin()),
-				 std::move_iterator<LR1Gramma::ClosuresVector::iterator>(tempitmes.end()));//itemsets changed but delayed until here
+		 //itemsets changed but delayed until here
+		 itemsets.resize(base + curIndex);//resize to contain more
+
+		 for(auto &p:tempitems)
+		 {
+			 itemsets[base + p.second]=std::move(p.first);
+		 }
 		 processed.insert(iic);
 	 }
 	 return std::make_tuple(itemsets,iC,C2);
+ }
+ /**
+  * constructing algorithm:
+  * 构造项目集规范族和GOTO
+  * 对项目集规范族中的每一项Ii
+  * 	对Ii中的每一项 [A->C.DE,b],如果D不是变量
+  * 		如果D是终结符号，则ACTION[i,D]=移入GOTO(i,D)的值
+  * 		如果D是空（表明一定不是S'->S.),将ACTION[i,a]设置为规约A->C.DE
+  * 		如果D是结束符号,意味着b也是结束符号，设置ACTION[i,$]=接受
+  *  //如果上面的循环出现重复，就意味着冲突，则这个文法不是LR(1)的
+  *  //还应当返回冲突信息 CorruptType,这是ACTION类型的扩展集，它可以在一个转移上支持多个状态
+  *
+  * 对于没有设置的项，默认为ERROR
+  * 初始状态是I0
+  *
+  *
+  */
+typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const InfoType& info)
+ {
+	 	 const auto &vec=std::get<0>(info);//all closures
+		 const auto &iC=std::get<1>(info);//concanical closures
+		 const auto &C2=std::get<2>(info);//goto
+		LR1Gramma::CorruptTableType corruptAction;
+
+
+		for(int i:iC)
+		{
+//			std::cout << "current closure is "<<i<<std::endl;
+			for(auto & item: vec[i])
+			{
+//				std::cout << "current item is "<<toString(item)<<std::endl;
+
+				 int nextsym=getFirstSymbolAfterDot(item);
+				 if(nextsym==6)
+				 {
+					 std::cout << std::endl;
+				 }
+				 if(gsyms.isSymbolVar(nextsym))continue;
+				 else if(gsyms.isSymbolTerm(nextsym))
+				 {
+					 std::pair<int,int> key={i,nextsym};
+					 if(corruptAction.find(key)==corruptAction.end())
+						 corruptAction[key]=std::set<std::tuple<int,int,int>>();
+					 if(nextsym!=getGEnd())
+						 corruptAction[key].insert({C2.at({i,nextsym}),-1,ACTION_SHIFT_IN});
+					 else
+						 corruptAction[key].insert({-1,-1,ACTION_ACCEPT});
+				 }
+				 else if(gsyms.isSymbolEmpty(nextsym))
+				 {
+					 std::pair<int,int> key={i,std::get<3>(item)};
+					 if(corruptAction.find(key)==corruptAction.end())
+						 corruptAction[key]=std::set<std::tuple<int,int,int>>();
+					 corruptAction[key].insert({std::get<0>(item),std::get<1>(item),ACTION_REDUCE});
+				 }
+			}
+		}
+		return corruptAction;
  }
 
  /**
@@ -1408,14 +1542,14 @@ namespace x2
 	 else
 		  return gsyms.findEmpty();
  }
- std::string LR1Gramma::toString(const ItemType& i)
+ std::string LR1Gramma::toString(const ItemType& i)const
  {
 	 std::string s="[";
 	 LRGramma::ItemType triple=std::make_tuple(std::get<0>(i),std::get<1>(i),std::get<2>(i));
 	 s += std::move(LRGramma::toString(triple)) + ", " + gsyms.getString(std::get<3>(i)) + "]";
 	 return s;
  }
- std::string LR1Gramma::toString(const ClosureType& closure)
+ std::string LR1Gramma::toString(const ClosureType& closure)const
  {
 	 std::string s;
 	 std::for_each(closure.begin(),closure.end(),[this,&s](const ItemType&  i)
@@ -1425,11 +1559,11 @@ namespace x2
 			 );
 	 return s;
  }
- std::string LR1Gramma::toString(const InfoType& info)
+ std::string LR1Gramma::toString(const InfoType& info)const
  {
 	 auto &vec=std::get<0>(info);
 	 auto &iC=std::get<1>(info);
-	 auto C2=std::get<2>(info);
+	 auto &C2=std::get<2>(info);
 	 std::string s;
 	 s+= std::string("CLOSURES:\n");
 	 for(auto i:iC)
@@ -1441,6 +1575,64 @@ namespace x2
 	 {
 		 s += std::string("<") + std::to_string(p.first.first) + ", " + gsyms.getString(p.first.second) + "> =  "+
 				 std::to_string(p.second) + "\n";
+	 }
+	 return s;
+ }
+ std::string LR1Gramma::toString(const AnaylzeTableType& tableInfo)const
+ {
+	 std::string s("Analyze Table:\n");
+	 for(auto &p:tableInfo)
+	 {
+		 s+="action["+std::to_string(p.first.first)+", "+gsyms.getString(p.first.second)+"] = ";
+		 int actionType=std::get<2>(p.second);
+		 switch(actionType)
+		 {
+		 	 case ACTION_SHIFT_IN:
+		 		s+=This::ACTION_INFO_STRING[actionType] + " " + std::to_string(std::get<0>(p.second));
+		 		break;
+		 	 case ACTION_REDUCE:
+		 		s+=This::ACTION_INFO_STRING[actionType] + " " + Gramma::toString(std::get<0>(p.second),std::get<1>(p.second));
+		 		break;
+		 	 case ACTION_ACCEPT:
+		 		 s+=This::ACTION_INFO_STRING[actionType];
+		 		 break;
+		 	 case ACTION_ERROR:
+		 	 default://ACTION_ERROR
+		 		 s+=This::ACTION_INFO_STRING[ACTION_ERROR];
+		 		 break;
+		 }
+		 s+="\n";
+	 }
+	 return s;
+ }
+ std::string LR1Gramma::toString(const CorruptTableType& tableInfo)const
+ {
+	 std::string s("[Corrupt]Analyze Table:\n");
+	 for(auto &p:tableInfo)
+	 {
+		 s+="action["+std::to_string(p.first.first)+", "+gsyms.getString(p.first.second)+"] = ";
+		 for(auto &tup : p.second)
+		 {
+			 int actionType=std::get<2>(tup);
+			 switch(actionType)
+			 {
+				 case ACTION_SHIFT_IN:
+					s+=This::ACTION_INFO_STRING[actionType] + " " + std::to_string(std::get<0>(tup));
+					break;
+				 case ACTION_REDUCE:
+					s+=This::ACTION_INFO_STRING[actionType] + " " + Gramma::toString(std::get<0>(tup),std::get<1>(tup));
+					break;
+				 case ACTION_ACCEPT:
+					 s+=This::ACTION_INFO_STRING[actionType];
+					 break;
+				 case ACTION_ERROR:
+				 default://ACTION_ERROR
+					 s+=This::ACTION_INFO_STRING[ACTION_ERROR];
+					 break;
+			 }
+			 s+=", ";
+		 }
+		 s+="\n";
 	 }
 	 return s;
  }

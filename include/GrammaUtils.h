@@ -16,6 +16,8 @@
 #include <iostream>
 #include <algorithm>
 #include <tuple>
+#include <unordered_map>
+#include <unordered_set>
 namespace x2
 {
   //=======================
@@ -63,13 +65,6 @@ namespace x2
    */
   class GrammaSymbols{/*符号管理表*/
   public:
-    enum{
-      TYPE_TERM,
-      TYPE_VAR,
-      TYPE_EMPTY,
-      TYPE_UNDEFINED
-    };
-    static std::map<int,std::string> TYPES_INFO;
     typedef std::map<int,int> TypeInfo;
     typedef std::map<int,std::string> TypeString;
 
@@ -81,12 +76,9 @@ namespace x2
     GrammaSymbols & operator=(const GrammaSymbols & gs);
     GrammaSymbols & operator=(GrammaSymbols && gs);
 
-    AS_MACRO int addTerm(std::string &&s);
     AS_MACRO int addTerm(const std::string &s);//return the index that generated
-    AS_MACRO int addVar(std::string &&s);
     AS_MACRO int addVar(const std::string & s);
     AS_MACRO int addEmpty(const std::string & s);
-    AS_MACRO int addEmpty(std::string && s);
     AS_MACRO bool isSymbolEmpty(int i)const;
     AS_MACRO bool isSymbolTerm(int i)const;
     AS_MACRO bool isSymbolVar(int i)const;
@@ -94,19 +86,32 @@ namespace x2
     AS_MACRO int getSymbolType(int i)const;
     AS_MACRO int findEmpty()const;
     AS_MACRO int findSymbolIndex(const std::string & s)const;
+    AS_MACRO int findAdd(const std::string & s);
     AS_MACRO void lock();//lock to avoid any modifying
     AS_MACRO void unlock();//unlock
 
-    int add(int type,std::string &&s);
     int add(int type,const std::string &s);
+    int add(int type,int index,const std::string &s);//add by index,non-replace,if failed,return next available;else return index
+//    int addAlways(int type,int index,const std::string &s);//add by index,add to max if corrupt;return the actual index
     void deleteNo(int no);//删除某一项
     const std::string& getString(int i)const;
     std::string	toString()const;
   public:
-    int max; //-1 就是empty产生式
-    std::map<int,int>	typeInfo;
-    std::map<int,std::string> typeString;
-    static std::string	UNDEFINED;
+    int max; //-1 就是empty产生式  -2 undefined
+    std::map<int,int>	symInfo;
+
+    //将symbol 和 string 视为等价的
+    std::map<int,std::string> symString;
+    std::map<std::string,int> stringSym;
+    static std::string	UNDEFINED_STRING,EMPTY_STRING;
+    static int			EMPTY_INDEX,UNDEFINED_INDEX;
+    enum{
+      TYPE_TERM,
+      TYPE_VAR,
+      TYPE_EMPTY,
+      TYPE_UNDEFINED
+    };
+    static std::map<int,std::string> TYPES_INFO;
   };
   //=====================================
   /**
@@ -163,6 +168,8 @@ namespace x2
     Gramma(GrammaSymbols&& gsyms);
     Gramma(std::initializer_list<std::pair<int,std::string> > &&list);
     Gramma(const std::initializer_list<std::pair<int,std::string> > &list);
+    Gramma(const std::string &file);//construct from file
+    Gramma(std::istream &in);
 
     Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
 	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist);
@@ -220,8 +227,7 @@ namespace x2
     void reduceLeftFactor(int i,int j);
     SetsType calcFirst();
     std::set<int> calcFirst(const GrammaSentence & gs,int start,int end,const SetsType& firstset);//根据句型获得FIRST集
-    SetsType calcFollow(int start,int end);
-    SetsType calcFollow(const SetsType& firstset,int start,int end);
+    SetsType calcFollow(const SetsType& firstset,int startSym,int endSym);
 
 
     Gramma duplicate(); //symbols , productions will change
@@ -231,6 +237,11 @@ namespace x2
     AS_MACRO std::string toString(int i)const;
     AS_MACRO std::string toString(const GrammaSentence &gs)const;
     AS_MACRO std::string toString(int i,const std::vector<GrammaSentence>& gss)const;
+    AS_MACRO std::string toString(int i,int j)const;//j of i
+
+    /**
+     * for FOLLOW & FIRST
+     */
     std::string toString(const SetsType& set)const;
     std::string toString(const std::set<int> & set)const;
 
@@ -274,6 +285,8 @@ namespace x2
 	  LRGramma()=default;
 
 	  //======从一个现有的一般性文法构造一个LRGramma文法
+	  LRGramma(const LRGramma & lrg)=default;
+	  LRGramma(LRGramma &&lrg)=default;
 	  LRGramma(const Gramma& g,int oristart,int oriend,const std::string & strstart);
 	  LRGramma(Gramma&& g,int oristart,int oriend,const std::string & strstart);
 	  LRGramma(const std::initializer_list<std::pair<int,std::string> > &list,
@@ -315,10 +328,10 @@ namespace x2
 	  AS_MACRO int  getGEnd()const;
 
 	  AS_MACRO		std::string toString()const;
-	  std::string toString(const ItemType& item);
-	  std::string toString(const ClosureType& closure);
-	  std::string toString(const  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> & tups);
-	  std::string toStringSet(int i);
+	  std::string toString(const ItemType& item)const;
+	  std::string toString(const ClosureType& closure)const;
+	  std::string toString(const  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> & tups)const;
+	  std::string toStringSet(int i)const;
 	  AS_MACRO void		  setDotString(const std::string & s);
 
   public:
@@ -339,7 +352,19 @@ namespace x2
 	  typedef std::set<ItemType> 		ClosureType;
 	  typedef std::vector<ClosureType>	ClosuresVector;
 	  typedef std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> InfoType;
+	  typedef std::map<std::pair<int,int>,std::tuple<int,int,int>> 				AnaylzeTableType;
+	  typedef std::map<std::pair<int,int>,std::set<std::tuple<int,int,int>>>	CorruptTableType;
+	 enum{
+		 ACTION_SHIFT_IN,
+		 ACTION_REDUCE,
+		 ACTION_ACCEPT,
+		 ACTION_ERROR,
+	 };
+	 static std::unordered_map<int,std::string> ACTION_INFO_STRING;
   public:
+	 //从LR(0)文法构造LR(1)文法
+	 AS_MACRO LR1Gramma(const LRGramma& lrg);
+	 AS_MACRO LR1Gramma(LRGramma&& lrg);
 	  AS_MACRO LR1Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
 		   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,int oriend,const std::string & strstart);
 
@@ -353,13 +378,17 @@ namespace x2
 	   */
 	  AS_MACRO static bool			doInsert(ClosureType & C,const ItemType &i);
 	  InfoType				getAllClosures();
+	  CorruptTableType constructAnalyzeTable(const InfoType& info);
 	  AS_MACRO int		  getFirstSymbolAfterDot(const ItemType & i);
 	  int		  getNthSymboleAfterDot(const ItemType & i,unsigned int j);
 
+
 	  AS_MACRO std::string toString()const;
-	  std::string toString(const ItemType& i);
-	  std::string toString(const ClosureType& closure);
-	  std::string toString(const InfoType& info);
+	  std::string toString(const ItemType& i)const;
+	  std::string toString(const ClosureType& closure)const;
+	  std::string toString(const InfoType& info)const;
+	  std::string toString(const AnaylzeTableType& tableInfo)const;
+	  std::string toString(const CorruptTableType& tableInfo)const;
   };
 
   //===========function macrso
@@ -368,19 +397,12 @@ namespace x2
   GrammaSymbols::GrammaSymbols():
       max(0)
   {
-    this->add(TYPE_EMPTY, "EMPTY");
-  }
-  int GrammaSymbols::addTerm(std::string &&s)
-  {
-    return add(TYPE_TERM,s);
+    this->add(TYPE_EMPTY, EMPTY_STRING);
+    this->add(TYPE_UNDEFINED,UNDEFINED_STRING);
   }
   int GrammaSymbols::addTerm(const std::string &s)
   {
     return add(TYPE_TERM,s);
-  }
-  int GrammaSymbols::addVar(std::string &&s)
-  {
-    return add(TYPE_VAR,s);
   }
   int GrammaSymbols::addVar(const std::string & s)
   {
@@ -388,10 +410,6 @@ namespace x2
   }
 
   int GrammaSymbols::addEmpty(const std::string & s)
-  {
-    return add(TYPE_EMPTY,s);
-  }
-  int GrammaSymbols::addEmpty(std::string && s)
   {
     return add(TYPE_EMPTY,s);
   }
@@ -413,8 +431,8 @@ namespace x2
   }
   int GrammaSymbols::getSymbolType(int i)const
   {
-    TypeInfo::const_iterator it=typeInfo.find(i);
-    if(it!=typeInfo.end())return it->second;
+    TypeInfo::const_iterator it=symInfo.find(i);
+    if(it!=symInfo.end())return it->second;
     return TYPE_UNDEFINED;
   }
   int GrammaSymbols::findEmpty()const
@@ -423,12 +441,15 @@ namespace x2
   }
   int GrammaSymbols::findSymbolIndex(const std::string & s)const
   {
-    TypeString::const_iterator it=std::begin(this->typeString),itend=std::end(this->typeString);
-    for(;it!=itend;it++)
-      {
-	if(it->second.compare(s)==0)return it->first;
-      }
-    return -1;
+	  auto it=this->stringSym.find(s);
+	  if(it==stringSym.end())return UNDEFINED_INDEX;
+	  return it->second;
+  }
+  int GrammaSymbols::findAdd(const std::string & s)
+  {
+	  auto it=this->stringSym.find(s);
+	  if(it!=stringSym.end())return it->second;
+	  return add(TYPE_VAR,s);
   }
 
   //====class GrammarSentence
@@ -520,6 +541,10 @@ namespace x2
     });
     return s;
   }
+  std::string Gramma::toString(int i,int j)const
+  {
+	  return toString(i) + " -> " + this->toString(prods.at(i)[j]);
+  }
   //============class LRGramma
   int  LRGramma::getFirstSymbolAfterDot(const ItemType & i)
   {
@@ -543,6 +568,14 @@ namespace x2
   }
 
   //===========class LR1Gramma
+ LR1Gramma::LR1Gramma(const LRGramma& lrg):
+		 LRGramma(lrg)
+	{
+	}
+
+ LR1Gramma::LR1Gramma(LRGramma&& lrg):
+		 LRGramma(lrg)
+	{}
   LR1Gramma::LR1Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
   		   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,int oriend,const std::string & strstart):
   				   LRGramma(list,prodlist,oristart,oriend,strstart)

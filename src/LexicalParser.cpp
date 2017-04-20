@@ -168,7 +168,7 @@ int LexicalParser::tellDigitType(char ch)
 }
 bool LexicalParser::isInSet(char ch, const char* buffer, size_t len)
 {
-	for(int i=0;i<len;i++)
+	for(int i=0;i<(int)len;i++)
 	{
 		if(ch==buffer[i])return true;
 	}
@@ -208,7 +208,7 @@ bool LexicalParser::isInSet(char ch, const char* buffer, size_t len)
 //}
 char	LexicalParser::findValue(char key,const char* buffer,size_t len)
 {
-	for(int i=0;i<len;i+=2)
+	for(int i=0;i<(int)len;i+=2)
 	{
 		if(buffer[i]==key)return buffer[i+1];
 	}
@@ -405,8 +405,8 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 
 	char ch;
 	int i;
-	char *buf=new char[100];
-	int bufi=0;
+//	char *buf=new char[100];
+//	int bufi=0;
 	int curState=STATE_START,nextState=STATE_START,lastState;
 	bool	prepP=false;
 	int wordP=DOING_ONE_WROD;
@@ -415,9 +415,9 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 //	vector<char>	oneword={'<','>'}; //include algorithm for that
 //	vector<char>	ignore={'\t','\ '};
 	string currentOutput;
-	for(i=index;i<=len;i++)
+	for(i=index;i<=(int)len;i++)
 	{
-	    if(i==len)ch=0;
+	    if(i==(int)len)ch=0;
 	    else	ch=buffer[i];
 	    if(wordP==DONE_ONE_WORD)wordP=DOING_ONE_WROD;
 		switch(curState)
@@ -746,7 +746,7 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 	HARD_END:
 	if(curState!=STATE_END && curState!=STATE_START && wordP!=DONE_ONE_WORD)//not done a word
 	  {
-	    printf("get lexical error : unexpected EOF for (%s,%s)\n",humanInfo[curType],currentOutput.c_str());
+	    std::cout << "get lexical error : unexpected EOF for ("<<humanInfo[curType]<<","<<currentOutput<<")"<<std::endl;
 	  }
 
 }
@@ -1034,21 +1034,32 @@ void DefinePreprocessor::initWithLine (const char* s,size_t &index, size_t len,i
 //  lp.parseId(s, len, i,this->macroName, type);//get name
   if(type==LexicalParser::TYPE_ERROR) return;
   else
-    {
-      while(i<len)
-	if(s[i]=='\t' || s[i]==' ')i++;
-	else if(s[i]=='\\')
-	  if(len-i>=1 && s[i+1]=='\n')i+=2;
-	  else {type=LexicalParser::TYPE_ERROR;return;}
-      if(i<len)
 	{
-	  if(s[i]=='(')//parse arguments
-	    {}
-	  else	//no argument
-	    while(i < len)//I feel DFA is more easy and graceful to use
-	      {}
+		while (i < len)
+			if (s[i] == '\t' || s[i] == ' ')
+				i++;
+			else if (s[i] == '\\')
+			{
+				if (len - i >= 1 && s[i + 1] == '\n')
+					i += 2;
+				else
+				{
+					type = LexicalParser::TYPE_ERROR;
+					return;
+				}
+				if (i < len)
+				{
+					if (s[i] == '(') //parse arguments
+					{
+					}
+					else
+						//no argument
+						while (i < len)	//I feel DFA is more easy and graceful to use
+						{
+						}
+				}
+			}
 	}
-    }
 
 }
 //

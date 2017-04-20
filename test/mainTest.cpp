@@ -13,6 +13,10 @@
 #include <fstream>
 #include <iostream>
 #include <GrammaUtils.h>
+#include <sstream>
+#include <MutualMap.h>
+#include <FAUtils.h>
+#include <StringUtils.h>
 
 #include <macros/all.h>
 using namespace std;
@@ -32,17 +36,238 @@ void testGramma();
 void testGramma();
 //LR(1) Grammar Only
 void testLR1();
+void assignment_LR();
+void testAmbigous();
+void testReadFromFile();
+void testMutualMap();
+void testStreamFA();
+void testDFA();
 
 int main()
 {
 //	testGramma();
-	testLR1();
+//	testLR1();
+//	assignment_LR();
+//	testAmbigous();
+//	testReadFromFile();
+//	testMutualMap();
+	testStreamFA();
+//	testDFA();
+}
+void testDFA()
+{
 
+	/**
+	 * (\w+\d)\w+\d(\w+\d)\w+\d
+	 *
+	 * 生成DFA状态
+	 *
+	 * \w+  0
+	 * \d   1
+	 * \w+   2
+	 * \d   3
+	 *
+	 */
+}
+void testStreamFA()
+{
+//	FiniteAutomata<char>::OutputStreamType outs;
+//	OutputStreamProcessor<char> sdfa(OutputStreamProcessor<char>::STATE_IGNORE,outs);
+//	sdfa.addTransition({0,1,OutputStreamProcessor<char>::STATE_IGNORE},
+//			{OutputStreamProcessor<char>::STATE_CATCH,OutputStreamProcessor<char>::INDEX_NEXT});
+//	sdfa.addTransition({1,0,OutputStreamProcessor<char>::STATE_CATCH},
+//			{OutputStreamProcessor<char>::STATE_CATCH,OutputStreamProcessor<char>::INDEX_NEXT});
+//
+//	sdfa.setCurState(OutputStreamProcessor<char>::STATE_CATCH);
+//	sdfa.setCurStreamIndex(0);
+//	sdfa.process('a');
+//	sdfa.process('b');
+//	sdfa.next(0, 1);
+//	sdfa.process('a');
+//	sdfa.process('c');
+//	sdfa.next(1,0);
+//	sdfa.process('a');
+//	sdfa.process('d');
+
+
+
+//	std::cout << x2::toString(outs)<<std::endl;
+
+	//===========定义一个符号管理器
+	//EMPTY & UNDEFINED
+	FiniteAutomataManager<char> faman((char)-1,(char)-2,
+			{ 'a','b','c','d','e','f','g','h','i','j','k',
+					' ','\t','\n','\r',
+					';',',','.','?'},
+			{"qStart","qID","qStr","qChar","q4","q5","q6"}
+	);
+
+	std::cout << faman.toString() << std::endl;
+
+
+	//==========定义一个FA, 当然是选择原谅这个DFA、了
+	//FiniteAutomata<char> fa(faman,0,{1,1});
+	DeterminasticFA<char> dfa(std::move(faman),"qStart",{"qStart"});
+	dfa.addTransition("qStart", 'a', "qID");
+
+	std::cout << dfa.FiniteAutomata::toString() << std::endl;
+	std::cout << "\n\n\nInplace toString :" << std::endl << dfa.toString() << std::endl;
+
+	dfa.next('a');
+	std::cout << dfa.toString() << std::endl;
+	std::cout << dfa.atEnd() << std::endl;
+	dfa.reset();
+	std::cout << dfa.atEnd() << std::endl;
+
+
+	/**
+	 * 原地继承
+	 */
+	class MyLexer:public LexicalOutputStreamProcessor<char,std::pair<std::string,int>>{
+	public:
+		enum{
+			TYPE_STRING,
+			TYPE_ID
+		};
+		MyLexer(DeterminasticFA<char> & dfa):dfa(dfa),info(-2,"UNDEFINED",{
+				{TYPE_STRING,"STRING"},
+				{TYPE_ID,"ID"}
+		}){}
+		virtual void process(int curState,const char& in)
+		{
+			std::string strCur=dfa.queryState(curState);
+			if(strCur=="qStart")
+			{
+				if(in=='"')
+				{
+					this->cachedStream.push_back({"",TYPE_STRING});
+				}else if(in >='a' && in <='z'){
+					this->cachedStream.push_back({ {in}, TYPE_ID });
+				}
+			}else if(strCur=="qID"){
+
+			}
+		}
+		DeterminasticFA<char>& dfa;
+		MutualMap<int,std::string> info;
+	}myLexp(dfa);
+
+	DeterminasticFA<char>::InputStreamType in={'a','b'};
+	dfa.getMatch(in,myLexp);
+	std::cout << x2::toString(myLexp.getCachedStream())<<std::endl;
+
+
+
+}
+void testMutualMap()
+{
+	MutualMap<int,std::string> mm(-1,"UNDEFINED");//default value of non-existing
+	mm.add(0,"what is the fuck");
+	std::cout << mm.get(0) << std::endl;
+	mm.change(0, "hello world");
+	std::cout << mm.get("what is the fuck")<<std::endl;
+	std::cout << mm.get(2)<<std::endl;
+	std::cout << mm.get(0)<<std::endl;
+	std::cout << mm.get("hello world")<<std::endl;
+
+
+}
+void testReadFromFile()
+{
+
+	const std::string filepath="D:\\Pool\\eclipse-workspace\\compiler-debug\\examples\\grammar_c";
+	Gramma g(filepath);
+//	std::cout << g.toString()<<std::endl;
+	g.gsyms.addTerm("$");
+
+	LRGramma lrg(g,g.gsyms.findSymbolIndex("START"),g.gsyms.findSymbolIndex("$"),"S'");
+	std::cout << lrg.toString()<<std::endl;
+	auto lr0info = lrg.getAllClosures();
+	std::cout << lrg.toString(lr0info)<<std::endl;
+
+}
+//二义性文法
+void testAmbigous()
+{
+	LR1Gramma lr1g(
+					  {
+						  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},//-1
+						  {GrammaSymbols::TYPE_VAR,"E"}, //0
+						  {GrammaSymbols::TYPE_TERM,"+"}, //1
+						  {GrammaSymbols::TYPE_TERM,"*"}, //2
+						  {GrammaSymbols::TYPE_TERM,"("}, //3
+						  {GrammaSymbols::TYPE_TERM,")"}, //4
+						  {GrammaSymbols::TYPE_TERM,"id"},//5
+						  {GrammaSymbols::TYPE_TERM,"$"},//6
+					  },
+					  {
+							  {0,{0,1,0}},//E->E+E
+							  {0,{0,2,0}}, //E->E*E
+							  {0,{3,0,4}},//E->(E)
+							  {0,{5}},//E->id
+					  },
+					  0,
+					  6,
+					  "E'"
+			);
+	lr1g.gsyms.add(GrammaSymbols::TYPE_TERM, 100, "whatis100");
+	std::cout << lr1g.gsyms.toString()<<std::endl;
+	lr1g.gsyms.deleteNo(100);
+	std::cout << lr1g.gsyms.toString()<<std::endl;
+
+	std::cout << lr1g.toString()<<std::endl;
+	auto lr1info=lr1g.getAllClosures();
+	std::cout << lr1g.toString(lr1info) << std::endl;
+	auto table=lr1g.constructAnalyzeTable(lr1info);
+	std::cout << lr1g.toString(table)<<std::endl;
+}
+void assignment_LR()
+{
+	LRGramma lrg(
+			 {
+				  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},//-1
+				  {GrammaSymbols::TYPE_VAR,"S"}, //0
+				  {GrammaSymbols::TYPE_VAR,"A"}, //1
+				  {GrammaSymbols::TYPE_VAR,"B"}, //2
+				  {GrammaSymbols::TYPE_TERM,"a"}, //3
+				  {GrammaSymbols::TYPE_TERM,"b"}, //4
+				  {GrammaSymbols::TYPE_TERM,"c"},//5
+				  {GrammaSymbols::TYPE_TERM,"d"},//6
+				  {GrammaSymbols::TYPE_TERM,"$"},//7
+								  },
+								  {
+										  {0,{4,1,0,2}},//S->bASB
+										  {0,{4,1}},//S->bA
+										  {1,{6,0,3}}, //A->dSa
+										  {1,{4}},//A->b
+										  {2,{5,1,3}},//B->cAa
+										  {2,{5}},//B->c
+								  },
+								  0,
+								  7,
+								  "S'"
+			);
+
+	std::cout << "LR(0):"<<std::endl;
+	std::cout << lrg.toString() << std::endl;
+	auto lr0info = lrg.getAllClosures();
+	std::cout << lrg.toString(lr0info)<<std::endl;
+	auto lr0first = lrg.calcFirst();
+	auto lr0follow = lrg.calcFollow(lr0first, lrg.gsyms.findSymbolIndex("S'"), 7);
+	std::cout << "FOLLOW of LR(0):"<<std::endl<<lrg.Gramma::toString(lr0follow)<<std::endl;
+
+	LR1Gramma lr1g(lrg);
+	std::cout << "LR(1):"<<std::endl;
+	std::cout << lr1g.toString()<<std::endl;
+	auto lr1info=lr1g.getAllClosures();
+	std::cout << lr1g.toString(lr1info) << std::endl;
+	auto table=lr1g.constructAnalyzeTable(lr1info);
+	std::cout << lr1g.toString(table)<<std::endl;
 }
 void testLR1()
 {
 	LR1Gramma lr1g(
-				  {
+					  {
 						  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},//-1
 						  {GrammaSymbols::TYPE_VAR,"S"}, //0
 						  {GrammaSymbols::TYPE_VAR,"L"}, //1
@@ -66,6 +291,8 @@ void testLR1()
 	std::cout << lr1g.toString()<<std::endl;
 	auto lr1info=lr1g.getAllClosures();
 	std::cout << lr1g.toString(lr1info) << std::endl;
+	auto table=lr1g.constructAnalyzeTable(lr1info);
+	std::cout << lr1g.toString(table)<<std::endl;
 
 }
 void testGramma()

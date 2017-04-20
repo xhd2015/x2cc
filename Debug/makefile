@@ -42,11 +42,14 @@ endif
 # All Target
 all: compiler-debug.exe
 
+dependents:
+	-cd D:/Pool/eclipse-workspace/leetcode/Debug && $(MAKE) all
+
 # Tool invocations
-compiler-debug.exe: $(OBJS) $(USER_OBJS)
+compiler-debug.exe: $(OBJS) $(USER_OBJS) D:/Pool/eclipse-workspace/leetcode/Debug/leetcode.exe
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cygwin C++ Linker'
-	g++  -o "compiler-debug.exe" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++  -o "compiler-debug.exe" $(OBJS) $(USER_OBJS) $(LIBS) ../../leetcode/Debug/include/StringUtils.o
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -57,5 +60,6 @@ clean:
 
 .PHONY: all clean dependents
 .SECONDARY:
+D:/Pool/eclipse-workspace/leetcode/Debug/leetcode.exe:
 
 -include ../makefile.targets

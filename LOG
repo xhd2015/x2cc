@@ -1,2 +1,9 @@
 2017-04-17 22:13:42		Corrected the CLOSURE Calculation.Recording array 'added' is valid for LR(0),but not for LR(1)
 						Use `queue to replace `hasnew	to improve much performance in  void	LR1Gramma::getClosure(const ItemType& i,ClosureType& C,const Gramma::SetsType &firstset)
+2017-04-18 15:39:38		Improved the performance when checking if a GOTO closure has already existed, by using additional set to do the find operation.
+						Completed LR(1) constructAnalyzeTable.
+2017-04-18 18:00:30		LR(1) AnalyzeTable can process corrupted/ambiguous grammar such as E->E+E|E*E|(E)|id, making it more functional
+2017-04-19 12:03:29		MutualMap<T1,T2>	added.
+2017-04-20 18:53:26		Through 2 days, a DFA is created.It is designed in general purpose.So it can be used in Lexical Parsing,Grammar Translation...
+
+
