@@ -21,15 +21,15 @@ namespace x2
 	//========static members
   std::string	GrammaSymbols::UNDEFINED_STRING="UNDEFINED";
   std::string 	GrammaSymbols::EMPTY_STRING="EMPTY";
-  int			GrammaSymbols::EMPTY_INDEX=-1,
-		  	  	  GrammaSymbols::UNDEFINED_INDEX=-2;
+  int			 GrammaSymbols::UNDEFINED_INDEX=-2;
 
-  std::map<int,std::string> GrammaSymbols::TYPES_INFO={
+  x2::MutualMap<int,std::string> GrammaSymbols::TYPES_INFO(
+		TYPE_UNDEFINED,"UNDEFINED",
+	{
       {TYPE_EMPTY,"EMPTY"},
-      {TYPE_UNDEFINED,"UNDEFINED"},
       {TYPE_TERM,"TERMINATOR"},
       {TYPE_VAR,"VARIABLE"},
-  };
+  });
   std::unordered_map<int,std::string> LR1Gramma::ACTION_INFO_STRING={
 		  {ACTION_ACCEPT,"ACCEPT"},
 		  {ACTION_SHIFT_IN,"SHIFT"},
@@ -39,124 +39,15 @@ namespace x2
 
 
   //=======functions
-  GrammaSymbols::GrammaSymbols(GrammaSymbols &&gsyms):
-      max(gsyms.max),
-      symInfo(std::move(gsyms.symInfo)),
-      symString(std::move(gsyms.symString)),
-  	  stringSym(std::move(gsyms.stringSym))
-  {
 
-  }
 
-  GrammaSymbols::GrammaSymbols(const std::initializer_list<std::pair<int,std::string> >& list):
-		GrammaSymbols()
-  {
-    auto it=begin(list),itend=end(list);
-    for(;it!=itend;it++)
-      {
-//	std::cout << it->first << "," << it->second <<std::endl;
-    	add(it->first,std::move(it->second));
-//	add(it->first,static_cast<const std::string&&>(it->second));//std::move可能失败，这是因为list本身不是一个const对象
-      }
-  }
-  GrammaSymbols::GrammaSymbols(std::initializer_list<std::pair<int,std::string> >&& list):
-		GrammaSymbols()
-  {
-    auto it=begin(list),itend=end(list);
-    for(;it!=itend;it++)
-      {
-	add(it->first,std::move(it->second));
-      }
-  }
-
-  GrammaSymbols & GrammaSymbols::operator=(const GrammaSymbols & gs)
-  {
-	  new (this) GrammaSymbols(gs);
-	  return *this;
-  }
-  GrammaSymbols & GrammaSymbols::operator=(GrammaSymbols && gs)
-  {
-	  new (this) GrammaSymbols(gs);
-	  return *this;
-  }
-
-  int GrammaSymbols::add(int type,const std::string &s)
-  {
-    int no;
-    if(type==TYPE_EMPTY)//empty exist already
-    	no=EMPTY_INDEX;
-    else if(type==TYPE_UNDEFINED)
-      no=UNDEFINED_INDEX;
-    else
-	  no=max++;
-   return add(type,no,s);
-  }
-  /**
-   * if index already exist, return a index may be used
-   */
-  int GrammaSymbols::add(int type,int index,const std::string &s)
-  {
-	  TypeInfo::iterator it=symInfo.find(index);
-	  if(it!=symInfo.end())return max;
-
-	  symInfo[index]=type;
-	  if(index==max)max++;
-
-	  symString[index]=s;
-	  stringSym[s] = index;
-	  return index;
-  }
-//  int GrammaSymbols::addAlways(int type,int index,const std::string &s)
-//  {
-//	  	  int no=index;
-//	    TypeInfo::iterator it=typeInfo.find(no);
-//	    if(it==typeInfo.end())no=max++;
-//
-//	    if(no==max)
-//
-//	    symString[no]=s;
-//	    stringSym[s] = no;
-//	//    printf("add at %d,type is %d,string is %.*s \n",no,typeInfo[no],typeString[no]);
-//	    return no;
-//  }
-  void GrammaSymbols::deleteNo(int no)
-  {
-    if(no==EMPTY_INDEX || no==UNDEFINED_INDEX)return;//you can not delete EMPTY
-    TypeInfo::iterator it=symInfo.find(no);
-    if(it!=symInfo.end())
-      {
-    	auto itstr=symString.find(no);
-    	auto itsym=stringSym.find(itstr->second);
-
-    	if(no==max)max--;
-    	symInfo.erase(it);
-    	symString.erase(itstr);
-    	stringSym.erase(itsym);
-//    	itstr->second.std::string::~string();
-//    	itsym->first.std::string::~string();
-      }
-  }
-  const std::string& GrammaSymbols::getString(int i)const
-  {
-    TypeInfo::const_iterator it=symInfo.find(i);
-    if(it!=symInfo.end())  	return this->symString.at(i);
-    return GrammaSymbols::UNDEFINED_STRING;
-  }
-  std::string	GrammaSymbols::toString()const
-  {
-    std::string s;
-    std::for_each(std::begin(this->symInfo),std::end(this->symInfo),[&s,this](const TypeInfo::value_type &item){
-      s+=std::string() + "( " +std::to_string(item.first) + " , " + GrammaSymbols::TYPES_INFO[item.second ] +" , "+ this->getString(item.first) + std::string(" ) \n");
-    });
-    return s;
-  }
 
   //===========class GrammaSentence
-  GrammaSentence::GrammaSentence(const SymsList & slist):syms(slist)
+  GrammaSentence::GrammaSentence(const SymsListType & slist):syms(slist)
   {
 
   }
-  GrammaSentence::GrammaSentence(SymsList && slist):
+  GrammaSentence::GrammaSentence(SymsListType && slist):
       syms(slist)
   {
 
@@ -210,56 +101,11 @@ namespace x2
   {
 
   }
-  Gramma::Gramma(std::initializer_list<std::pair<int,std::string> > &&list):
-      gsyms(list)
-  {
-
-  }
   Gramma::Gramma(const std::initializer_list<std::pair<int,std::string> > &list):
       gsyms(list)
   {
 
   }
-  Gramma::Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
-	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist):
-	       gsyms(list)
-  {
-    auto it=prodlist.begin(),itend=prodlist.end();
-    for(;it!=itend;it++)
-      {
-    	addProduction(it->first,it->second);
-      }
-  }
-  Gramma::Gramma(std::initializer_list<std::pair<int,std::string> > &&list,
-	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist):
-		       gsyms(list)
-	  {
-	    auto it=prodlist.begin(),itend=prodlist.end();
-	    for(;it!=itend;it++)
-	      {
-		addProduction(it->first,it->second);
-	      }
-	  }
-  Gramma::Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
-	   std::initializer_list<std::pair<int,GrammaSentence> > &&prodlist):
-		       gsyms(list)
-	  {
-	    auto it=prodlist.begin(),itend=prodlist.end();
-	    for(;it!=itend;it++)
-	      {
-		addProduction(it->first,std::move(it->second));
-	      }
-	  }
-  Gramma::Gramma(std::initializer_list<std::pair<int,std::string> > &&list,
-	   std::initializer_list<std::pair<int,GrammaSentence> > &&prodlist):
-  	       gsyms(list)
-    {
-      auto it=prodlist.begin(),itend=prodlist.end();
-      for(;it!=itend;it++)
-        {
-  	addProduction(it->first,std::move(it->second));
-        }
-    }
   Gramma::Gramma(const std::string &file)
   {
 	 std::ifstream in(file);
@@ -271,7 +117,7 @@ namespace x2
   {
 	  std::string s;
 	  std::set<int>	typeSure;
-	  typeSure.insert(GrammaSymbols::EMPTY_INDEX);
+	  typeSure.insert(this->gsyms.getEmpty());
 	  typeSure.insert(GrammaSymbols::UNDEFINED_INDEX);
 	  while(!in.eof())
 	  {
@@ -279,7 +125,7 @@ namespace x2
 		  std::stringstream ss(s);
 		  std::string var;
 		  ss>>var;
-		  int start=gsyms.findAdd(var);
+		  int start=gsyms.getAdd(var,GrammaSymbols::TYPE_VAR);
 		  typeSure.insert(start);
 		  GrammaSentence gs;
 
@@ -293,16 +139,41 @@ namespace x2
 			  if(var[0]=='#')
 				  inNote=!inNote;
 			  if(!inNote && var[0]!='#')
-				  gs.syms.push_back(gsyms.findAdd(var));
+				  gs.push_back(gsyms.getAdd(var,GrammaSymbols::TYPE_TERM));
 		  }
 		  if(gs.syms.size()==0)//such as A-> or A->EMPTY
-			  gs.syms.push_back(gsyms.findEmpty());
+			  gs.syms.push_back(gsyms.getEmpty());
 		  addProduction(start,gs);
 	  }
 	  for(auto &p:gsyms.symInfo) //correct type
 		  if(typeSure.find(p.first)==typeSure.end())
 			  p.second=GrammaSymbols::TYPE_TERM;
 
+  }
+  Gramma::Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
+	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist):
+	       gsyms(list)
+  {
+    auto it=prodlist.begin(),itend=prodlist.end();
+    for(;it!=itend;it++)
+      {
+    	addProduction(it->first,it->second);
+      }
+  }
+  Gramma::Gramma(const std::initializer_list<std::pair<std::string,std::initializer_list<std::string>>> &prodlist):
+		  gsyms()
+  {
+	  for(auto &p:prodlist)
+	  {
+		  this->addProduction(p.first,p.second);
+	  }
+  }
+  Gramma::Gramma(const std::vector<std::pair<std::string,std::vector<std::string>>> &prodlist)
+  {
+	  for(auto &p:prodlist)
+	  {
+		  this->addProduction(p.first,p.second);
+	  }
   }
   void Gramma::addProduction(int i,const GrammaSentence &gs)
   {
@@ -330,6 +201,37 @@ namespace x2
 	it->second.push_back(gs);
     }
   }
+
+  void Gramma::addProduction(const std::string& head, const std::vector<std::string>& gs)
+  {
+	  //headi = this->gsyms.getAdd(head,VAR)
+	  int ihead=this->gsyms.getAdd(head,GrammaSymbols::TYPE_VAR);
+
+	  //for s in gs, si = this->gsyms.getAdd(s,TERM)
+	  GrammaSentence grammars;
+	  for(auto & s:gs)
+	  {
+		  grammars.push_back(this->gsyms.getAdd(s, GrammaSymbols::TYPE_TERM));
+	  }
+	  this->addProduction(ihead, std::move(grammars));
+
+  }
+
+  void Gramma::addProduction(const std::string& head,const std::initializer_list<std::string>& gs)
+  {
+	  //headi = this->gsyms.getAdd(head,VAR)
+	  int ihead=this->gsyms.getAdd(head,GrammaSymbols::TYPE_VAR);
+
+	  //for s in gs, si = this->gsyms.getAdd(s,TERM)
+	  GrammaSentence grammars;
+	  for(auto & s:gs)
+	  {
+		  grammars.push_back(this->gsyms.getAdd(s, GrammaSymbols::TYPE_TERM));
+	  }
+	  this->addProduction(ihead, std::move(grammars));
+  }
+
+
   bool Gramma::canSymbolEmpty(int i)
   {
 //    std::cout << "symbol is " << toString(i) <<std::endl;
@@ -375,7 +277,7 @@ namespace x2
 	if(it->startsWith(j))
 	  {
 //	    printf("%d starts with %d\n",i,j);
-	    auto v=std::move(it->replaceFirst(sj,gsyms.findEmpty()));
+	    auto v=std::move(it->replaceFirst(sj,gsyms.getEmpty()));
 //	    printf("empty %d\n",gsyms.findEmpty());
 	    auto n=v.size();
 //	    printf("n = %d ,size = %d\n",n,si.size());
@@ -526,13 +428,13 @@ namespace x2
 	//=========add EMPTY
 	int newvar = gsyms.addVar(gsyms.getString(i)+ "_");
 	prods[newvar] = std::vector<GrammaSentence>();
-	std::vector<int> vec={gsyms.findEmpty()};
+	std::vector<int> vec={gsyms.getEmpty()};
 	prods[newvar].push_back(vec);
 
 	//====add S_ to end of those aren't recursive
       for(int i:nr)
 	{
-	  if(it[i].getLength()==1 && it[i].startsWith(gsyms.findEmpty()))
+	  if(it[i].getLength()==1 && it[i].startsWith(gsyms.getEmpty()))
 	      it[i].syms[0]=newvar;
 	  else
 	    it[i].syms.push_back(newvar);
@@ -542,7 +444,7 @@ namespace x2
       for(auto itt=r.rbegin(),ittend=r.rend();itt!=ittend;itt++)
 	{
 	  it[*itt].syms.erase(it[*itt].syms.begin());
-	  if(it[*itt].syms.size() > 1 || !it[*itt].startsWith(gsyms.findEmpty()))//不为空
+	  if(it[*itt].syms.size() > 1 || !it[*itt].startsWith(gsyms.getEmpty()))//不为空
 		prods[newvar].push_back(std::move(it[*itt]));
 	  it.erase(it.begin() + *itt);
 	}
@@ -556,7 +458,7 @@ namespace x2
   int Gramma::reduce(std::vector<GrammaSentence> &data,const std::string & varname,int start,int end,std::vector<int>& subset)
   {
 //    printf("start = %d, end = %d\n",start,end);
-    if(data.size() < 2 || subset.size() < 2 || start >= end )return gsyms.findEmpty();
+    if(data.size() < 2 || subset.size() < 2 || start >= end )return gsyms.getEmpty();
     //====sort subset to delete them in reversed  order
     std::sort(subset.begin(), subset.end(),[](int a,int b){return b-a;});
 
@@ -575,15 +477,14 @@ namespace x2
 	     allempty=false;
 	  }else{
 	     //set empty
-	      vec.push_back(gsyms.findEmpty());
+	      vec.push_back(gsyms.getEmpty());
 	  }
 	this->prods[newvar].push_back(std::move(vec));
       }
     if(allempty)//全部是空产生式，这个产生式就毫无意义，删除原来的符号，返回值为空即可
       {
-	gsyms.deleteNo(newvar);
 	prods.erase(newvar);
-	newvar = gsyms.findEmpty();
+	newvar = gsyms.getEmpty();
 	for(std::vector<int>::size_type i=0;i<subset.size() -1 ; i++)data.erase(data.begin()+subset[i]);//仅仅保留一项即可
       }else{
 
@@ -619,7 +520,7 @@ namespace x2
     while(existCommon)
       {
 	std::map<int,std::vector<int> > setMap;
-	setMap[gsyms.findEmpty()]=std::vector<int>();
+	setMap[gsyms.getEmpty()]=std::vector<int>();
 	existCommon=false;
 	int sz=(int)data.size();
 //	printf("before for,exist common? %d\n",existCommon);
@@ -636,7 +537,7 @@ namespace x2
 		if(mit!=setMap.end())mit->second.push_back(it);
 		else		setMap[curSym] = std::vector<int>({it});//如果存在一个多分类，则直接对其进行消除，直到没有新的分类出现
 	      }else{
-		  curSym=gsyms.findEmpty();
+		  curSym=gsyms.getEmpty();
 		  setMap[curSym].push_back(it);
 	      }
 	    if(setMap[curSym].size() >= 2)
@@ -671,7 +572,7 @@ namespace x2
 			int newvar=reduce(data,varname + std::to_string(namei++),j,k,setMap[curSym]);
 //			std::cout << "after reduce,this=\n"<<this->toString()<<std::endl;
 //			while(getchar()!='\n');
-			if(newvar != gsyms.findEmpty())
+			if(newvar != gsyms.getEmpty())
 			  reduceLeftFactor(prods[newvar],gsyms.getString(newvar),0);
 
 		  }
@@ -733,11 +634,11 @@ namespace x2
 		   }
 		 if(parti == (int)stnc.getLength())
 		   {
-		     if(canSentenceEmpty(stnc) && s[it.first].find(gsyms.findEmpty())==s[it.first].end())
+		     if(canSentenceEmpty(stnc) && s[it.first].find(gsyms.getEmpty())==s[it.first].end())
 		       {
 //		    	 std::cout << "add 3" << std::endl;
 			 hasnew=true;
-			 s[it.first].insert(gsyms.findEmpty());
+			 s[it.first].insert(gsyms.getEmpty());
 		       }
 		   }else{
 		       if(gsyms.isSymbolVar(stnc.syms[parti]) && !std::includes(s[it.first].begin(),s[it.first].end(),
@@ -795,10 +696,10 @@ namespace x2
 		i++;
 	 }
 	 if(i==end)
-		 set.insert(gsyms.findEmpty());
+		 set.insert(gsyms.getEmpty());
 	 else if(gsyms.isSymbolTerm(gs.syms[i]))
 		  set.insert(gs.syms[i]);
-	 if(set.empty())set.insert(gsyms.findEmpty());
+	 if(set.empty())set.insert(gsyms.getEmpty());
 	 return set;
  }
  typename Gramma::SetsType Gramma::calcFollow(const SetsType& firstset,int startSym,int endSym)
@@ -863,7 +764,7 @@ namespace x2
    //=====除去FOLLOW集中的EMPTY
 //   std::cout << "removing empty from FOLLOWs"<<std::endl;
 //   while(getchar()!='\n');
-   int empty=gsyms.findEmpty();
+   int empty=gsyms.getEmpty();
    for(auto &it:s)
      {
        it.second.erase(empty);
@@ -938,26 +839,6 @@ namespace x2
  }
 
  //============class LRGramma
- LRGramma::LRGramma(const Gramma& g,int oristart,int oriend,const std::string & strstart):
-		send(oriend),dotString(".")
- {
-	 gsyms = g.gsyms;
-	 prods = g.prods;
-
-	 sstart = gsyms.addVar(strstart);
-	 GrammaSentence gs={oristart};
-	 addProduction(sstart,std::move(gs));
- }
- LRGramma::LRGramma(Gramma&& g,int oristart,int oriend,const std::string & strstart):
-		send(oriend),dotString(".")
- {
-	 gsyms = std::move(g.gsyms);
-	 prods = std::move(g.prods);
-
-	 sstart = gsyms.addVar(strstart);
-	 GrammaSentence gs={oristart};
-	 addProduction(sstart,std::move(gs));
- }
  LRGramma::LRGramma(const std::initializer_list<std::pair<int,std::string> > &list,
 	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,int oriend,const std::string & strstart):
 		send(oriend),dotString(".")
@@ -1051,7 +932,7 @@ namespace x2
 //				 std::cout << "current production is " << toString(eachItem) << std::endl;
 				 int x=getFirstSymbolAfterDot(eachItem);
 //				 std::cout << "current expect SYMBOL is " << gsyms.getString(x) << std::endl;
-				 if(x!=gsyms.findEmpty() && x!=getGEnd())//不是空符号和结束符
+				 if(x!=gsyms.getEmpty() && x!=getGEnd())//不是空符号和结束符
 				 {
 					 auto iic_x_key=std::pair<int,int>(iic,x);
 					 auto itgoto=C2.find(iic_x_key);
@@ -1237,7 +1118,7 @@ namespace x2
  int  LRGramma::getNthSymboleAfterDot(const ItemType & i,unsigned int j)
  {
 	 if(j == 0)
-		 return gsyms.findEmpty();
+		 return gsyms.getEmpty();
 	 const GrammaSentence & gs=prods[std::get<0>(i)][std::get<1>(i)];
 	 int dotIndex=std::get<2>(i);
 	 int symIndex = dotIndex + j -1;
@@ -1246,7 +1127,7 @@ namespace x2
 	 else if(std::get<0>(i) == getGStart() && j==gs.getLength()) //start的末尾是结束符号
 		 return getGEnd();
 	 else
-		  return gsyms.findEmpty();
+		  return gsyms.getEmpty();
  }
  std::string LRGramma::toString(const ItemType& item)const
  {
@@ -1328,7 +1209,7 @@ namespace x2
 
 		 //=====在已有的firstset的基础上计算first(beta)，并且如果beta能够为空，将a加入其中
 		 std::set<int> fsets=Gramma::calcFirst(gs,std::get<2>(cit)+1,(int)gs.getLength() ,firstset);
-		 auto itempty=fsets.find(gsyms.findEmpty());
+		 auto itempty=fsets.find(gsyms.getEmpty());
 		 if(itempty!=fsets.end())//移除empty
 		 {
 			 fsets.erase(itempty);
@@ -1427,7 +1308,7 @@ namespace x2
 		 {
 			 int x=getFirstSymbolAfterDot(eachItem);
 			 //==如果不是空符号则求其Closure,并检查这个Closure是否已经存在于现有的Closure中，如果不存在，就将其加入
-			 if(x!=gsyms.findEmpty() && C2.find({iic,x})==C2.end())
+			 if(x!=gsyms.getEmpty() && C2.find({iic,x})==C2.end())
 			 {
 				 //===avoid S'->S.,$ to generate EMPTY
 				 if(std::get<0>(eachItem)==getGStart() && x==getGEnd())continue;
@@ -1531,7 +1412,7 @@ typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const Inf
  int		  LR1Gramma::getNthSymboleAfterDot(const ItemType & i,unsigned int j)
  {
 	 if(j == 0)
-		 return gsyms.findEmpty();
+		 return gsyms.getEmpty();
 	 const GrammaSentence & gs=prods[std::get<0>(i)][std::get<1>(i)];
 	 int dotIndex=std::get<2>(i);
 	 int symIndex = dotIndex + j -1;
@@ -1540,7 +1421,7 @@ typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const Inf
 	 else if(std::get<0>(i) == getGStart() && j==gs.getLength()) //start的末尾是结束符号
 		 return getGEnd();
 	 else
-		  return gsyms.findEmpty();
+		  return gsyms.getEmpty();
  }
  std::string LR1Gramma::toString(const ItemType& i)const
  {

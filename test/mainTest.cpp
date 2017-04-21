@@ -6,7 +6,6 @@
  */
 
 #include <LexicalParser.h>
-#include <SemanticParser.h>
 #include <cstring>
 #include <cstdio>
 #include <cassert>
@@ -42,6 +41,7 @@ void testReadFromFile();
 void testMutualMap();
 void testStreamFA();
 void testDFA();
+void testGrammarDefineIsAdding();
 
 int main()
 {
@@ -51,8 +51,69 @@ int main()
 //	testAmbigous();
 //	testReadFromFile();
 //	testMutualMap();
-	testStreamFA();
+//	testStreamFA();
 //	testDFA();
+	testGrammarDefineIsAdding();
+}
+/**
+ * the idea is simple, when I add a grammar rule, I don't have to define it at first.
+ *
+ * 之所以选择int来映射语法符号，是为了在编译时拥有确定的可处理类型
+ *
+ * simplified.
+ *
+ */
+void testGrammarDefineIsAdding()
+{
+	Gramma g({
+		{"E",{"E","+","E"}},
+		{"E",{"E","*","E"}},
+		{"E",{"(","E",")"}},
+		{"E",{"id"}},
+	});
+
+	//lr1g.setExtendedStart
+	//lr1g.setEndSymbol
+	//lr1g.setSymbolType
+
+	/**
+	 *  lr1g.addProduction("A",{"B","C","D"});
+	 *
+	 *  suppose B has appeared with a know type,
+	 *  		C appears after A,
+	 *  		D has never appeared
+	 *  No matter what happened, firstly check the symbol table if it has A,whether it has or not,adding A as variable
+	 *  adding B with known type
+	 *  adding C as TERMINATOR type
+	 *  adding D as TERMINATOR type
+	 *
+	 *  the process divided into 2 parts: the head and the body.
+	 *
+	 */
+	std::cout << g.gsyms.toString()<<std::endl;
+	std::cout << g.toString() << std::endl;
+
+
+	LRGramma lrg(g,"E","$","E'");
+	std::cout << lrg.gsyms.toString()<<std::endl;
+	std::cout << lrg.toString() << std::endl;
+
+	LR1Gramma	lr1g(lrg);
+	std::cout << lr1g.gsyms.toString()<<std::endl;
+	std::cout << lr1g.toString() << std::endl;
+
+
+//	lr1g.addProduction("A",{"B","C","D"});
+//
+//
+//	lr1g.gsyms.getAdd("whatis100");
+//	std::cout << lr1g.gsyms.toString()<<std::endl;
+//
+//	std::cout << lr1g.toString()<<std::endl;
+//	auto lr1info=lr1g.getAllClosures();
+//	std::cout << lr1g.toString(lr1info) << std::endl;
+//	auto table=lr1g.constructAnalyzeTable(lr1info);
+//	std::cout << lr1g.toString(table)<<std::endl;
 }
 void testDFA()
 {
@@ -71,28 +132,6 @@ void testDFA()
 }
 void testStreamFA()
 {
-//	FiniteAutomata<char>::OutputStreamType outs;
-//	OutputStreamProcessor<char> sdfa(OutputStreamProcessor<char>::STATE_IGNORE,outs);
-//	sdfa.addTransition({0,1,OutputStreamProcessor<char>::STATE_IGNORE},
-//			{OutputStreamProcessor<char>::STATE_CATCH,OutputStreamProcessor<char>::INDEX_NEXT});
-//	sdfa.addTransition({1,0,OutputStreamProcessor<char>::STATE_CATCH},
-//			{OutputStreamProcessor<char>::STATE_CATCH,OutputStreamProcessor<char>::INDEX_NEXT});
-//
-//	sdfa.setCurState(OutputStreamProcessor<char>::STATE_CATCH);
-//	sdfa.setCurStreamIndex(0);
-//	sdfa.process('a');
-//	sdfa.process('b');
-//	sdfa.next(0, 1);
-//	sdfa.process('a');
-//	sdfa.process('c');
-//	sdfa.next(1,0);
-//	sdfa.process('a');
-//	sdfa.process('d');
-
-
-
-//	std::cout << x2::toString(outs)<<std::endl;
-
 	//===========定义一个符号管理器
 	//EMPTY & UNDEFINED
 //	FiniteAutomataManager<char> faman((char)-1,(char)-2,
@@ -111,7 +150,7 @@ void testStreamFA()
 //	std::cout << faman.toString() << std::endl;
 
 
-	//==========定义一个FA, 当然是选择原谅这个DFA、了
+	//==========定义一个FA, 当然是选择原谅这个DFA了
 	//FiniteAutomata<char> fa(faman,0,{1,1});
 	DeterminasticFA<char> dfa((char)-1,(char)-2,"qStart",{"qStart"});
 	/*
@@ -140,6 +179,8 @@ void testStreamFA()
 	dfa.addGroup("SINGLE",{
 			'~','!','@','#','$','%','^','&','*','-','+','=','{','}','[',']','<','>','(',')',
 	});
+	dfa.addGroup("TRANSFER",{'t','a','n','b','n','r','v'});
+//	dfa.addGroup("TRANSFER-HEX",{'x'});
 
 
 
@@ -155,21 +196,40 @@ void testStreamFA()
 	dfa.addTransition("qStart", '"', "qString");
 	dfa.addTransition("qStart",'\'',"qChar");
 	dfa.addTransition("qStart", '0', "qNumber");
-	dfa.addTransitionByGroup("qNumber","DECNUM", "qDecNum");
 	dfa.addTransitionByGroup("qStart", "WORD", "qID");
+	dfa.addTransitionByGroup("qStart", "NOMACRO-SPACE", "qStart");
 
 	//=====id
+	dfa.addTransitionByGroup("qID","ALL","qStart");
 	dfa.addTransitionByGroup("qID", "WORD","qID");
 	dfa.addTransition("qID", '\\', "qIDTransfer");
 
-	//===transfer
+	//===transfer: \* \x** 的类型
 	dfa.addTransitionByGroup("qStartTransfer","ALL","qID");
+	dfa.addTransition("qStartTransfer",'x',"qStartTransferHex1");
+
+	dfa.addTransitionByGroup("qStartTransferHex1","HEXNUM","qStartTransferHex2");
+	dfa.addTransitionByGroup("qStartTransferHex2","HEXNUM","qID");
+//	dfa.addTransitionByGroup("qStartTransfer","TRANSFER","q")
 
 	//===string
+	dfa.addTransitionUndefined("qString","ALL",{},"qStart");
+	dfa.addTransition("qString", '\\', "qStringTransfer");
+	dfa.addTransition("qString", '"',"qStart");
 
 	//====char
+	dfa.addTransitionByGroup("qChar", "ALL","qCharEnding");
+	dfa.addTransition("qChar",'\\',"qCharTransfer");
+
+	dfa.addTransition("qCharEnding",'\'',"qStart");
+	//undefined then it is an error state
 
 	//=====number
+	dfa.addTransitionByGroup("qNumber","DECNUM", "qDecNum");
+	dfa.addTransitionUndefined("qNumber", "ALL","DECNUM","qStart");
+	dfa.addTransition("qNumber", 'x',"qHexNum");
+	dfa.addTransition("qNumber", 'b', "qBinNum");
+
 	dfa.addTransitionByGroup("qDecNum","DECNUM","qDecNum");
 	dfa.addTransitionUndefined("qDecNum", "ALL", "DECNUM","qStart");
 
@@ -183,10 +243,18 @@ void testStreamFA()
 	dfa.addTransition("qMultiLineEnding", '/', "qStart");
 	dfa.addTransitionUndefined("qMultiLineEnding", "ALL", {'/'}, "qMultiLineNote");
 
+	//====error state, such as unrecognised character
+	//==adding states that you want the automata immediately stops if such states are entered.
+	dfa.addStop({"qTransferError"});
 
-
-//	std::cout << dfa.FiniteAutomata::toString() << std::endl;
-	std::cout << "\n\n\nInplace toString :" << std::endl << dfa.toString() << std::endl;
+	//====go backs
+	dfa.addGoback({
+		{"qNumber","qStart"},
+		{"qDecNum","qStart"},
+		{"qHexNum","qStart"},
+		{"qBinNum","qStart"},
+		{"qID","qStart"}
+	});
 
 	dfa.next('a');
 	std::cout << dfa.toString() << std::endl;
@@ -194,71 +262,34 @@ void testStreamFA()
 	dfa.reset();
 	std::cout << dfa.atEnd() << std::endl;
 
+	LexicalOutputStreamProcessor<char,std::string> myLexp(dfa);
+	using PA = LexicalOutputStreamProcessor<char,std::string>::POSITION_ACTION;
+	myLexp.addType({"qStart",'"'}, {"TYPE_STRING",PA::POSITION_NEW});
+	myLexp.addType({"qStart",'\''}, {"TYPE_CHAR",PA::POSITION_NEW});
+	myLexp.addType({"qStart", 'i'},{"TYPE_ID",PA::POSITION_NEWAPPEND});
+	myLexp.addType({"qStart", 'm'},{"TYPE_ID",PA::POSITION_NEWAPPEND});
+	myLexp.addType({"qID",'i'},{"",PA::POSITION_APPEND});
+	myLexp.addType({"qStart",' '},{"",PA::POSITION_IGNORE});
+	myLexp.addType({"qStart",'('},{"TYPE_SINGLE",PA::POSITION_NEWAPPEND});
+	myLexp.addType({"qStart",')'},{"TYPE_SINGLE",PA::POSITION_NEWAPPEND});
+	myLexp.addType({"qStart",'{'},{"TYPE_SINGLE",PA::POSITION_NEWAPPEND});
+	myLexp.addType({"qStart",'}'},{"TYPE_SINGLE",PA::POSITION_NEWAPPEND});
 
-	/**
-	 * 原地继承
-	 */
-	class MyLexer:public LexicalOutputStreamProcessor<char,std::pair<std::string,int>>{
-	public:
-		enum{
-			TYPE_STRING,
-			TYPE_ID
-		};
-		MyLexer(DeterminasticFA<char> & dfa):dfa(dfa),info(-2,"UNDEFINED",{
-				{TYPE_STRING,"STRING"},
-				{TYPE_ID,"ID"}
-		}),index(-1){}
-		virtual void process(int curState,const char& in)
-		{
 
-//			{"qStart","qID","qStr","qChar","qHexNum","qBinNum","qDecNum","qError","qSingleLineNote","qMultiLineNote"}
-			/**
-			 * 只处理那些合法的输入
-			 */
-			std::string strCur=dfa.queryState(curState);
-			if(strCur=="qStart")
-			{
-				if(in=='"')
-				{
-					this->cachedStream.push_back({"",TYPE_STRING});
-					index++;
-				}else if(in >='a' && in <='z'){
-					this->cachedStream.push_back({ {in}, TYPE_ID });
-					index++;
-				}
-			}else if(strCur=="qID"){
-
-			}else if(strCur=="qHexNum" || strCur=="qBinNum" ||strCur=="qDecNum"){
-				if(in!='_')
-						this->cachedStream[index].first.push_back(in);
-			}else if(strCur=="qSingleLineNote"){
-
-			}
-		}
-		DeterminasticFA<char>& dfa;
-		MutualMap<int,std::string> info;
-		int index;
-	}myLexp(dfa);
-
-	DeterminasticFA<char>::InputStreamType in={'a','b'};
+	DeterminasticFA<char>::InputStreamType in={'i','i',' ','m','(',')','{','}'};//ii m(){}
 	dfa.getMatch(in,myLexp);
 	std::cout << x2::toString(myLexp.getCachedStream())<<std::endl;
-
-
-
 }
 void testMutualMap()
 {
 	MutualMap<int,std::string> mm(-1,"UNDEFINED");//default value of non-existing
 	mm.add(0,"what is the fuck");
 	std::cout << mm.get(0) << std::endl;
-	mm.change(0, "hello world");
+	mm.addReplace(0,"hello world");
 	std::cout << mm.get("what is the fuck")<<std::endl;
 	std::cout << mm.get(2)<<std::endl;
 	std::cout << mm.get(0)<<std::endl;
 	std::cout << mm.get("hello world")<<std::endl;
-
-
 }
 void testReadFromFile()
 {
@@ -268,7 +299,7 @@ void testReadFromFile()
 //	std::cout << g.toString()<<std::endl;
 	g.gsyms.addTerm("$");
 
-	LRGramma lrg(g,g.gsyms.findSymbolIndex("START"),g.gsyms.findSymbolIndex("$"),"S'");
+	LRGramma lrg(g,g.gsyms.get("START"),g.gsyms.get("$"),"S'");
 	std::cout << lrg.toString()<<std::endl;
 	auto lr0info = lrg.getAllClosures();
 	std::cout << lrg.toString(lr0info)<<std::endl;
@@ -298,9 +329,7 @@ void testAmbigous()
 					  6,
 					  "E'"
 			);
-	lr1g.gsyms.add(GrammaSymbols::TYPE_TERM, 100, "whatis100");
-	std::cout << lr1g.gsyms.toString()<<std::endl;
-	lr1g.gsyms.deleteNo(100);
+	lr1g.gsyms.getAdd("whatis100");
 	std::cout << lr1g.gsyms.toString()<<std::endl;
 
 	std::cout << lr1g.toString()<<std::endl;
@@ -341,7 +370,7 @@ void assignment_LR()
 	auto lr0info = lrg.getAllClosures();
 	std::cout << lrg.toString(lr0info)<<std::endl;
 	auto lr0first = lrg.calcFirst();
-	auto lr0follow = lrg.calcFollow(lr0first, lrg.gsyms.findSymbolIndex("S'"), 7);
+	auto lr0follow = lrg.calcFollow(lr0first, lrg.gsyms.get("S'"), 7);
 	std::cout << "FOLLOW of LR(0):"<<std::endl<<lrg.Gramma::toString(lr0follow)<<std::endl;
 
 	LR1Gramma lr1g(lrg);
@@ -421,7 +450,7 @@ void testGramma()
   std::cout<< g.gsyms.toString()<<std::endl;
 
   //========查找'S'的下标
-  int n=g.gsyms.findSymbolIndex("S");
+  int n=g.gsyms.get("S");
   std::cout<<"S is at "<<n<<std::endl;
 
   //=======打印语法表

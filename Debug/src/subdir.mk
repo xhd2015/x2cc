@@ -8,21 +8,21 @@ CPP_SRCS += \
 ../src/GrammaUtils.cpp \
 ../src/GrammarTranslateUtils.cpp \
 ../src/LexicalParser.cpp \
-../src/SemanticParser.cpp 
+../src/MutualMap.cpp 
 
 OBJS += \
 ./src/FAUtils.o \
 ./src/GrammaUtils.o \
 ./src/GrammarTranslateUtils.o \
 ./src/LexicalParser.o \
-./src/SemanticParser.o 
+./src/MutualMap.o 
 
 CPP_DEPS += \
 ./src/FAUtils.d \
 ./src/GrammaUtils.d \
 ./src/GrammarTranslateUtils.d \
 ./src/LexicalParser.d \
-./src/SemanticParser.d 
+./src/MutualMap.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

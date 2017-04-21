@@ -17,8 +17,12 @@
 #include <functional>
 #include <initializer_list>
 
+
 namespace x2
 {
+//=====declaration
+template <class T> class OutputStreamProcessor;
+
 /**
  * symbols 中至少含有一项：empty
  * states和symbols都有未定义
@@ -77,73 +81,19 @@ class FiniteAutomataManager<int>
 };
 
 /**
- * helper for FAs
- *
- * T input stream type
- *
+ * T as a group
  */
 template <class T>
- class OutputStreamProcessor
- {
- public:
-	OutputStreamProcessor()=default;
-	virtual ~OutputStreamProcessor()=default;
-	virtual bool process(int curState,const T& in)=0;//if returned true,go next, else keep
- };
-/**
- * 一般的词法分析器要求输出 <值，类型>两种
- * 有些值，比如int，类型是ID，ID-int就可以作为一种语法引导符号
- */
-template <class T,class V>
-class LexicalOutputStreamProcessor:public OutputStreamProcessor<T>{
+class FAGroups{
 public:
-	typedef std::vector<V> OutputStreamType;
-public:
-	LexicalOutputStreamProcessor();
-	virtual ~LexicalOutputStreamProcessor();
-	OutputStreamType& getCachedStream();
-	const OutputStreamType& getCachedStream()const;
-	virtual bool process(int curState,const T& in)=0;
-
-protected:
-	 OutputStreamType	cachedStream;
-};
-
-
-/**
- * 输入流既可以是 vector，也可以是string；
- *
- * 如果输入流是int，需要另外处理
- */
-template<class T>
-class FiniteAutomata
-{
-public:
-	typedef std::vector<T> InputStreamType;
-	typedef FiniteAutomata<T>	This;
-	typedef std::function<bool(int,const T&)> ProcessFunType;
-public:
-	FiniteAutomata(const  T& emptyT,const T& failedT,int startState,const std::vector<int>& endingStates);
-	FiniteAutomata(const  T& emptyT,const T& failedT,const std::string& startState,const std::vector<std::string>& endingStates);
-	FiniteAutomata(FiniteAutomataManager<T> && faman,int startState,const std::vector<int>& endingStates);
-	FiniteAutomata(FiniteAutomataManager<T> && faman,const std::string& startState,const std::vector<std::string>& endingStates);
-	virtual ~FiniteAutomata()=default;
-
-	const T& getCurrentState()const;
-
-	/**
-	 * 约束条件：
-	 *
-	 *
-	 */
-	//===group operations
-	/**
+	FAGroups()=default;
+	~FAGroups()=default;
+	/*
 	 * if already exist,return failed
 	 */
 	bool	addGroup(const std::string & name,const std::set<T> & group);
 	bool	addGroup(const std::string & name,std::set<T> && group);
 	bool	inGroup(const T& t,const std::string& name)const;
-	bool	inGroup(int t,const std::string & name)const;
 	bool	hasGroup(const std::string & name)const;
 	/*
 	 * if group doesn't exist,return group UNDEFINED
@@ -154,6 +104,34 @@ public:
 	bool	addGroupUnion(const std::string &newGroup,const std::vector<std::string> groups);
 	bool	addGroupDiff(const std::string &newGroup,const std::string& groupBase,const std::string& groupDefined);
 	bool	addGroupUnion(const std::string &newGroup,const std::string& groups1,const std::set<T>& groupOutter);
+protected:
+	std::map<std::string,std::set<T>> groups;
+	static const std::set<T> UNDEFINED_GROUP;
+};
+
+
+/**
+ * 输入流既可以是 vector，也可以是string；
+ *
+ * 如果输入流是int，需要另外处理
+ *
+ *   : in C++ does not mean extending, it means that it has such part
+ */
+template<class T>
+class FiniteAutomata:public FAGroups<T>
+{
+public:
+	typedef std::vector<T> InputStreamType;
+	typedef FiniteAutomata<T>	This;
+	typedef std::function<void(int,const T&)> ProcessFunType;
+public:
+	FiniteAutomata(const  T& emptyT,const T& failedT,int startState,const std::vector<int>& endingStates);
+	FiniteAutomata(const  T& emptyT,const T& failedT,const std::string& startState,const std::vector<std::string>& endingStates);
+	FiniteAutomata(FiniteAutomataManager<T> && faman,int startState,const std::vector<int>& endingStates);
+	FiniteAutomata(FiniteAutomataManager<T> && faman,const std::string& startState,const std::vector<std::string>& endingStates);
+	virtual ~FiniteAutomata()=default;
+
+	const std::string& getCurrentState()const;
 
 
 	int queryState(const std::string & state)const;
@@ -174,7 +152,10 @@ public:
 	 */
 	bool atEnd()const;
 
-	virtual bool addTransition(int qin, int in, int qout)=0; //imply  if succeed
+	/**
+	 * default is add-replace
+	 */
+	virtual void addTransition(int qin, int in, int qout)=0; //imply  if succeed
 	/**
 	 *
 	 */
@@ -183,11 +164,65 @@ public:
 	std::string toString()const;
 protected:
 	FiniteAutomataManager<T> FAman;
-	std::map<std::string,std::set<T>> groups;
 	int startState;
 	std::set<int> endingStates;
 	int curState;
-	static const std::set<T> UNDEFINED_GROUP;
+};
+
+
+/**
+ * helper for FAs
+ *
+ * T input stream type
+ *
+ */
+template <class T>
+ class OutputStreamProcessor
+ {
+ public:
+	OutputStreamProcessor()=default;
+	virtual ~OutputStreamProcessor()=default;
+	virtual void process(int curState,const T& in)=0;//if returned true,go next, else keep
+ };
+/**
+ * 一般的词法分析器要求输出 <值，类型>两种
+ * 有些值，比如int，类型是ID，ID-int就可以作为一种语法引导符号
+ * V is a vector-like container
+ *   V supports:
+ *   	constructs from {}
+ *   	push_back(T)
+ */
+template <class T,class V>
+class LexicalOutputStreamProcessor:public OutputStreamProcessor<T>{
+private:
+	LexicalOutputStreamProcessor();//do not provide such constructor because reference type
+public:
+	/**
+	 * position = new or keep
+	 */
+	enum POSITION_ACTION{
+		POSITION_APPEND=0,//default
+		POSITION_NEW=1,
+		POSITION_NEWAPPEND=2,
+		POSITION_IGNORE=3
+	};
+	typedef std::vector<std::pair<V,int>> OutputStreamType;
+	typedef std::map<std::pair<int,int>,std::pair<int,int>> ActionType;//<state,in> --> <type,position>
+public:
+
+	LexicalOutputStreamProcessor(FiniteAutomata<T>& da);
+	virtual ~LexicalOutputStreamProcessor();
+	OutputStreamType& getCachedStream();
+	const OutputStreamType& getCachedStream()const;
+	virtual void process(int curState,const T& in);
+	void addType(std::pair<std::string,T> key,std::pair<std::string,int> value);
+	void addType(std::pair<int,int> key,std::pair<int,int> value);
+
+protected:
+	 FiniteAutomata<T>&				fa;
+	 OutputStreamType				cachedStream;
+	 ActionType						 actions;
+	 IndexedMap<std::string>		 typeInfo;
 };
 
 
@@ -215,8 +250,8 @@ public:
 	/**
 	 * if non-exist,add it,else return failed.
 	 */
-	bool addTransition(int qin, int in, int qout);
-	bool addTransition(const std::string & qin, const T & in, const std::string & qout);
+	bool addTransitionNoReplace(int qin, int in, int qout);
+	bool addTransitionNoReplace(const std::string & qin, const T & in, const std::string & qout);
 	/**
 	 * the group operation will not overload the single defined transition
 	 *
@@ -233,8 +268,28 @@ public:
 			const std::set<T>& groupDefined,const std::string& qout);
 	void addTransitionUndefined(const std::string & qin,const std::set<T>& groupBase,
 			const std::string& groupDefined,const std::string& qout);
-	void addReplace(int qin, int in, int qout);
-	void addReplace(const std::string & qin, const T & in, const std::string & qout);
+//	explicit void addTransitionUndefined(const std::string & qin,const std::initializer_list<T> baseList,
+//			const std::initializer_list<T> definedList,const std::string& qout);
+//	explicit void addTransitionUndefined(const std::string & qin,const std::string& baseList,
+//				const std::initializer_list<T> definedList,const std::string& qout);
+
+
+	void addTransition(int qin, int in, int qout);
+	void addTransition(const std::string & qin, const T & in, const std::string & qout);
+
+	//===gobacks
+	void addGoback(int qin,int qout);
+	void addGoback(const std::string & qin,const std::string & qout);
+	void addGoback(const std::initializer_list<std::pair<std::string,std::string>> list);
+	/*explicit*/ void addGoback(const std::vector<std::pair<std::string,std::string>> list);
+	//====stops
+	void addStop(int q);
+	void addStop(std::initializer_list<int> list);
+	void addStop(const std::string & q);
+	void addStop(std::initializer_list<std::string> list);
+
+
+
 	/**
 	 * goto next state on input in,if failed return failed,else return succeed.
 	 */
@@ -247,7 +302,8 @@ public:
 
 protected:
 	std::map<std::pair<int, int>, int> transitions;
-//	std::map<int,int>					gobacks;
+	std::set<std::pair<int,int>>		gobacks;
+	std::set<int>						stops;
 
 };
 template<class T>
@@ -270,7 +326,7 @@ template<class T>
 template<class T>
 	std::string FiniteAutomataManager<T>::UNDEFINED_STRING = "UNDEFINED";
 template<class T>
-const std::set<T> FiniteAutomata<T>::UNDEFINED_GROUP = std::set<T>();
+const std::set<T> FAGroups<T>::UNDEFINED_GROUP = std::set<T>();
 
 //====class FiniteAutomataManager<T>
 template<class T>
@@ -355,28 +411,111 @@ inline std::string x2::FiniteAutomataManager<T>::toString()const
 	return s;
 }
 
-//=====class LexicalOutputStreamProcessor
-template<class T, class V>
-inline LexicalOutputStreamProcessor<T, V>::LexicalOutputStreamProcessor()
+//=====class FAGroups
+template<class T>
+inline bool FAGroups<T>::addGroup(const std::string& name,
+		const std::set<T>& group)
 {
+	auto it=groups.find(name);
+	if(it!=groups.end())return false;
+	groups[name]=group;
+	return true;
 }
 
-template<class T, class V>
-inline LexicalOutputStreamProcessor<T, V>::~LexicalOutputStreamProcessor()
+template<class T>
+inline bool FAGroups<T>::addGroup(const std::string& name,
+		std::set<T>&& group)
 {
+	auto it=groups.find(name);
+	if(it!=groups.end())return false;
+	groups[name]=std::move(group);
+	return true;
 }
 
-template<class T, class V>
-inline typename LexicalOutputStreamProcessor<T,V>::OutputStreamType& LexicalOutputStreamProcessor<T, V>::getCachedStream()
+template<class T>
+inline bool FAGroups<T>::inGroup(const T& t,
+		const std::string& name) const
 {
-	return cachedStream;
+	auto it=groups.find(name);
+	if(it==groups.end())return false;
+	return it->second.find(t)!=it->second.end();
 }
-template<class T, class V>
-inline const typename LexicalOutputStreamProcessor<T,V>::OutputStreamType& LexicalOutputStreamProcessor<T, V>::getCachedStream() const
+template<class T>
+inline bool FAGroups<T>:: hasGroup(const std::string & name)const
 {
-	return cachedStream;
+	return groups.find(name)!=groups.end();
 }
 
+template<class T>
+inline const std::set<T>& FAGroups<T>::getGroup(
+		const std::string& name) const
+{
+	auto it=groups.find(name);
+	if(it==groups.end())return UNDEFINED_GROUP;
+	return it->second;
+}
+
+template<class T>
+inline bool FAGroups<T>::isGroupUndefined(const std::string& group) const
+{
+	return this->isGroupUndefined(this->getGroup(group));
+}
+
+
+template<class T>
+inline bool FAGroups<T>::isGroupUndefined(const std::set<T>& group) const
+{
+	return (&group)==(&UNDEFINED_GROUP);
+}
+
+template<class T>
+inline bool FAGroups<T>::addGroupUnion(const std::string& newGroup,
+		const std::vector<std::string> groups)
+{
+	if(this->isGroupUndefined(newGroup))
+	{
+		std::set<T>& unions = (this->groups[newGroup]=std::set<T>());
+		for(const std::string &name:groups)
+		{
+			const std::set<T> &gotgrp=this->getGroup(name);
+			unions.insert(gotgrp.begin(),gotgrp.end());
+		}
+		return true;
+	}
+	return false;
+}
+
+template<class T>
+inline bool FAGroups<T>::addGroupDiff(const std::string& newGroup,
+		const std::string& groupBase, const std::string& groupDefined)
+{
+	if(this->isGroupUndefined(newGroup))
+	{
+		std::set<T>& diff = (this->groups[newGroup]=std::set<T>());
+		const std::set<T> &gbase=this->getGroup(groupBase);
+		const std::set<T> &gdefined=this->getGroup(groupDefined);
+		for(const T& t:gbase)
+		{
+			if(gdefined.find(t)==gdefined.end())diff.insert(t);
+		}
+		return true;
+	}
+	return false;
+}
+template<class T>
+inline bool FAGroups<T>::addGroupUnion(const std::string &newGroup,const std::string& groups1,const std::set<T>& groupOutter)
+{
+	if(this->isGroupUndefined(newGroup))
+	{
+		std::set<T>& unions = (this->groups[newGroup]=std::set<T>());
+		const std::set<T> &grp1=this->getGroup(groups1);
+		unions.insert(grp1.begin(),grp1.end());
+		unions.insert(groupOutter.begin(),groupOutter.end());
+		return true;
+	}
+	return false;
+
+}
 //====class : FiniteAutomata
 template<class T>
 inline FiniteAutomata<T>::FiniteAutomata(const T& emptyT, const T& failedT,
@@ -427,122 +566,12 @@ inline FiniteAutomata<T>::FiniteAutomata(FiniteAutomataManager<T> && faman,
 
 
 template<class T>
-inline const T& FiniteAutomata<T>::getCurrentState() const
+inline const std::string& FiniteAutomata<T>::getCurrentState() const
 {
 	return this->queryState(this->curState);
 }
 
-template<class T>
-inline bool FiniteAutomata<T>::addGroup(const std::string& name,
-		const std::set<T>& group)
-{
-	auto it=groups.find(name);
-	if(it!=groups.end())return false;
-	groups[name]=group;
-	return true;
-}
 
-template<class T>
-inline bool FiniteAutomata<T>::addGroup(const std::string& name,
-		std::set<T>&& group)
-{
-	auto it=groups.find(name);
-	if(it!=groups.end())return false;
-	groups[name]=std::move(group);
-	return true;
-}
-
-template<class T>
-inline bool FiniteAutomata<T>::inGroup(const T& t,
-		const std::string& name) const
-{
-	return inGroup(querySymbol(t),name);
-}
-
-template<class T>
-inline bool FiniteAutomata<T>::inGroup(int t, const std::string& name) const
-{
-	auto it=groups.find(name);
-	if(it==groups.end())return false;
-	return it->second.find(t)!=it->second.end();
-
-}
-template<class T>
-inline bool FiniteAutomata<T>:: hasGroup(const std::string & name)const
-{
-	return groups.find(name)!=groups.end();
-}
-
-template<class T>
-inline const std::set<T>& FiniteAutomata<T>::getGroup(
-		const std::string& name) const
-{
-	auto it=groups.find(name);
-	if(it==groups.end())return UNDEFINED_GROUP;
-	return it->second;
-}
-
-template<class T>
-inline bool FiniteAutomata<T>::isGroupUndefined(const std::string& group) const
-{
-	return this->isGroupUndefined(this->getGroup(group));
-}
-
-
-template<class T>
-inline bool FiniteAutomata<T>::isGroupUndefined(const std::set<T>& group) const
-{
-	return (&group)==(&UNDEFINED_GROUP);
-}
-
-template<class T>
-inline bool FiniteAutomata<T>::addGroupUnion(const std::string& newGroup,
-		const std::vector<std::string> groups)
-{
-	if(this->isGroupUndefined(newGroup))
-	{
-		std::set<T>& unions = (this->groups[newGroup]=std::set<T>());
-		for(const std::string &name:groups)
-		{
-			const std::set<T> &gotgrp=this->getGroup(name);
-			unions.insert(gotgrp.begin(),gotgrp.end());
-		}
-		return true;
-	}
-	return false;
-}
-
-template<class T>
-inline bool FiniteAutomata<T>::addGroupDiff(const std::string& newGroup,
-		const std::string& groupBase, const std::string& groupDefined)
-{
-	if(this->isGroupUndefined(newGroup))
-	{
-		std::set<T>& diff = (this->groups[newGroup]=std::set<T>());
-		const std::set<T> &gbase=this->getGroup(groupBase);
-		const std::set<T> &gdefined=this->getGroup(groupDefined);
-		for(const T& t:gbase)
-		{
-			if(gdefined.find(t)==gdefined.end())diff.insert(t);
-		}
-		return true;
-	}
-	return false;
-}
-template<class T>
-inline bool FiniteAutomata<T>::addGroupUnion(const std::string &newGroup,const std::string& groups1,const std::set<T>& groupOutter)
-{
-	if(this->isGroupUndefined(newGroup))
-	{
-		std::set<T>& unions = (this->groups[newGroup]=std::set<T>());
-		const std::set<T> &grp1=this->getGroup(groups1);
-		unions.insert(grp1.begin(),grp1.end());
-		unions.insert(groupOutter.begin(),groupOutter.end());
-		return true;
-	}
-	return false;
-
-}
 
 
 template<class T>
@@ -608,6 +637,68 @@ inline std::string x2::FiniteAutomata<T>::toString() const
 	s+=std::string("Symbols & States Manager : {\n")+ this->FAman.toString() + "}";
 	return s;
 }
+//=====class LexicalOutputStreamProcessor
+template<class T,class V>
+inline LexicalOutputStreamProcessor<T,V>::LexicalOutputStreamProcessor(FiniteAutomata<T>& fa):
+	fa(fa)
+{
+}
+
+template<class T,class V>
+inline LexicalOutputStreamProcessor<T,V>::~LexicalOutputStreamProcessor()
+{
+}
+
+template<class T,class V>
+inline typename LexicalOutputStreamProcessor<T,V>::OutputStreamType& LexicalOutputStreamProcessor<T,V>::getCachedStream()
+{
+	return cachedStream;
+}
+template<class T,class V>
+inline const typename LexicalOutputStreamProcessor<T,V>::OutputStreamType& LexicalOutputStreamProcessor<T,V>::getCachedStream() const
+{
+	return cachedStream;
+}
+
+template<class T,class V>
+inline void LexicalOutputStreamProcessor<T,V>::process(int curState, const T& in)
+{
+	std::pair<int,int> actionKey(curState,fa.querySymbolAdd(in));
+	auto actionValIt=this->actions.find(actionKey);
+	int positionAction;
+	if(actionValIt==this->actions.end())positionAction=POSITION_APPEND;//default no process
+	else positionAction=actionValIt->second.second;
+
+	switch(positionAction)
+	{
+	case POSITION_NEW:
+		cachedStream.push_back( {  {  },  actionValIt->second.first} );break;
+	case POSITION_APPEND:
+		cachedStream[cachedStream.size() - 1].first.push_back(in);break;
+	case POSITION_NEWAPPEND:
+		cachedStream.push_back( {  { in },  actionValIt->second.first} );break;
+	case POSITION_IGNORE:
+		break;
+	}
+}
+
+
+template<class T,class V>
+inline void x2::LexicalOutputStreamProcessor<T,V>::addType(
+		std::pair<std::string,T> key,std::pair<std::string,int> value)
+{
+	this->addType({fa.queryStateAdd(key.first), fa.querySymbolAdd(key.second)},
+			{this->typeInfo.getAdd(value.first), value.second}
+			);
+}
+template<class T,class V>
+inline void x2::LexicalOutputStreamProcessor<T,V>::addType(
+		std::pair<int, int> key, std::pair<int, int> value)
+{
+	this->actions[key]=value;
+}
+
+
 
 
 //====class : DeterminasticFA<T>
@@ -647,7 +738,7 @@ inline DeterminasticFA<T>::DeterminasticFA(const std::string& startState,
 }
 
 template<class T>
-bool DeterminasticFA<T>::addTransition(int qin, int in, int qout)
+bool DeterminasticFA<T>::addTransitionNoReplace(int qin, int in, int qout)
 {
 	std::pair<int, int> key(qin, in);
 	auto it = transitions.find(key);
@@ -657,10 +748,10 @@ bool DeterminasticFA<T>::addTransition(int qin, int in, int qout)
 	return true;
 }
 template<class T>
-inline bool DeterminasticFA<T>::addTransition(const std::string& qin,
+inline bool DeterminasticFA<T>::addTransitionNoReplace(const std::string& qin,
 		const T& in, const std::string& qout)
 {
-	return addTransition(this->queryStateAdd(qin),this->querySymbolAdd(in),this->queryStateAdd(qout));
+	return addTransitionNoReplace(this->queryStateAdd(qin),this->querySymbolAdd(in),this->queryStateAdd(qout));
 }
 
 template<class T>
@@ -712,8 +803,10 @@ inline void DeterminasticFA<T>::addTransitionUndefined(const std::string & qin,c
 
 
 
+
+
 template<class T>
-void DeterminasticFA<T>::addReplace(int qin, int in, int qout)
+void DeterminasticFA<T>::addTransition(int qin, int in, int qout)
 {
 	std::pair<int, int> key(qin, in);
 	auto it = transitions.find(key);
@@ -723,11 +816,69 @@ void DeterminasticFA<T>::addReplace(int qin, int in, int qout)
 		transitions[key] = qout;
 }
 template<class T>
-inline void DeterminasticFA<T>::addReplace(const std::string& qin,
+inline void DeterminasticFA<T>::addTransition(const std::string& qin,
 		const T& in, const std::string& qout)
 {
-	addReplace(this->queryStateAdd(qin),this->querySymbolAdd(in),this->queryStateAdd(qout));
+	addTransition(this->queryStateAdd(qin),this->querySymbolAdd(in),this->queryStateAdd(qout));
 }
+
+template<class T>
+inline void DeterminasticFA<T>::addGoback(int qin, int qout)
+{
+	gobacks.insert({qin, qout});
+}
+
+template<class T>
+inline void DeterminasticFA<T>::addGoback(const std::string& qin,
+		const std::string& qout)
+{
+	this->addGoback(this->queryStateAdd(qin), this->queryStateAdd(qout));
+}
+
+template<class T>
+inline void DeterminasticFA<T>::addGoback(
+		const std::initializer_list<std::pair<std::string, std::string> > list)
+{
+	for(const auto &p:list)
+		this->addGoback(p.first,p.second);
+}
+
+template<class T>
+inline void DeterminasticFA<T>::addGoback(
+		const std::vector<std::pair<std::string, std::string> > list)
+{
+	for(const auto &p:list)
+		this->addGoback(p.first,p.second);
+}
+
+
+
+template<class T>
+inline void DeterminasticFA<T>::addStop(int q)
+{
+	this->stops.insert(q);
+}
+
+template<class T>
+inline void DeterminasticFA<T>::addStop(std::initializer_list<int> list)
+{
+	this->stops.insert(list.begin(),list.end());
+}
+
+template<class T>
+inline void DeterminasticFA<T>::addStop(const std::string& q)
+{
+	this->addStop(this->queryStateAdd(q));
+}
+
+template<class T>
+inline void DeterminasticFA<T>::addStop(std::initializer_list<std::string> list)
+{
+	for(auto &str:list)
+		this->addStop(this->queryStateAdd(str));
+}
+
+
 
 template<class T>
 inline bool DeterminasticFA<T>::next(const T& in)
@@ -749,20 +900,50 @@ inline bool DeterminasticFA<T>::next(int in)
 template <class T>
 inline void DeterminasticFA<T>::getMatch(const InputStreamType& instream,OutputStreamProcessor<T>& outstream)
 {
-	for(const T& t:instream)
+	for(typename InputStreamType::const_iterator it=instream.begin(); it!=instream.end();)
 	{
-		outstream.process(this->curState, t);
-		if(!this->next(t))return;
+		//===at stop?
+		if(this->stops.find(this->curState)!=this->stops.end())return;
+		//====go to next and see if need to go back
+		int lastState=this->curState;
+		if(!this->next(*it))//no such transition
+		{
+			//====process an input at state and end the match
+			outstream.process(lastState, *it);
+			return;
+		}
+		if( gobacks.find({lastState,this->curState})!=gobacks.end())
+		{
+			//keep the input iterator,and do not process output
+		}else{
+
+			outstream.process(lastState, *it++);
+		}
 	}
 }
 
 template <class T>
 inline void DeterminasticFA<T>::getMatch(const InputStreamType& instream,ProcessFunType process)
 {
-	for(const T& t:instream)
+	for(typename InputStreamType::const_iterator it=instream.begin(); it!=instream.end();)
 	{
-		process(this->curState, t);
-		if(!this->next(t))return;
+		//===at stop?
+		if(this->stops.find(this->curState)!=this->stops.end())return;
+		//====go to next and see if need to go back
+		int lastState=this->curState;
+		if(!this->next(*it))//no such transition
+		{
+			//====process an input at state
+			process(lastState, *it);
+			return;
+		}
+		if(lastState==this->curState || gobacks.find({lastState,this->curState})==gobacks.end())
+		{
+			process(lastState, *it);
+			it++;
+		}else{
+			//keep the input iterator,and do not process output
+		}
 	}
 }
 template <class T>

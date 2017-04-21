@@ -6,4 +6,6 @@
 2017-04-19 12:03:29		MutualMap<T1,T2>	added.
 2017-04-20 18:53:26		Through 2 days, a DFA is created.It is designed in general purpose.So it can be used in Lexical Parsing,Grammar Translation...
 2017-04-21 00:50:11		A new power concept added : group of FA. Group is a very powerful description tool for transitions.
-
+		   11:02:07		[TODO]	change the GrammaUtils to support randomly adding grammar symbols by string.[need Design](the designing philosophy is that defining is adding.
+		   21:17:52		A lexical parser using DFA is completed.See the examples for details.
+2017-04-22 02:13:18		[DONE]	direct `defining is adding` is supported.check `test/mainTest.cpp void testGrammarDefineIsAdding()` for detials. 

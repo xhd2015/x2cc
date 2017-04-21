@@ -18,39 +18,9 @@
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
+#include <MutualMap.h>
 namespace x2
 {
-  //=======================
-  /**
-   * 文法符号的约定：每一个文法符号
-   */
-//  class GrammaSymbol/*文法符号*/
-//  {
-//  public:
-//    enum{
-//      SYM_EMPTY=0,
-//      SYM_TERM=1,
-//      SYM_ERROR=2,
-//    };
-//  public:
-//    GrammaSymbol()=default;
-//    GrammaSymbol(int type,const std::string& s);
-//    GrammaSymbol(int type,std::string&& s="");
-//    const GrammaSymbol& operator=(int type);
-//    ~GrammaSymbol ();
-//    AS_MACRO bool isTerm()const;
-//    AS_MACRO bool isEmpty()const;
-//    AS_MACRO bool isVar()const;
-//    AS_MACRO int getType()const;
-//    AS_MACRO std::string getValue()const;
-//    AS_MACRO static GrammaSymbol makeEmpty();
-//    AS_MACRO std::string toString()const;
-//  public:
-//    int type;
-//    std::string value;
-//  };
-//  AS_MACRO bool operator<(const GrammaSymbol &a,const GrammaSymbol& b){if(a.type!=b.type)return a.type<b.type;else return a.value<b.value;}
-
   //====================
   /**
    * 对于typeString而言
@@ -58,60 +28,82 @@ namespace x2
    *  如果是TYPE_EMPTY,可以是任意值
    *  如果是其它的，长度至少是1，并且建议大写字母
    *
-   *  任何时刻，保证表中的empty只有一项
+   *  TYPE分三种类型：终结符  空符号  变量
+   *  空符号需要做单独处理，但是不属于存储级别的单独处理
+   *
+   *
+   *  任何时刻，保证表中的empty有且只有一项 -- 实现方式就是令将EMPTY添加到存储结构之后，缓存返回的EMPTY index
+   *  EMPTY 只支持初始化，不支持修改
+   *
    * 这个类将由其它所有的类共享
-   *   empty项必须存在，且仅有一项
+   *   empty项必须存在，且仅有一项,且其下标必须是EMPTY_INDEX, EMPTY_INDEX,EMPTY_STRING 需要存储在容器之中;
+   *   不可以删除empty项
+   *   初始化symString时使用UNDEFINED_STRING
+   *
    *   内置的属性值：TYPE_UNDEFINED "UNDEFINED"
+   *
+   *   仅支持添加操作，暂不支持删除操作
+   *
+   *   可以使用string来添加文法，查询文法符号
    */
-  class GrammaSymbols{/*符号管理表*/
+ /*符号管理表*/
+  class GrammaSymbols{
   public:
+	enum TYPE_DEF{TYPE_TERM,	TYPE_VAR,	TYPE_EMPTY,	TYPE_UNDEFINED };
+	//预定义的数字，如果是固定的，可以不必使用string，使用string的优势主要在于可以自定义类型
     typedef std::map<int,int> TypeInfo;
     typedef std::map<int,std::string> TypeString;
+    typedef GrammaSymbols This;
 
-    AS_MACRO GrammaSymbols();
+    GrammaSymbols(const std::string& emptyString=EMPTY_STRING);/*必须提供emptyString的*/
+
     GrammaSymbols(const GrammaSymbols &gsyms)=default;
     GrammaSymbols(GrammaSymbols &&gsyms);
     GrammaSymbols(const std::initializer_list<std::pair<int,std::string> >& list);
-    GrammaSymbols(std::initializer_list<std::pair<int,std::string> >&& list);
     GrammaSymbols & operator=(const GrammaSymbols & gs);
     GrammaSymbols & operator=(GrammaSymbols && gs);
 
+    //<block time="2017-04-21 22:02:42“>
+//    [[deprecated("use get instead")]]
+    AS_MACRO int		get(const std::string & s)const;
+    AS_MACRO int		getAdd(const std::string & sym,const std::string & type="TERMINATOR");
+    AS_MACRO int		getAdd(const std::string & sym,int type);
+    AS_MACRO int		getEmpty()const;
+    AS_MACRO bool	isSymbolEmpty(const std::string &sym)const;
+    AS_MACRO bool	isSymbolTerm(const std::string &sym)const;
+    AS_MACRO bool	isSymbolUndefined(const std::string & sym)const;
+    AS_MACRO int		getSymbolType(const std::string & sym)const;
+    //</block>
+
     AS_MACRO int addTerm(const std::string &s);//return the index that generated
     AS_MACRO int addVar(const std::string & s);
-    AS_MACRO int addEmpty(const std::string & s);
     AS_MACRO bool isSymbolEmpty(int i)const;
     AS_MACRO bool isSymbolTerm(int i)const;
     AS_MACRO bool isSymbolVar(int i)const;
     AS_MACRO bool isSymbolUndefined(int i)const;
     AS_MACRO int getSymbolType(int i)const;
-    AS_MACRO int findEmpty()const;
-    AS_MACRO int findSymbolIndex(const std::string & s)const;
-    AS_MACRO int findAdd(const std::string & s);
+
     AS_MACRO void lock();//lock to avoid any modifying
     AS_MACRO void unlock();//unlock
 
-    int add(int type,const std::string &s);
-    int add(int type,int index,const std::string &s);//add by index,non-replace,if failed,return next available;else return index
-//    int addAlways(int type,int index,const std::string &s);//add by index,add to max if corrupt;return the actual index
-    void deleteNo(int no);//删除某一项
+    //==IMPORTANT, core methods
+    /**
+     * add always,no matter if it exists or not
+     */
+    AS_MACRO void add(int index,int type);//add by index,non-replace,if failed,return next available;else return index
+
+    //deprecated
+//    void deleteNo(int no);//删除某一项
     const std::string& getString(int i)const;
     std::string	toString()const;
   public:
-    int max; //-1 就是empty产生式  -2 undefined
-    std::map<int,int>	symInfo;
-
-    //将symbol 和 string 视为等价的
-    std::map<int,std::string> symString;
-    std::map<std::string,int> stringSym;
+    std::map<int,int>			symInfo;
+    x2::IndexedMap<std::string> symString;
+    int							emptyIndex;
     static std::string	UNDEFINED_STRING,EMPTY_STRING;
-    static int			EMPTY_INDEX,UNDEFINED_INDEX;
-    enum{
-      TYPE_TERM,
-      TYPE_VAR,
-      TYPE_EMPTY,
-      TYPE_UNDEFINED
-    };
-    static std::map<int,std::string> TYPES_INFO;
+    static int			UNDEFINED_INDEX;
+
+    static x2::MutualMap<int,std::string> TYPES_INFO;
   };
   //=====================================
   /**
@@ -119,15 +111,17 @@ namespace x2
    * 	如果GrammaSentence为空产生式，则含有语法变量 SYM_EMPTY
    * 	长度至少为1
    */
-  class GrammaSentence{/*句型*/
-    typedef  std::vector<int>	SymsList;
-    typedef  SymsList::size_type size_type;
+  /*句型*/
+  class GrammaSentence{
+  public:
+    typedef  std::vector<int>	SymsListType;
+    typedef  SymsListType::size_type size_type;
   public:
     GrammaSentence()=default;
     GrammaSentence(GrammaSentence&& gs)=default;
     GrammaSentence(const GrammaSentence& gs)=default;
-    GrammaSentence(const SymsList & slist);
-    GrammaSentence(SymsList && slist);
+    GrammaSentence(const SymsListType & slist);
+    GrammaSentence(SymsListType && slist);
     GrammaSentence(std::initializer_list<int>&& list);
     GrammaSentence(const std::initializer_list<int>& list);
     GrammaSentence& operator=(const GrammaSentence& gs);
@@ -138,12 +132,14 @@ namespace x2
     AS_MACRO int getFirstSymbol()const;
     AS_MACRO bool startsWith(int i)const;
     AS_MACRO size_type getLength()const;
+    void	push_back(int i);
   public:
-    SymsList syms;
+    SymsListType syms;
   };
 
   //===================================
   /**
+   * LL Utilities are automatically loadeed
    * Gramma状态约定：
    * 	如果syms中存在一个非终结符号，则prods必然包含至少一个产生式（统一性）
    * 	prods中的所有产生式，左部只能来自syms表的非终结符，右部只能是syms符号的一个组合
@@ -157,7 +153,8 @@ namespace x2
    *
    *
    */
-  class Gramma{/*文法*/
+  /*文法*/
+  class Gramma{
   public:
     typedef Gramma This;
     typedef std::map<int,std::vector<GrammaSentence> > ProductionsType;
@@ -166,23 +163,27 @@ namespace x2
     Gramma()=default;
     Gramma(const GrammaSymbols & gsyms);
     Gramma(GrammaSymbols&& gsyms);
-    Gramma(std::initializer_list<std::pair<int,std::string> > &&list);
     Gramma(const std::initializer_list<std::pair<int,std::string> > &list);
     Gramma(const std::string &file);//construct from file
     Gramma(std::istream &in);
 
     Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
 	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist);
-    Gramma(std::initializer_list<std::pair<int,std::string> > &&list,
-	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist);
-    Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
-	   std::initializer_list<std::pair<int,GrammaSentence> > &&prodlist);
-    Gramma(std::initializer_list<std::pair<int,std::string> > &&list,
-	   std::initializer_list<std::pair<int,GrammaSentence> > &&prodlist);
+    Gramma(const std::initializer_list<std::pair<std::string,std::initializer_list<std::string>>> &prodlist);
+    Gramma(const std::vector<std::pair<std::string,std::vector<std::string>>> &prodlist);
 
 
     void addProduction(int i,const GrammaSentence &gs);
     void addProduction(int i,GrammaSentence &&gs);
+
+    /**
+     * added 2017-04-21 21:49:40
+     */
+    void addProduction(const std::string& head,const std::vector<std::string>& gs);
+    /**
+     * added 2017-04-21 21:49:47
+     */
+    void addProduction(const std::string& head,const std::initializer_list<std::string> & gs);
 
     bool canSymbolEmpty(int i);
     bool canSentenceEmpty(const GrammaSentence& s);//可以构造一个非空表，以及一个关于句型的第一个非空符号的位置（左起最长空串的长度）
@@ -295,6 +296,8 @@ namespace x2
 	  LRGramma(const GrammaSymbols & gs,ProductionsType && prods,int oristart,int oriend,const std::string & strstart);
 	  LRGramma( GrammaSymbols && gs,const ProductionsType & prods,int oristart,int oriend,const std::string & strstart);
 	  LRGramma(GrammaSymbols && gs,ProductionsType && prods,int oristart,int oriend,const std::string & strstart);
+	  LRGramma(const Gramma & g,const std::string & oriStart,const std::string &oriEnd,const std::string &extStart);
+	  LRGramma(Gramma &&g,const std::string & oriStart,const std::string &oriEnd,const std::string &extStart);
 
 	  /**
 	   * return a tuple
@@ -338,6 +341,7 @@ namespace x2
 	  int sstart;//拓广之后的start
 	  int send;//必须定义结束符号
 	  std::string dotString;
+	  static const std::string DOT_STRING;
   };
 
   /**
@@ -394,63 +398,134 @@ namespace x2
   //===========function macrso
 
   //====class GrammaSymbols
-  GrammaSymbols::GrammaSymbols():
-      max(0)
+  inline GrammaSymbols::GrammaSymbols( const std::string& emptyString):
+		symString(UNDEFINED_STRING)
   {
-    this->add(TYPE_EMPTY, EMPTY_STRING);
-    this->add(TYPE_UNDEFINED,UNDEFINED_STRING);
+	  emptyIndex=symString.getAdd(emptyString);
   }
-  int GrammaSymbols::addTerm(const std::string &s)
+  inline GrammaSymbols::GrammaSymbols(GrammaSymbols &&gsyms):
+	  symInfo(std::move(gsyms.symInfo)),
+      symString(std::move(gsyms.symString)),
+	  emptyIndex(gsyms.emptyIndex)
   {
-    return add(TYPE_TERM,s);
-  }
-  int GrammaSymbols::addVar(const std::string & s)
-  {
-    return add(TYPE_VAR,s);
+
   }
 
-  int GrammaSymbols::addEmpty(const std::string & s)
+  inline GrammaSymbols::GrammaSymbols(const std::initializer_list<std::pair<int,std::string> >& list):
+		GrammaSymbols()
   {
-    return add(TYPE_EMPTY,s);
+    auto it=begin(list),itend=end(list);
+    for(;it!=itend;it++)
+      {
+    	this->getAdd(it->second,it->first);
+      }
   }
-  bool GrammaSymbols::isSymbolEmpty(int i)const
+
+  inline GrammaSymbols & GrammaSymbols::operator=(const GrammaSymbols & gs)
+  {
+	  new (this) GrammaSymbols(gs);
+	  return *this;
+  }
+  inline GrammaSymbols & GrammaSymbols::operator=(GrammaSymbols && gs)
+  {
+	  new (this) GrammaSymbols(gs);
+	  return *this;
+  }
+  inline int GrammaSymbols::get(const std::string & s)const
+   {
+ 	  return this->symString.get(s);
+   }
+  inline int GrammaSymbols::getAdd(const std::string & s,const std::string & type)
+   {
+ 	  return this->getAdd(s, This::TYPES_INFO.get(type));
+   }
+
+  inline int GrammaSymbols::getAdd(const std::string& sym, int type)
+   {
+ 	  int i=this->symString.getAdd(sym);
+ 	  auto it=this->symInfo.find(i);
+ 	  if(it==symInfo.end()){
+ 		  if(type==TYPE_EMPTY)return this->emptyIndex;
+ 		  else this->add(i,type);
+ 	  }
+ 	  return i;
+   }
+
+  inline  int GrammaSymbols::getEmpty()const
+   {
+     return this->emptyIndex;
+   }
+  inline int GrammaSymbols::addTerm(const std::string &s)
+   {
+     return this->getAdd(s,TYPE_TERM);
+   }
+  inline int GrammaSymbols::addVar(const std::string & s)
+   {
+     return this->getAdd(s,TYPE_VAR);
+   }
+
+  inline bool GrammaSymbols::isSymbolEmpty(int i)const
   {
     return getSymbolType(i)==TYPE_EMPTY;
   }
-  bool GrammaSymbols::isSymbolTerm(int i)const
+  inline bool GrammaSymbols::isSymbolTerm(int i)const
   {
     return getSymbolType(i)==TYPE_TERM;
   }
-  bool GrammaSymbols::isSymbolVar(int i)const
+  inline bool GrammaSymbols::isSymbolVar(int i)const
   {
     return getSymbolType(i)==TYPE_VAR;
   }
-  bool GrammaSymbols::isSymbolUndefined(int i)const
+  inline bool GrammaSymbols::isSymbolUndefined(int i)const
   {
     return getSymbolType(i)==TYPE_UNDEFINED;
   }
-  int GrammaSymbols::getSymbolType(int i)const
+  inline int GrammaSymbols::getSymbolType(int i)const
   {
     TypeInfo::const_iterator it=symInfo.find(i);
     if(it!=symInfo.end())return it->second;
     return TYPE_UNDEFINED;
   }
-  int GrammaSymbols::findEmpty()const
+  /**
+   * if index already exist, return a index may be used
+   */
+  inline void GrammaSymbols::add(int index,int type)
   {
-    return -1;
+	  this->symInfo[index]=type;
   }
-  int GrammaSymbols::findSymbolIndex(const std::string & s)const
-  {
-	  auto it=this->stringSym.find(s);
-	  if(it==stringSym.end())return UNDEFINED_INDEX;
-	  return it->second;
-  }
-  int GrammaSymbols::findAdd(const std::string & s)
-  {
-	  auto it=this->stringSym.find(s);
-	  if(it!=stringSym.end())return it->second;
-	  return add(TYPE_VAR,s);
-  }
+  //  void GrammaSymbols::deleteNo(int no)
+  //  {
+  //    if(no==EMPTY_INDEX || no==UNDEFINED_INDEX)return;//you can not delete EMPTY
+  //    TypeInfo::iterator it=symInfo.find(no);
+  //    if(it!=symInfo.end())
+  //      {
+  //    	auto itstr=symString.find(no);
+  //    	auto itsym=stringSym.find(itstr->second);
+  //
+  //    	if(no==max)max--;
+  //    	symInfo.erase(it);
+  //    	symString.erase(itstr);
+  //    	stringSym.erase(itsym);
+  ////    	itstr->second.std::string::~string();
+  ////    	itsym->first.std::string::~string();
+  //      }
+  //  }
+  inline  const std::string& GrammaSymbols::getString(int i)const
+    {
+  	  return this->symString.get(i);
+    }
+  inline  std::string	GrammaSymbols::toString()const
+    {
+      std::string s;
+      s+=std::string("( ")+std::to_string(emptyIndex) + " , " + GrammaSymbols::TYPES_INFO.get(TYPE_EMPTY) +" , "+ this->getString(emptyIndex) + " ) \n";
+      std::for_each(std::begin(this->symInfo),std::end(this->symInfo),[&s,this](const TypeInfo::value_type &item){
+        s+=std::string("( ") +std::to_string(item.first) + " , " + GrammaSymbols::TYPES_INFO.get(item.second) +" , "+ this->getString(item.first) + " ) \n";
+      });
+      return s;
+    }
+
+
+
 
   //====class GrammarSentence
   int GrammaSentence::getFirstSymbol()const
@@ -465,6 +540,12 @@ namespace x2
   {
     return this->syms.size();
   }
+  inline void GrammaSentence::push_back(int i)
+  {
+	  this->syms.push_back(i);
+  }
+
+
 
   //=====class GrammaProduction
 
@@ -546,6 +627,48 @@ namespace x2
 	  return toString(i) + " -> " + this->toString(prods.at(i)[j]);
   }
   //============class LRGramma
+  inline LRGramma::LRGramma(const Gramma& g,int oristart,int oriend,const std::string & strstart):
+ 		send(oriend),dotString(".")
+  {
+ 	 gsyms = g.gsyms;
+ 	 prods = g.prods;
+
+ 	 sstart = gsyms.addVar(strstart);
+ 	 GrammaSentence gs={oristart};
+ 	 addProduction(sstart,std::move(gs));
+  }
+ inline LRGramma::LRGramma(Gramma&& g,int oristart,int oriend,const std::string & strstart):
+ 		send(oriend),dotString(".")
+  {
+ 	 gsyms = std::move(g.gsyms);
+ 	 prods = std::move(g.prods);
+
+ 	 sstart = gsyms.addVar(strstart);
+ 	 GrammaSentence gs={oristart};
+ 	 addProduction(sstart,std::move(gs));
+  }
+  inline LRGramma::LRGramma(const Gramma& g, const std::string& oriStart,
+  		const std::string& oriEnd, const std::string& extStart):
+		Gramma(g),
+		send(this->gsyms.getAdd(oriEnd,GrammaSymbols::TYPE_TERM)),
+		dotString(".")
+
+  {
+	  this->sstart = this->gsyms.getAdd(extStart,GrammaSymbols::TYPE_VAR);
+	  this->Father::addProduction(extStart,{oriStart});
+  }
+
+  inline LRGramma::LRGramma(Gramma&& g, const std::string& oriStart,
+  		const std::string& oriEnd, const std::string& extStart):
+  				Gramma(std::move(g)),
+				send(this->gsyms.getAdd(oriEnd,GrammaSymbols::TYPE_TERM)),
+				dotString(".")
+  {
+	  this->sstart = this->gsyms.getAdd(extStart,GrammaSymbols::TYPE_VAR);
+	  this->Father::addProduction(extStart,{oriStart});
+  }
+
+
   int  LRGramma::getFirstSymbolAfterDot(const ItemType & i)
   {
  	 return getNthSymboleAfterDot(i,1);
