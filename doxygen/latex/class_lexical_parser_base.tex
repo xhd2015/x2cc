@@ -1,0 +1,25 @@
+\hypertarget{class_lexical_parser_base}{}\section{Lexical\+Parser\+Base Class Reference}
+\label{class_lexical_parser_base}\index{Lexical\+Parser\+Base@{Lexical\+Parser\+Base}}
+Inheritance diagram for Lexical\+Parser\+Base\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_lexical_parser_base}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_base_ae490e4942ede17406fc3ea288a41dba5}\label{class_lexical_parser_base_ae490e4942ede17406fc3ea288a41dba5}} 
+virtual void {\bfseries parse} (const char $\ast$buffer, size\+\_\+t len, size\+\_\+t \&index)=0
+\item 
+\mbox{\Hypertarget{class_lexical_parser_base_a21ee1453e87a63d194cacd9283a7b55a}\label{class_lexical_parser_base_a21ee1453e87a63d194cacd9283a7b55a}} 
+virtual void {\bfseries error} (const char $\ast$buffer, size\+\_\+t len, size\+\_\+t \&index, int \&state)=0
+\item 
+\mbox{\Hypertarget{class_lexical_parser_base_a4ca2ae98fd5f5f55a3a84db9e465121e}\label{class_lexical_parser_base_a4ca2ae98fd5f5f55a3a84db9e465121e}} 
+virtual int {\bfseries get\+Next\+State} (int cur\+State, char ch)=0
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Lexical\+Parser.\+h\end{DoxyCompactItemize}

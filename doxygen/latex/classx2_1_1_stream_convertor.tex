@@ -1,0 +1,104 @@
+\hypertarget{classx2_1_1_stream_convertor}{}\section{x2\+:\+:Stream\+Convertor Class Reference}
+\label{classx2_1_1_stream_convertor}\index{x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}}
+
+
+A convert word stream, it converts any input type to integer(int)  
+
+
+
+
+{\ttfamily \#include $<$Lexical\+Parser.\+h$>$}
+
+Inheritance diagram for x2\+:\+:Stream\+Convertor\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classx2_1_1_stream_convertor}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_a1aad435b98906735d193f2dddaafcbde}\label{classx2_1_1_stream_convertor_a1aad435b98906735d193f2dddaafcbde}} 
+typedef std\+::vector$<$ std\+::pair$<$ std\+::string, int $>$ $>$ {\bfseries Word\+Stream}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_a876b8e8c24be22071be077131d630653}\label{classx2_1_1_stream_convertor_a876b8e8c24be22071be077131d630653}} 
+virtual void {\bfseries go\+Backward} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_a139c6530279fa6c4539aec126e8d18a5}\label{classx2_1_1_stream_convertor_a139c6530279fa6c4539aec126e8d18a5}} 
+virtual void {\bfseries go\+Forward} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_a5496244c269c2c59aaa8b596bf4e6e93}\label{classx2_1_1_stream_convertor_a5496244c269c2c59aaa8b596bf4e6e93}} 
+virtual void {\bfseries move} (int i)=0
+\item 
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_ad6e8220fe474334d95d0361f7bd301c4}\label{classx2_1_1_stream_convertor_ad6e8220fe474334d95d0361f7bd301c4}} 
+virtual void {\bfseries go\+Head} ()=0
+\item 
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_ab2a5c8c756da383dac62ef7e5ba15953}\label{classx2_1_1_stream_convertor_ab2a5c8c756da383dac62ef7e5ba15953}} 
+virtual void {\bfseries go\+End} ()=0
+\item 
+virtual \hyperlink{classx2_1_1_stream_convertor}{Stream\+Convertor} \& \hyperlink{classx2_1_1_stream_convertor_a5b387cc560794db5ac2f0c35dd4023d1}{operator$>$$>$} (int \&i)=0
+\item 
+virtual int \hyperlink{classx2_1_1_stream_convertor_a9bc76cb1b81f1b11c9967f37f01bf2be}{peek} () const =0
+\item 
+virtual int \hyperlink{classx2_1_1_stream_convertor_a1025f8d8b1b1e430a6476d74e2506b10}{get} ()=0
+\item 
+virtual bool \hyperlink{classx2_1_1_stream_convertor_a64febc08c310555497ca497df583b940}{eof} () const =0
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A convert word stream, it converts any input type to integer(int) 
+
+a stream is an ordered input sequence, which can move backward or move forward randomly. the stream is not consumed,so it can be repeatly traversed.
+
+It cannot be put,but only be taken. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_a64febc08c310555497ca497df583b940}\label{classx2_1_1_stream_convertor_a64febc08c310555497ca497df583b940}} 
+\index{x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}!eof@{eof}}
+\index{eof@{eof}!x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}}
+\subsubsection{\texorpdfstring{eof()}{eof()}}
+{\footnotesize\ttfamily virtual bool x2\+::\+Stream\+Convertor\+::eof (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+judge if the stream is coming its ending 
+
+Implemented in \hyperlink{classx2_1_1_lexical_to_grammar_stream_a813ec919763970d4150f35cba4da1db1}{x2\+::\+Lexical\+To\+Grammar\+Stream}.
+
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_a1025f8d8b1b1e430a6476d74e2506b10}\label{classx2_1_1_stream_convertor_a1025f8d8b1b1e430a6476d74e2506b10}} 
+\index{x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}!get@{get}}
+\index{get@{get}!x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}}
+\subsubsection{\texorpdfstring{get()}{get()}}
+{\footnotesize\ttfamily virtual int x2\+::\+Stream\+Convertor\+::get (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+same with operator$>$$>$ 
+
+Implemented in \hyperlink{classx2_1_1_lexical_to_grammar_stream_a8ae8e1b6ada26785c70db1255daca798}{x2\+::\+Lexical\+To\+Grammar\+Stream}.
+
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_a5b387cc560794db5ac2f0c35dd4023d1}\label{classx2_1_1_stream_convertor_a5b387cc560794db5ac2f0c35dd4023d1}} 
+\index{x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}!operator$>$$>$@{operator$>$$>$}}
+\index{operator$>$$>$@{operator$>$$>$}!x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}}
+\subsubsection{\texorpdfstring{operator$>$$>$()}{operator>>()}}
+{\footnotesize\ttfamily virtual \hyperlink{classx2_1_1_stream_convertor}{Stream\+Convertor}\& x2\+::\+Stream\+Convertor\+::operator$>$$>$ (\begin{DoxyParamCaption}\item[{int \&}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+get an input stream 
+
+Implemented in \hyperlink{classx2_1_1_lexical_to_grammar_stream_a7b3d4b7bfc44a17905bae8dc8dcf7a40}{x2\+::\+Lexical\+To\+Grammar\+Stream}.
+
+\mbox{\Hypertarget{classx2_1_1_stream_convertor_a9bc76cb1b81f1b11c9967f37f01bf2be}\label{classx2_1_1_stream_convertor_a9bc76cb1b81f1b11c9967f37f01bf2be}} 
+\index{x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}!peek@{peek}}
+\index{peek@{peek}!x2\+::\+Stream\+Convertor@{x2\+::\+Stream\+Convertor}}
+\subsubsection{\texorpdfstring{peek()}{peek()}}
+{\footnotesize\ttfamily virtual int x2\+::\+Stream\+Convertor\+::peek (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+get an input, but do not move the stream 
+
+Implemented in \hyperlink{classx2_1_1_lexical_to_grammar_stream_a67a0e2b6ed998fd1dea1c9829be4461f}{x2\+::\+Lexical\+To\+Grammar\+Stream}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Lexical\+Parser.\+h\end{DoxyCompactItemize}

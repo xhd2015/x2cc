@@ -16,6 +16,7 @@
 #include <MutualMap.h>
 #include <FAUtils.h>
 #include <StringUtils.h>
+#include <GrammarTranslateUtils.h>
 
 #include <macros/all.h>
 using namespace std;
@@ -38,10 +39,15 @@ void testLR1();
 void assignment_LR();
 void testAmbigous();
 void testReadFromFile();
+void testSimplifiedGrammar();
 void testMutualMap();
 void testStreamFA();
 void testDFA();
 void testGrammarDefineIsAdding();
+void testVerifiedGrammarTranslation();
+void testMutualMapInt();
+void testLexicalStream();
+void testCombineLexicalGrammarTranslation();
 
 int main()
 {
@@ -53,7 +59,205 @@ int main()
 //	testMutualMap();
 //	testStreamFA();
 //	testDFA();
-	testGrammarDefineIsAdding();
+//	testGrammarDefineIsAdding();
+//	testSimplifiedGrammar();
+//	testVerifiedGrammarTranslation();
+//	testMutualMapInt();
+//	testLexicalStream();
+	testCombineLexicalGrammarTranslation();
+}
+/**
+ * a united test, this will test the combination/cooperation between
+ * these tools.
+ */
+void testCombineLexicalGrammarTranslation()
+{
+	//== define a grammar
+	LR1Gramma lr1g(Gramma("examples/normal_test3.grammar"),
+			"C","$","S'"
+	);
+	std::cout << lr1g.toString() <<std::endl;
+
+	//== parse the lexical stream
+	LexicalParser lp;
+	std::ifstream infile("examples/normal_test3.cpp");
+	auto stream=lp.parseWords(infile);
+	DefaultLexcialToGrammarStream myStream(stream,lr1g);
+
+	//== retrieve information from the grammar
+	auto lr1info = lr1g.getAllClosures();
+	auto lr1table = lr1g.constructAnalyzeTable(lr1info);
+	auto goodTable = Gramma::convertCorruptToStandardSimply(lr1table);
+	std::cout << lr1g.toString(lr1info) << std::endl
+				<<lr1g.toString(goodTable) << std::endl;
+
+	//== output the lexical stream
+	while(!myStream.eof())
+	{
+		std::cout << lr1g.gsyms.getString(myStream.get()) << " ";
+	}
+	std::cout << std::endl;
+	myStream.goHead();//reset to head
+
+	//== a translator working
+	DemoTranslator demoTrans(lr1g, lr1info, goodTable, lr1g.gsyms.get("$"), 0);
+	DefaultSemanticAction	myAction;//default action
+	demoTrans.translate(myStream, myAction);
+
+}
+/**
+ * 测试词法流是否正确工作
+ * 测试结果:修复了某些错误
+ */
+void testLexicalStream()
+{
+	LexicalParser lp;
+//	std::ifstream infile("examples/normal_test1.cpp");
+	std::ifstream infile("examples/normal_test3.cpp");
+	/**
+	 * get method of istream retreives a raw character
+	 * while operator>> returns formatted.
+	 * So reading the document is the most important.
+	 */
+//	char ch;
+//	while(!infile.eof())
+//	{
+//		ch=infile.get();
+//
+//		std::cout << ch ;
+//	}
+//	char ch;
+//	while(!infile.eof())
+//	{
+//		infile >> ch;
+//
+//		std::cout << ch ;
+//	}
+//	std::cout <<std::endl<<"<END>"<<std::endl;
+
+	auto stream=lp.parseWords(infile);
+	for(auto &p:stream)
+	{
+		std::cout << "<"<<p.first<<", "<<lp.humanInfo[p.second]<<">"<<std::endl;
+	}
+}
+/**
+ * 测试 MutualMap<int,int>	是否可用
+ */
+void testMutualMapInt()
+{
+	x2::MutualMap<int,int> imap(-1,-1);
+	imap.addT1(1, 2);
+	imap.addT2(2,1);
+	imap.addT1(2,1);
+	std::cout << imap.toString() <<std::endl;
+}
+/**
+ * 一个已经验证过的文法的翻译
+ * 将
+ *    A=B + C*(D+F)
+ *   翻译成三地址码的形式
+ *
+ *   文法:
+ *    E->(E)
+ *    E->id
+ *    E->E+E
+ *    E->E*E
+ *
+ *   输入流
+ *   	ID = ID + ID * ( ID + ID )
+ *
+ */
+void testVerifiedGrammarTranslation()
+{
+	LR1Gramma lr1g({	 "E E + E",
+						 "E E * E",
+						 "E ( E )",
+						 "E id"
+					  },
+			"E","$", "E'");
+//	LR1Gramma lr1g({	 "S B B",
+//						 "B a B",
+//						 "B b",
+//					  },
+//			"S","$", "S'");
+
+	std::cout << lr1g.gsyms.toString()<<std::endl;
+
+	std::cout << lr1g.toString()<<std::endl;
+	auto lr1info=lr1g.getAllClosures();
+	std::cout << lr1g.toString(lr1info) << std::endl;
+	auto table=lr1g.constructAnalyzeTable(lr1info);
+	std::cout << lr1g.toString(table)<<std::endl;
+	Gramma::LRAnalyzeTableType goodTable;
+	//<9,+>,r
+	//<9,*>,s
+	//<10,+>,r
+	//<10,*>,r
+	//<15,+> r
+	//<15,*> s
+	//<16,+>,r
+	//<16,*>,r
+//	std::map<std::pair<int,int>,int> reserve={
+//			{ {9,lr1g.gsyms.get("+")},LR1Gramma::ACTION_REDUCE},
+//			{ {9,lr1g.gsyms.get("*")},LR1Gramma::ACTION_SHIFT_IN},
+//			{ {10,lr1g.gsyms.get("+")},LR1Gramma::ACTION_REDUCE},
+//			{ {10,lr1g.gsyms.get("*")},LR1Gramma::ACTION_REDUCE},
+//			{ {15,lr1g.gsyms.get("+")},LR1Gramma::ACTION_REDUCE},
+//			{ {15,lr1g.gsyms.get("*")},LR1Gramma::ACTION_SHIFT_IN},
+//			{ {16,lr1g.gsyms.get("+")},LR1Gramma::ACTION_REDUCE},
+//			{ {16,lr1g.gsyms.get("*")},LR1Gramma::ACTION_REDUCE},
+//	};
+//	for(auto &k:table)
+//	{
+//		if(k.second.size() > 1)
+//		{
+//			int thisaction=reserve[k.first];
+//			for(auto it=k.second.begin();it!=k.second.end();it++)
+//			{
+//				if(std::get<2>(*it)==thisaction)
+//				{
+//					goodTable[k.first]=*it;
+//					break;
+//				}
+//			}
+//		}else{
+//			goodTable[k.first]=*(k.second.begin());
+//		}
+//	}
+	goodTable = Gramma::convertCorruptToStandardSimply(table);
+	std::cout << lr1g.toString(goodTable)<<std::endl;
+
+	DefaultSemanticAction myAction;
+	DemoTranslator demotrans(lr1g,lr1info,goodTable,lr1g.gsyms.get("$"),0);
+	/**
+	 * ( id + id ) * id + id
+	 */
+	LexicalToGrammarStream input({
+			lr1g.gsyms.getAdd("("),
+			lr1g.gsyms.getAdd("id"),
+			lr1g.gsyms.getAdd("+"),
+			lr1g.gsyms.getAdd("id"),
+			lr1g.gsyms.getAdd(")"),
+			lr1g.gsyms.getAdd("*"),
+			lr1g.gsyms.getAdd("id"),
+			lr1g.gsyms.getAdd("+"),
+			lr1g.gsyms.getAdd("id"),
+			lr1g.gsyms.getAdd("$"),
+	});
+//	DemoTranslator::InputStreamType input={
+//			lr1g.gsyms.getAdd("b"),
+//			lr1g.gsyms.getAdd("a"),
+//			lr1g.gsyms.getAdd("b"),
+//			lr1g.gsyms.getAdd("$"),
+//	};
+//	std::cout << x2::toString(input) << std::endl;
+	for(int i:input)
+	{
+		std::cout << lr1g.gsyms.getString(i)<< " ";
+	}
+	std::cout << std::endl;
+	demotrans.translate(input, myAction);
 }
 /**
  * the idea is simple, when I add a grammar rule, I don't have to define it at first.
@@ -70,6 +274,8 @@ void testGrammarDefineIsAdding()
 		{"E",{"E","*","E"}},
 		{"E",{"(","E",")"}},
 		{"E",{"id"}},
+		{"E",{"H","X"}},
+		{"H",{"EMPTY"}},
 	});
 
 	//lr1g.setExtendedStart
@@ -283,17 +489,16 @@ void testStreamFA()
 void testMutualMap()
 {
 	MutualMap<int,std::string> mm(-1,"UNDEFINED");//default value of non-existing
-	mm.add(0,"what is the fuck");
-	std::cout << mm.get(0) << std::endl;
-	mm.addReplace(0,"hello world");
-	std::cout << mm.get("what is the fuck")<<std::endl;
-	std::cout << mm.get(2)<<std::endl;
-	std::cout << mm.get(0)<<std::endl;
-	std::cout << mm.get("hello world")<<std::endl;
+	mm.addT1(0,"what is the fuck");
+	std::cout << mm.getT1(0) << std::endl;
+	mm.addReplaceT1(0,"hello world");
+	std::cout << mm.getT2("what is the fuck")<<std::endl;
+	std::cout << mm.getT1(2)<<std::endl;
+	std::cout << mm.getT1(0)<<std::endl;
+	std::cout << mm.getT2("hello world")<<std::endl;
 }
 void testReadFromFile()
 {
-
 	const std::string filepath="D:\\Pool\\eclipse-workspace\\compiler-debug\\examples\\grammar_c";
 	Gramma g(filepath);
 //	std::cout << g.toString()<<std::endl;
@@ -305,31 +510,37 @@ void testReadFromFile()
 	std::cout << lrg.toString(lr0info)<<std::endl;
 
 }
+void testSimplifiedGrammar()
+{
+	const std::string filepath="D:\\Pool\\eclipse-workspace\\compiler-debug\\examples\\grammar_very_simplified.g";
+	Gramma g(filepath);
+	g.gsyms.addTerm("$");
+	g.gsyms.addEmpty("empty");
+
+	LR1Gramma lrg(g,"C","$","S'");
+	std::cout << lrg.gsyms.toString() << std::endl;
+	std::cout << lrg.toString()<<std::endl;
+
+	std::cout << lrg.Gramma::toString(lrg.calcFirst()) << std::endl;
+
+	auto lrinfo = lrg.getAllClosures();
+	std::cout << lrg.toString(lrinfo)<<std::endl;
+	auto table = lrg.constructAnalyzeTable(lrinfo);
+	std::cout << lrg.toString(table) << std::endl;
+
+
+
+}
 //二义性文法
 void testAmbigous()
 {
-	LR1Gramma lr1g(
-					  {
-						  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},//-1
-						  {GrammaSymbols::TYPE_VAR,"E"}, //0
-						  {GrammaSymbols::TYPE_TERM,"+"}, //1
-						  {GrammaSymbols::TYPE_TERM,"*"}, //2
-						  {GrammaSymbols::TYPE_TERM,"("}, //3
-						  {GrammaSymbols::TYPE_TERM,")"}, //4
-						  {GrammaSymbols::TYPE_TERM,"id"},//5
-						  {GrammaSymbols::TYPE_TERM,"$"},//6
+	LR1Gramma lr1g({	 "E E + E",
+						 "E E * E",
+						 "E ( E )",
+						 "E id"
 					  },
-					  {
-							  {0,{0,1,0}},//E->E+E
-							  {0,{0,2,0}}, //E->E*E
-							  {0,{3,0,4}},//E->(E)
-							  {0,{5}},//E->id
-					  },
-					  0,
-					  6,
-					  "E'"
-			);
-	lr1g.gsyms.getAdd("whatis100");
+			"E","$", "E'");
+
 	std::cout << lr1g.gsyms.toString()<<std::endl;
 
 	std::cout << lr1g.toString()<<std::endl;
@@ -340,37 +551,54 @@ void testAmbigous()
 }
 void assignment_LR()
 {
-	LRGramma lrg(
-			 {
-				  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},//-1
-				  {GrammaSymbols::TYPE_VAR,"S"}, //0
-				  {GrammaSymbols::TYPE_VAR,"A"}, //1
-				  {GrammaSymbols::TYPE_VAR,"B"}, //2
-				  {GrammaSymbols::TYPE_TERM,"a"}, //3
-				  {GrammaSymbols::TYPE_TERM,"b"}, //4
-				  {GrammaSymbols::TYPE_TERM,"c"},//5
-				  {GrammaSymbols::TYPE_TERM,"d"},//6
-				  {GrammaSymbols::TYPE_TERM,"$"},//7
-								  },
-								  {
-										  {0,{4,1,0,2}},//S->bASB
-										  {0,{4,1}},//S->bA
-										  {1,{6,0,3}}, //A->dSa
-										  {1,{4}},//A->b
-										  {2,{5,1,3}},//B->cAa
-										  {2,{5}},//B->c
-								  },
-								  0,
-								  7,
-								  "S'"
-			);
+//	LRGramma lrg(
+//			 {
+//				  {GrammaSymbols::TYPE_EMPTY,"<EMPTY>"},//-1
+//				  {GrammaSymbols::TYPE_VAR,"S"}, //0
+//				  {GrammaSymbols::TYPE_VAR,"A"}, //1
+//				  {GrammaSymbols::TYPE_VAR,"B"}, //2
+//				  {GrammaSymbols::TYPE_TERM,"a"}, //3
+//				  {GrammaSymbols::TYPE_TERM,"b"}, //4
+//				  {GrammaSymbols::TYPE_TERM,"c"},//5
+//				  {GrammaSymbols::TYPE_TERM,"d"},//6
+//				  {GrammaSymbols::TYPE_TERM,"$"},//7
+//								  },
+//								  {
+//										  {0,{4,1,0,2}},//S->bASB
+//										  {0,{4,1}},//S->bA
+//										  {1,{6,0,3}}, //A->dSa
+//										  {1,{4}},//A->b
+//										  {2,{5,1,3}},//B->cAa
+//										  {2,{5}},//B->c
+//								  },
+//								  0,
+//								  7,
+//								  "S'"
+//			);
+//	LR1Gramma lrg({
+//		{"S",{"b","A","S","B"}},
+//		{"S",{"b","A"}},
+//		{"A",{"d","S","a"}},
+//		{"A",{"b"}},
+//		{"B",{"c","A","a"}},
+//		{"B",{"c"}},
+//	},"S","$","S'");
+	LR1Gramma lrg({ //末尾不能有空格
+		{"S b A S B"},
+		{"S b A"},
+		{"A d S A"},
+		{"A b"},
+		{"B c A a"},
+		{"B c"},
+	},"S","$","S'");
 
 	std::cout << "LR(0):"<<std::endl;
+	std::cout << lrg.gsyms.toString() << std::endl;
 	std::cout << lrg.toString() << std::endl;
 	auto lr0info = lrg.getAllClosures();
 	std::cout << lrg.toString(lr0info)<<std::endl;
 	auto lr0first = lrg.calcFirst();
-	auto lr0follow = lrg.calcFollow(lr0first, lrg.gsyms.get("S'"), 7);
+	auto lr0follow = lrg.calcFollow(lr0first, lrg.gsyms.get("S'"), lrg.gsyms.get("$"));
 	std::cout << "FOLLOW of LR(0):"<<std::endl<<lrg.Gramma::toString(lr0follow)<<std::endl;
 
 	LR1Gramma lr1g(lrg);

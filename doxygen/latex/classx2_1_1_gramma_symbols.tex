@@ -1,0 +1,178 @@
+\hypertarget{classx2_1_1_gramma_symbols}{}\section{x2\+:\+:Gramma\+Symbols Class Reference}
+\label{classx2_1_1_gramma_symbols}\index{x2\+::\+Gramma\+Symbols@{x2\+::\+Gramma\+Symbols}}
+
+
+{\ttfamily \#include $<$Gramma\+Utils.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_aa2d271a9d4d8adb95a97f45c743ad322}\label{classx2_1_1_gramma_symbols_aa2d271a9d4d8adb95a97f45c743ad322}} 
+enum {\bfseries T\+Y\+P\+E\+\_\+\+D\+EF} \{ {\bfseries T\+Y\+P\+E\+\_\+\+T\+E\+RM}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+V\+AR}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+E\+M\+P\+TY}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+U\+N\+D\+E\+F\+I\+N\+ED}
+ \}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a88f776185c38f99d90dfe88faf406486}\label{classx2_1_1_gramma_symbols_a88f776185c38f99d90dfe88faf406486}} 
+typedef std\+::map$<$ int, int $>$ {\bfseries Type\+Info}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ac78d9a23d6a926093a2269d5f4fddc2c}\label{classx2_1_1_gramma_symbols_ac78d9a23d6a926093a2269d5f4fddc2c}} 
+typedef std\+::map$<$ int, std\+::string $>$ {\bfseries Type\+String}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a3e471289e4e8bdf147e0e12b0f283ce6}\label{classx2_1_1_gramma_symbols_a3e471289e4e8bdf147e0e12b0f283ce6}} 
+typedef \hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} {\bfseries This}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a3c821b367628262c5c5f2a0dda4250b3}\label{classx2_1_1_gramma_symbols_a3c821b367628262c5c5f2a0dda4250b3}} 
+{\bfseries Gramma\+Symbols} (const std\+::string \&empty\+String=E\+M\+P\+T\+Y\+\_\+\+S\+T\+R\+I\+NG)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ac90febd608ebef059fa29ea52a588518}\label{classx2_1_1_gramma_symbols_ac90febd608ebef059fa29ea52a588518}} 
+{\bfseries Gramma\+Symbols} (const \hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&gsyms)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a891a249c01275bc3e1a31540b8a2d3b0}\label{classx2_1_1_gramma_symbols_a891a249c01275bc3e1a31540b8a2d3b0}} 
+{\bfseries Gramma\+Symbols} (\hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&\&gsyms)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ae672047f559d8551d520d88622da7f63}\label{classx2_1_1_gramma_symbols_ae672047f559d8551d520d88622da7f63}} 
+{\bfseries Gramma\+Symbols} (const std\+::initializer\+\_\+list$<$ std\+::pair$<$ int, std\+::string $>$ $>$ \&list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ae71d1c101cc5ed0d981434c7060f5efd}\label{classx2_1_1_gramma_symbols_ae71d1c101cc5ed0d981434c7060f5efd}} 
+\hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \& {\bfseries operator=} (const \hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&gs)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_af7bae01689e15f9aa7ff509f2a736999}\label{classx2_1_1_gramma_symbols_af7bae01689e15f9aa7ff509f2a736999}} 
+\hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \& {\bfseries operator=} (\hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&\&gs)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a4ab0bdb81b834729a6487c421d33ef30}\label{classx2_1_1_gramma_symbols_a4ab0bdb81b834729a6487c421d33ef30}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get} (const std\+::string \&s) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a0d57500363cfa99756f71b04059fa806}\label{classx2_1_1_gramma_symbols_a0d57500363cfa99756f71b04059fa806}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Add} (const std\+::string \&sym, const std\+::string \&type=\char`\"{}T\+E\+R\+M\+I\+N\+A\+T\+OR\char`\"{})
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_aefe73ad5dbbda477272ccadfcc2ef84a}\label{classx2_1_1_gramma_symbols_aefe73ad5dbbda477272ccadfcc2ef84a}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Add} (const std\+::string \&sym, int type)
+\item 
+int \hyperlink{classx2_1_1_gramma_symbols_ac7cb85affa4c6c9a6176ace01d6ed4b6}{add\+Replace} (const std\+::string \&sym, const std\+::string \&type=\char`\"{}T\+E\+R\+M\+I\+N\+A\+T\+OR\char`\"{})
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_af183c98f51b9ea1982cf39314790e04f}\label{classx2_1_1_gramma_symbols_af183c98f51b9ea1982cf39314790e04f}} 
+int {\bfseries add\+Replace} (const std\+::string \&sym, int type)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ac6966547daf0c9009e27f5ceb1923c2c}\label{classx2_1_1_gramma_symbols_ac6966547daf0c9009e27f5ceb1923c2c}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Empty} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a23a09b16e7f63902ccd97cc94baabd97}\label{classx2_1_1_gramma_symbols_a23a09b16e7f63902ccd97cc94baabd97}} 
+A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+Symbol\+Empty} (const std\+::string \&sym) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a2c8b9e2d1df211b086e2fd678378165e}\label{classx2_1_1_gramma_symbols_a2c8b9e2d1df211b086e2fd678378165e}} 
+A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+Symbol\+Term} (const std\+::string \&sym) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a3e74a49ffb1765129d17863820ce743d}\label{classx2_1_1_gramma_symbols_a3e74a49ffb1765129d17863820ce743d}} 
+A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+Symbol\+Undefined} (const std\+::string \&sym) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a386ddcce4fecf5e158e6371e05c74bba}\label{classx2_1_1_gramma_symbols_a386ddcce4fecf5e158e6371e05c74bba}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Symbol\+Type} (const std\+::string \&sym) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ae68863cdea90c8ae218fa65498a748d3}\label{classx2_1_1_gramma_symbols_ae68863cdea90c8ae218fa65498a748d3}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries add\+Term} (const std\+::string \&s)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a6ca7cacf622113005532d791c46116de}\label{classx2_1_1_gramma_symbols_a6ca7cacf622113005532d791c46116de}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries add\+Var} (const std\+::string \&s)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a21edf771f7aaec70f68986f9e3afa695}\label{classx2_1_1_gramma_symbols_a21edf771f7aaec70f68986f9e3afa695}} 
+int {\bfseries add\+Empty} (const std\+::string \&s)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ac6f411be6b4aacc787529f2dfda62206}\label{classx2_1_1_gramma_symbols_ac6f411be6b4aacc787529f2dfda62206}} 
+A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+Symbol\+Empty} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_abca42f33cb4b60fd0b453d45cfc8b840}\label{classx2_1_1_gramma_symbols_abca42f33cb4b60fd0b453d45cfc8b840}} 
+A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+Symbol\+Term} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a9830ca4cc32612f2623e7a80958d0f5c}\label{classx2_1_1_gramma_symbols_a9830ca4cc32612f2623e7a80958d0f5c}} 
+A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+Symbol\+Var} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a8da925b02b1665354cbcab34a0d75997}\label{classx2_1_1_gramma_symbols_a8da925b02b1665354cbcab34a0d75997}} 
+A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+Symbol\+Undefined} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a8cbd02389dab71a483c5f84b1ab6d7a5}\label{classx2_1_1_gramma_symbols_a8cbd02389dab71a483c5f84b1ab6d7a5}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Symbol\+Type} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_aa1b6ad018528b2f9e28e7038d402ea22}\label{classx2_1_1_gramma_symbols_aa1b6ad018528b2f9e28e7038d402ea22}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries lock} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a0c3a36f033f9f07ee26684b3ddaf203f}\label{classx2_1_1_gramma_symbols_a0c3a36f033f9f07ee26684b3ddaf203f}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries unlock} ()
+\item 
+A\+S\+\_\+\+M\+A\+C\+RO void \hyperlink{classx2_1_1_gramma_symbols_a5fb0d8e67e6eb5e0b3d36220aa562f1b}{add} (int index, int type)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a895393111b5212412a5a080e2853f74d}\label{classx2_1_1_gramma_symbols_a895393111b5212412a5a080e2853f74d}} 
+const std\+::string \& {\bfseries get\+String} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ac4f3fb44fcb792d6d19146bbe6c31812}\label{classx2_1_1_gramma_symbols_ac4f3fb44fcb792d6d19146bbe6c31812}} 
+std\+::string {\bfseries to\+String} () const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a8f772b5a4a70bbb12c36ca21242eb1f3}\label{classx2_1_1_gramma_symbols_a8f772b5a4a70bbb12c36ca21242eb1f3}} 
+std\+::map$<$ int, int $>$ {\bfseries sym\+Info}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a7cbb7fd00c6f5d0425c52fb0a0fc9485}\label{classx2_1_1_gramma_symbols_a7cbb7fd00c6f5d0425c52fb0a0fc9485}} 
+\hyperlink{classx2_1_1_indexed_map}{x2\+::\+Indexed\+Map}$<$ std\+::string $>$ {\bfseries sym\+String}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a30d8f8988167ae7dcbd2623129db38a3}\label{classx2_1_1_gramma_symbols_a30d8f8988167ae7dcbd2623129db38a3}} 
+int {\bfseries empty\+Index}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a4ca98f52f3c65c70b131fc23a71df367}\label{classx2_1_1_gramma_symbols_a4ca98f52f3c65c70b131fc23a71df367}} 
+static std\+::string {\bfseries U\+N\+D\+E\+F\+I\+N\+E\+D\+\_\+\+S\+T\+R\+I\+NG} =\char`\"{}U\+N\+D\+E\+F\+I\+N\+ED\char`\"{}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_afd2b07bda6be21be19d11fa785897d41}\label{classx2_1_1_gramma_symbols_afd2b07bda6be21be19d11fa785897d41}} 
+static std\+::string {\bfseries E\+M\+P\+T\+Y\+\_\+\+S\+T\+R\+I\+NG} =\char`\"{}E\+M\+P\+TY\char`\"{}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_ab8ac76b133ef15a38dad282ca0c41402}\label{classx2_1_1_gramma_symbols_ab8ac76b133ef15a38dad282ca0c41402}} 
+static int {\bfseries U\+N\+D\+E\+F\+I\+N\+E\+D\+\_\+\+I\+N\+D\+EX} =-\/2
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a501562880b443f56488fe31ac6a2a941}\label{classx2_1_1_gramma_symbols_a501562880b443f56488fe31ac6a2a941}} 
+static \hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$ int, std\+::string $>$ {\bfseries T\+Y\+P\+E\+S\+\_\+\+I\+N\+FO}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+对于type\+String而言 如果是\+T\+Y\+P\+E\+\_\+\+T\+E\+RM,则长度为至少是1，一般情况下是1 如果是\+T\+Y\+P\+E\+\_\+\+E\+M\+P\+TY,可以是任意值 如果是其它的，长度至少是1，并且建议大写字母
+
+T\+Y\+P\+E分三种类型：终结符 空符号 变量 空符号需要做单独处理，但是不属于存储级别的单独处理
+
+任何时刻，保证表中的empty有且只有一项 -- 实现方式就是令将\+E\+M\+P\+T\+Y添加到存储结构之后，缓存返回的\+E\+M\+P\+TY index E\+M\+P\+TY 只支持初始化，不支持修改
+
+这个类将由其它所有的类共享 empty项必须存在，且仅有一项,且其下标必须是\+E\+M\+P\+T\+Y\+\_\+\+I\+N\+D\+EX, E\+M\+P\+T\+Y\+\_\+\+I\+N\+D\+EX,E\+M\+P\+T\+Y\+\_\+\+S\+T\+R\+I\+NG 需要存储在容器之中; 不可以删除empty项 初始化sym\+String时使用\+U\+N\+D\+E\+F\+I\+N\+E\+D\+\_\+\+S\+T\+R\+I\+NG
+
+内置的属性值：\+T\+Y\+P\+E\+\_\+\+U\+N\+D\+E\+F\+I\+N\+ED \char`\"{}\+U\+N\+D\+E\+F\+I\+N\+E\+D\char`\"{}
+
+仅支持添加操作，暂不支持删除操作
+
+可以使用string来添加文法，查询文法符号 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_gramma_symbols_a5fb0d8e67e6eb5e0b3d36220aa562f1b}\label{classx2_1_1_gramma_symbols_a5fb0d8e67e6eb5e0b3d36220aa562f1b}} 
+\index{x2\+::\+Gramma\+Symbols@{x2\+::\+Gramma\+Symbols}!add@{add}}
+\index{add@{add}!x2\+::\+Gramma\+Symbols@{x2\+::\+Gramma\+Symbols}}
+\subsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily void x2\+::\+Gramma\+Symbols\+::add (\begin{DoxyParamCaption}\item[{int}]{index,  }\item[{int}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+add always,no matter if it exists or not
+
+if index already exist, return a index may be used \mbox{\Hypertarget{classx2_1_1_gramma_symbols_ac7cb85affa4c6c9a6176ace01d6ed4b6}\label{classx2_1_1_gramma_symbols_ac7cb85affa4c6c9a6176ace01d6ed4b6}} 
+\index{x2\+::\+Gramma\+Symbols@{x2\+::\+Gramma\+Symbols}!add\+Replace@{add\+Replace}}
+\index{add\+Replace@{add\+Replace}!x2\+::\+Gramma\+Symbols@{x2\+::\+Gramma\+Symbols}}
+\subsubsection{\texorpdfstring{add\+Replace()}{addReplace()}}
+{\footnotesize\ttfamily int x2\+::\+Gramma\+Symbols\+::add\+Replace (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{sym,  }\item[{const std\+::string \&}]{type = {\ttfamily \char`\"{}TERMINATOR\char`\"{}} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+add,if exist,replace it. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Gramma\+Utils.\+h\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/src/Gramma\+Utils.\+cpp\end{DoxyCompactItemize}

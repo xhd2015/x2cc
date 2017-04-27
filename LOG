@@ -8,4 +8,16 @@
 2017-04-21 00:50:11		A new power concept added : group of FA. Group is a very powerful description tool for transitions.
 		   11:02:07		[TODO]	change the GrammaUtils to support randomly adding grammar symbols by string.[need Design](the designing philosophy is that defining is adding.
 		   21:17:52		A lexical parser using DFA is completed.See the examples for details.
-2017-04-22 02:13:18		[DONE]	direct `defining is adding` is supported.check `test/mainTest.cpp void testGrammarDefineIsAdding()` for detials. 
+2017-04-22 02:13:18		[DONE]	direct `defining is adding` is supported.check `test/mainTest.cpp void testGrammarDefineIsAdding()` for detials.
+		02:28:10 		[SUMMARY]	Current state of this project is built on a very basic ground base.Each correctness is assured by many other correctnesses.I do admit that, I've done some artists' work.
+		09:35:14		Some bugs fixed,including EMPTY adding and so on.
+		12:29:33		[TODO] erase all `AS_MACROs`
+						[TODO] construct LR(0) & SLR analyze tables
+						[TODO reconstruct the codes] There are so many duplications in LRGrammar & LR1Grammar, the only difference between them is the ItemType.
+								So actually we can define a new type: LRItemType, let it operate with LRGrammar.
+								Or LRGrammar<LRItemType>, different LRItemType gets different LRGrammars
+								[This is called 'the Best Practice' and 'the Best Architecture']
+2017-4-27 12:56:42		[FIX]	修改MutualMap的API,现在它可以接受相同的类型了.
+		12:41:34		[FIX]	在mainTest中,文件的读取应当是基于根目录
+		17:10:05		[ADVICE]	应当提供默认的实现而不是pure virtual函数,这样可以使各个软件更容易使用(对于初学者来说)(当然也可以提供默认的继承实现)
+		18:41:48		[COMMIT]	添加了doxygen自动生成文档; 添加了一个文法翻译器; 现在,库的架构趋于合理

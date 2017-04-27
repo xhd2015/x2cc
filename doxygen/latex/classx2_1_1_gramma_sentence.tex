@@ -1,0 +1,75 @@
+\hypertarget{classx2_1_1_gramma_sentence}{}\section{x2\+:\+:Gramma\+Sentence Class Reference}
+\label{classx2_1_1_gramma_sentence}\index{x2\+::\+Gramma\+Sentence@{x2\+::\+Gramma\+Sentence}}
+
+
+{\ttfamily \#include $<$Gramma\+Utils.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_a2ac136621c50e96f7d126eec257ebddd}\label{classx2_1_1_gramma_sentence_a2ac136621c50e96f7d126eec257ebddd}} 
+typedef std\+::vector$<$ int $>$ {\bfseries Syms\+List\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_abece966f6435f072c4535f81b8f58115}\label{classx2_1_1_gramma_sentence_abece966f6435f072c4535f81b8f58115}} 
+typedef Syms\+List\+Type\+::size\+\_\+type {\bfseries size\+\_\+type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_aebcf626920630103d5f5a48a00eb57a4}\label{classx2_1_1_gramma_sentence_aebcf626920630103d5f5a48a00eb57a4}} 
+{\bfseries Gramma\+Sentence} (\hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&\&gs)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_a90e50f2cf45081bc11d5ff18ab7913b8}\label{classx2_1_1_gramma_sentence_a90e50f2cf45081bc11d5ff18ab7913b8}} 
+{\bfseries Gramma\+Sentence} (const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&gs)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_aff4e3d88d7166fc7a3748df2b66109c2}\label{classx2_1_1_gramma_sentence_aff4e3d88d7166fc7a3748df2b66109c2}} 
+{\bfseries Gramma\+Sentence} (const Syms\+List\+Type \&slist)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_aa407f65f300d881bc9225d12488325ea}\label{classx2_1_1_gramma_sentence_aa407f65f300d881bc9225d12488325ea}} 
+{\bfseries Gramma\+Sentence} (Syms\+List\+Type \&\&slist)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_a1f857ae143012e35a8021714c9236ead}\label{classx2_1_1_gramma_sentence_a1f857ae143012e35a8021714c9236ead}} 
+{\bfseries Gramma\+Sentence} (std\+::initializer\+\_\+list$<$ int $>$ \&\&list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_acce42463db9a6c6d78454f49c579ac11}\label{classx2_1_1_gramma_sentence_acce42463db9a6c6d78454f49c579ac11}} 
+{\bfseries Gramma\+Sentence} (const std\+::initializer\+\_\+list$<$ int $>$ \&list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_ac71133dec3e7bb06253e32982e7add31}\label{classx2_1_1_gramma_sentence_ac71133dec3e7bb06253e32982e7add31}} 
+\hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \& {\bfseries operator=} (const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&gs)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_a695af7767ca769144cbaafc7714d7976}\label{classx2_1_1_gramma_sentence_a695af7767ca769144cbaafc7714d7976}} 
+void {\bfseries replace\+First} (const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&gs, int empty)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_aaa3adf3d7d6642e08adb7c619d1a3c1f}\label{classx2_1_1_gramma_sentence_aaa3adf3d7d6642e08adb7c619d1a3c1f}} 
+std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ {\bfseries replace\+First} (const std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ \&vgs, int empty)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_ae9c2408b6a175986d70914139ba08ab4}\label{classx2_1_1_gramma_sentence_ae9c2408b6a175986d70914139ba08ab4}} 
+\hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} {\bfseries duplicate} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_a4312f5a83549fd228e1b119b0969a142}\label{classx2_1_1_gramma_sentence_a4312f5a83549fd228e1b119b0969a142}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+First\+Symbol} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_abe7ce37e3ae87d5b593b3521eccabe5a}\label{classx2_1_1_gramma_sentence_abe7ce37e3ae87d5b593b3521eccabe5a}} 
+A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries starts\+With} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_a07e2e2a7bf13008a55c9a71f1e3ccbb9}\label{classx2_1_1_gramma_sentence_a07e2e2a7bf13008a55c9a71f1e3ccbb9}} 
+A\+S\+\_\+\+M\+A\+C\+RO size\+\_\+type {\bfseries get\+Length} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_a3e6c91515206b17988bd9dab613976b2}\label{classx2_1_1_gramma_sentence_a3e6c91515206b17988bd9dab613976b2}} 
+void {\bfseries push\+\_\+back} (int i)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_sentence_a425eeca4d66cc4c28544b3b6f1027b06}\label{classx2_1_1_gramma_sentence_a425eeca4d66cc4c28544b3b6f1027b06}} 
+Syms\+List\+Type {\bfseries syms}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Gramma\+Sentence约定： 如果\+Gramma\+Sentence为空产生式，则含有语法变量 S\+Y\+M\+\_\+\+E\+M\+P\+TY 长度至少为1 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Gramma\+Utils.\+h\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/src/Gramma\+Utils.\+cpp\end{DoxyCompactItemize}

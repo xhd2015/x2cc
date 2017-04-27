@@ -1,0 +1,114 @@
+\hypertarget{classx2_1_1_finite_automata_manager}{}\section{x2\+:\+:Finite\+Automata\+Manager$<$ T $>$ Class Template Reference}
+\label{classx2_1_1_finite_automata_manager}\index{x2\+::\+Finite\+Automata\+Manager$<$ T $>$@{x2\+::\+Finite\+Automata\+Manager$<$ T $>$}}
+
+
+{\ttfamily \#include $<$F\+A\+Utils.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a13a355f1b81eba02742ee65c777ea291}\label{classx2_1_1_finite_automata_manager_a13a355f1b81eba02742ee65c777ea291}} 
+{\bfseries Finite\+Automata\+Manager} (const T \&emptyT, const T \&failedT)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_af7c092cddeb6a5e9a5f4179054edded0}\label{classx2_1_1_finite_automata_manager_af7c092cddeb6a5e9a5f4179054edded0}} 
+{\bfseries Finite\+Automata\+Manager} (const T \&emptyT, const T \&failedT, std\+::initializer\+\_\+list$<$ T $>$ sym\+List, std\+::initializer\+\_\+list$<$ std\+::string $>$ state\+List)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a731643ed9332c61379350bbb4656b119}\label{classx2_1_1_finite_automata_manager_a731643ed9332c61379350bbb4656b119}} 
+{\bfseries Finite\+Automata\+Manager} (\hyperlink{classx2_1_1_finite_automata_manager}{Finite\+Automata\+Manager}$<$ T $>$ \&\&fa)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a98b4a7376b062fb688a46ed4d444d39d}\label{classx2_1_1_finite_automata_manager_a98b4a7376b062fb688a46ed4d444d39d}} 
+void {\bfseries add\+Symbol} (const T \&t)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_aa9a9eb2979c9e0eb5b855ddbcc275d6e}\label{classx2_1_1_finite_automata_manager_aa9a9eb2979c9e0eb5b855ddbcc275d6e}} 
+void {\bfseries add\+States} (const std\+::string \&strstate)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_aa8d09bb88a278d4faadfe8b1e95a0ff2}\label{classx2_1_1_finite_automata_manager_aa8d09bb88a278d4faadfe8b1e95a0ff2}} 
+int {\bfseries query\+State} (const std\+::string \&state) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a041ba77cdab1d0a1a8e913001c0d20e4}\label{classx2_1_1_finite_automata_manager_a041ba77cdab1d0a1a8e913001c0d20e4}} 
+int {\bfseries query\+Symbol} (const T \&t) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a10723c23e08ee15acd6eb80d494fefe6}\label{classx2_1_1_finite_automata_manager_a10723c23e08ee15acd6eb80d494fefe6}} 
+int {\bfseries query\+State\+Add} (const std\+::string \&state)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_af85414dd60f2d1d5e7325cc745bcc9cd}\label{classx2_1_1_finite_automata_manager_af85414dd60f2d1d5e7325cc745bcc9cd}} 
+int {\bfseries query\+Symbol\+Add} (const T \&t)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a216b02d710030768eca71d96c757394e}\label{classx2_1_1_finite_automata_manager_a216b02d710030768eca71d96c757394e}} 
+const std\+::string \& {\bfseries query\+State} (int state) const
+\item 
+const T \& \hyperlink{classx2_1_1_finite_automata_manager_a86be4353e0fca67243a2a397bb289966}{query\+Symbol} (int sym) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a0a8379981cef571c5e3da4eee3876b13}\label{classx2_1_1_finite_automata_manager_a0a8379981cef571c5e3da4eee3876b13}} 
+std\+::string {\bfseries to\+String} () const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$ int, T $>$ \hyperlink{classx2_1_1_finite_automata_manager_ae0f30598da4c83462fb78d93a3878f4a}{symbols}
+\item 
+\hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$ int, std\+::string $>$ \hyperlink{classx2_1_1_finite_automata_manager_a54a0b0aba6cf5b0d1e04dd966e7c83fc}{states}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a5a305ca8e9e7b2f245f69ad491435e36}\label{classx2_1_1_finite_automata_manager_a5a305ca8e9e7b2f245f69ad491435e36}} 
+int {\bfseries max\+Index\+Sym}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a87bc737c79a43e42844d125a0cae638b}\label{classx2_1_1_finite_automata_manager_a87bc737c79a43e42844d125a0cae638b}} 
+int {\bfseries max\+Index\+State}
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a5f2f1897280db4ff57f6bcb21c002f2c}\label{classx2_1_1_finite_automata_manager_a5f2f1897280db4ff57f6bcb21c002f2c}} 
+static int {\bfseries E\+M\+P\+T\+Y\+\_\+\+I\+N\+D\+EX} = -\/1
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a27e9b72349b7e2442a847f4aad1f244b}\label{classx2_1_1_finite_automata_manager_a27e9b72349b7e2442a847f4aad1f244b}} 
+static int {\bfseries U\+N\+D\+E\+F\+I\+N\+E\+D\+\_\+\+I\+N\+D\+EX} = -\/2
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a51dce54aff6821b61d467eb89a5e7763}\label{classx2_1_1_finite_automata_manager_a51dce54aff6821b61d467eb89a5e7763}} 
+static std\+::string {\bfseries E\+M\+P\+T\+Y\+\_\+\+S\+T\+R\+I\+NG} = \char`\"{}E\+M\+P\+TY\char`\"{}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a55dd0263995adf15ed5f1818be8c6fee}\label{classx2_1_1_finite_automata_manager_a55dd0263995adf15ed5f1818be8c6fee}} 
+static std\+::string {\bfseries U\+N\+D\+E\+F\+I\+N\+E\+D\+\_\+\+S\+T\+R\+I\+NG} = \char`\"{}U\+N\+D\+E\+F\+I\+N\+ED\char`\"{}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\newline
+class x2\+::\+Finite\+Automata\+Manager$<$ T $>$}
+
+symbols 中至少含有一项：empty states和symbols都有未定义
+
+int和相应的string是等价的
+
+T 输入符号类型 输入符号类型必须转成int型 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a86be4353e0fca67243a2a397bb289966}\label{classx2_1_1_finite_automata_manager_a86be4353e0fca67243a2a397bb289966}} 
+\index{x2\+::\+Finite\+Automata\+Manager@{x2\+::\+Finite\+Automata\+Manager}!query\+Symbol@{query\+Symbol}}
+\index{query\+Symbol@{query\+Symbol}!x2\+::\+Finite\+Automata\+Manager@{x2\+::\+Finite\+Automata\+Manager}}
+\subsubsection{\texorpdfstring{query\+Symbol()}{querySymbol()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+const T \& \hyperlink{classx2_1_1_finite_automata_manager}{x2\+::\+Finite\+Automata\+Manager}$<$ T $>$\+::query\+Symbol (\begin{DoxyParamCaption}\item[{int}]{sym }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+查找符号下标对应值 
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{classx2_1_1_finite_automata_manager_a54a0b0aba6cf5b0d1e04dd966e7c83fc}\label{classx2_1_1_finite_automata_manager_a54a0b0aba6cf5b0d1e04dd966e7c83fc}} 
+\index{x2\+::\+Finite\+Automata\+Manager@{x2\+::\+Finite\+Automata\+Manager}!states@{states}}
+\index{states@{states}!x2\+::\+Finite\+Automata\+Manager@{x2\+::\+Finite\+Automata\+Manager}}
+\subsubsection{\texorpdfstring{states}{states}}
+{\footnotesize\ttfamily template$<$class T$>$ \\
+\hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$int, std\+::string$>$ \hyperlink{classx2_1_1_finite_automata_manager}{x2\+::\+Finite\+Automata\+Manager}$<$ T $>$\+::states\hspace{0.3cm}{\ttfamily [protected]}}
+
+状态的整数形式 \mbox{\Hypertarget{classx2_1_1_finite_automata_manager_ae0f30598da4c83462fb78d93a3878f4a}\label{classx2_1_1_finite_automata_manager_ae0f30598da4c83462fb78d93a3878f4a}} 
+\index{x2\+::\+Finite\+Automata\+Manager@{x2\+::\+Finite\+Automata\+Manager}!symbols@{symbols}}
+\index{symbols@{symbols}!x2\+::\+Finite\+Automata\+Manager@{x2\+::\+Finite\+Automata\+Manager}}
+\subsubsection{\texorpdfstring{symbols}{symbols}}
+{\footnotesize\ttfamily template$<$class T$>$ \\
+\hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$int, T$>$ \hyperlink{classx2_1_1_finite_automata_manager}{x2\+::\+Finite\+Automata\+Manager}$<$ T $>$\+::symbols\hspace{0.3cm}{\ttfamily [protected]}}
+
+符号的整数形式 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/F\+A\+Utils.\+h\end{DoxyCompactItemize}

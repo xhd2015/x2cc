@@ -1,0 +1,90 @@
+\hypertarget{classx2_1_1_indexed_map}{}\section{x2\+:\+:Indexed\+Map$<$ T $>$ Class Template Reference}
+\label{classx2_1_1_indexed_map}\index{x2\+::\+Indexed\+Map$<$ T $>$@{x2\+::\+Indexed\+Map$<$ T $>$}}
+
+
+{\ttfamily \#include $<$Mutual\+Map.\+h$>$}
+
+Inheritance diagram for x2\+:\+:Indexed\+Map$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classx2_1_1_indexed_map}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_ac4647adcaec364cbcd569a83faabccfe}\label{classx2_1_1_indexed_map_ac4647adcaec364cbcd569a83faabccfe}} 
+typedef \hyperlink{classx2_1_1_mutual_map}{Mutual\+Map}$<$ int, T $>$ {\bfseries Father}
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_a9541095b80539c1deb7248b59a8adbdf}\label{classx2_1_1_indexed_map_a9541095b80539c1deb7248b59a8adbdf}} 
+typedef \hyperlink{classx2_1_1_indexed_map}{Indexed\+Map} {\bfseries This}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_a0ae7462f1bfbc8145fa992cc0bfaa923}\label{classx2_1_1_indexed_map_a0ae7462f1bfbc8145fa992cc0bfaa923}} 
+{\bfseries Indexed\+Map} (const \hyperlink{classx2_1_1_indexed_map}{Indexed\+Map}$<$ T $>$ \&map)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_ae77e782d05e1f99e84be949f0834c710}\label{classx2_1_1_indexed_map_ae77e782d05e1f99e84be949f0834c710}} 
+{\bfseries Indexed\+Map} (\hyperlink{classx2_1_1_indexed_map}{Indexed\+Map}$<$ T $>$ \&\&map)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_aaab5c1c5eb826a61725e8527f8ad3aa0}\label{classx2_1_1_indexed_map_aaab5c1c5eb826a61725e8527f8ad3aa0}} 
+{\bfseries Indexed\+Map} (const T \&failedT)
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_a8973ed906cd8d78344139765cb8fe0c0}\label{classx2_1_1_indexed_map_a8973ed906cd8d78344139765cb8fe0c0}} 
+{\bfseries Indexed\+Map} (const T \&failedT, std\+::initializer\+\_\+list$<$ T $>$ list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_a8a13faf490943dc5b95bb55c90174aa1}\label{classx2_1_1_indexed_map_a8a13faf490943dc5b95bb55c90174aa1}} 
+{\bfseries Indexed\+Map} (const T \&failedT, const std\+::vector$<$ T $>$ \&list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_a953add6e946eccbe53a8cfb817ea06c7}\label{classx2_1_1_indexed_map_a953add6e946eccbe53a8cfb817ea06c7}} 
+int {\bfseries get} (const T \&t) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_aaddb767a7970a551177b8d8198603ac8}\label{classx2_1_1_indexed_map_aaddb767a7970a551177b8d8198603ac8}} 
+const T \& {\bfseries get} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_aa95f0065873bed75257da67c3111f75c}\label{classx2_1_1_indexed_map_aa95f0065873bed75257da67c3111f75c}} 
+int {\bfseries get\+Add} (const T \&t)
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_a8841875de3bb775a698377b5cb160fdd}\label{classx2_1_1_indexed_map_a8841875de3bb775a698377b5cb160fdd}} 
+void {\bfseries set} (int i, const T \&t)
+\item 
+void \hyperlink{classx2_1_1_indexed_map_a76211a5e565fd668c39f00f2935d6481}{add} (const T \&t)
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_a15516e7f6557faff0697a7ae9ce95e2a}\label{classx2_1_1_indexed_map_a15516e7f6557faff0697a7ae9ce95e2a}} 
+void {\bfseries remove} (const T \&t)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_ab683c90c6f8eadc051bd74eadcb5b2b7}\label{classx2_1_1_indexed_map_ab683c90c6f8eadc051bd74eadcb5b2b7}} 
+int {\bfseries max}
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_indexed_map_acb56a512932a44a9f6e3245e283ec1a0}\label{classx2_1_1_indexed_map_acb56a512932a44a9f6e3245e283ec1a0}} 
+static int {\bfseries U\+N\+D\+E\+F\+I\+N\+E\+D\+\_\+\+I\+N\+D\+EX} =-\/2
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\newline
+class x2\+::\+Indexed\+Map$<$ T $>$}
+
+visit all through T,not by index 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_indexed_map_a76211a5e565fd668c39f00f2935d6481}\label{classx2_1_1_indexed_map_a76211a5e565fd668c39f00f2935d6481}} 
+\index{x2\+::\+Indexed\+Map@{x2\+::\+Indexed\+Map}!add@{add}}
+\index{add@{add}!x2\+::\+Indexed\+Map@{x2\+::\+Indexed\+Map}}
+\subsubsection{\texorpdfstring{add()}{add()}}
+{\footnotesize\ttfamily template$<$class T$>$ \\
+void \hyperlink{classx2_1_1_indexed_map}{x2\+::\+Indexed\+Map}$<$ T $>$\+::add (\begin{DoxyParamCaption}\item[{const T \&}]{t }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+always succeed 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Mutual\+Map.\+h\end{DoxyCompactItemize}

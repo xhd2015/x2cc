@@ -1,0 +1,116 @@
+\hypertarget{classx2_1_1_lexical_to_grammar_stream}{}\section{x2\+:\+:Lexical\+To\+Grammar\+Stream Class Reference}
+\label{classx2_1_1_lexical_to_grammar_stream}\index{x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}}
+
+
+{\ttfamily \#include $<$Lexical\+Parser.\+h$>$}
+
+Inheritance diagram for x2\+:\+:Lexical\+To\+Grammar\+Stream\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classx2_1_1_lexical_to_grammar_stream}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a06ae6e58b3913bb1b693759831e0ba0d}\label{classx2_1_1_lexical_to_grammar_stream_a06ae6e58b3913bb1b693759831e0ba0d}} 
+typedef \hyperlink{classx2_1_1_lexical_to_grammar_stream}{Lexical\+To\+Grammar\+Stream} {\bfseries This}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a76f44ca6e2d0341489f6a2ab0680d5c4}\label{classx2_1_1_lexical_to_grammar_stream_a76f44ca6e2d0341489f6a2ab0680d5c4}} 
+typedef \hyperlink{classx2_1_1_stream_convertor}{Stream\+Convertor} {\bfseries Father}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a9acac6d22837802e8559d64ac827c799}\label{classx2_1_1_lexical_to_grammar_stream_a9acac6d22837802e8559d64ac827c799}} 
+using {\bfseries Size\+Type} = std\+::vector$<$ int $>$\+::size\+\_\+type
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a393596cd9ceaabd4a4fdf0a7fcea4a2c}\label{classx2_1_1_lexical_to_grammar_stream_a393596cd9ceaabd4a4fdf0a7fcea4a2c}} 
+{\bfseries Lexical\+To\+Grammar\+Stream} (std\+::initializer\+\_\+list$<$ int $>$ list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_aae745125e58536eb4e56ec821723031a}\label{classx2_1_1_lexical_to_grammar_stream_aae745125e58536eb4e56ec821723031a}} 
+{\bfseries Lexical\+To\+Grammar\+Stream} (std\+::vector$<$ int $>$ \&\&list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a334aecb6568d8f30bfac37860b99833d}\label{classx2_1_1_lexical_to_grammar_stream_a334aecb6568d8f30bfac37860b99833d}} 
+{\bfseries Lexical\+To\+Grammar\+Stream} (const vector$<$ int $>$ \&list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_ad4c04605d8dbb125211f79ecc8b9322d}\label{classx2_1_1_lexical_to_grammar_stream_ad4c04605d8dbb125211f79ecc8b9322d}} 
+{\bfseries Lexical\+To\+Grammar\+Stream} (const \hyperlink{classx2_1_1_lexical_to_grammar_stream}{Lexical\+To\+Grammar\+Stream} \&stream)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_affeee9707cacd9923627104ab667a8c6}\label{classx2_1_1_lexical_to_grammar_stream_affeee9707cacd9923627104ab667a8c6}} 
+{\bfseries Lexical\+To\+Grammar\+Stream} (\hyperlink{classx2_1_1_lexical_to_grammar_stream}{Lexical\+To\+Grammar\+Stream} \&\&stream)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_ac0aadf8b4d8a98218accbd6983f40c85}\label{classx2_1_1_lexical_to_grammar_stream_ac0aadf8b4d8a98218accbd6983f40c85}} 
+virtual void {\bfseries move} (int i)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a120b0b329f7dbc1dce5c4fd5614be764}\label{classx2_1_1_lexical_to_grammar_stream_a120b0b329f7dbc1dce5c4fd5614be764}} 
+virtual void {\bfseries go\+Head} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a418c04a6f99d13068bcfafae19a5fcf5}\label{classx2_1_1_lexical_to_grammar_stream_a418c04a6f99d13068bcfafae19a5fcf5}} 
+virtual void {\bfseries go\+End} ()
+\item 
+virtual \hyperlink{classx2_1_1_stream_convertor}{Stream\+Convertor} \& \hyperlink{classx2_1_1_lexical_to_grammar_stream_a7b3d4b7bfc44a17905bae8dc8dcf7a40}{operator$>$$>$} (int \&i)
+\item 
+virtual int \hyperlink{classx2_1_1_lexical_to_grammar_stream_a67a0e2b6ed998fd1dea1c9829be4461f}{peek} () const
+\item 
+virtual int \hyperlink{classx2_1_1_lexical_to_grammar_stream_a8ae8e1b6ada26785c70db1255daca798}{get} ()
+\item 
+virtual bool \hyperlink{classx2_1_1_lexical_to_grammar_stream_a813ec919763970d4150f35cba4da1db1}{eof} () const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a7691e61d5ed3c843e1011f7733fab0c7}\label{classx2_1_1_lexical_to_grammar_stream_a7691e61d5ed3c843e1011f7733fab0c7}} 
+Size\+Type {\bfseries cur\+Index}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+at every get,peek or $>$$>$ operation,it\textquotesingle{}s the user\textquotesingle{}s obligation to check if the stream reaches its eof. 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a813ec919763970d4150f35cba4da1db1}\label{classx2_1_1_lexical_to_grammar_stream_a813ec919763970d4150f35cba4da1db1}} 
+\index{x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}!eof@{eof}}
+\index{eof@{eof}!x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}}
+\subsubsection{\texorpdfstring{eof()}{eof()}}
+{\footnotesize\ttfamily bool x2\+::\+Lexical\+To\+Grammar\+Stream\+::eof (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+judge if the stream is coming its ending 
+
+Implements \hyperlink{classx2_1_1_stream_convertor_a64febc08c310555497ca497df583b940}{x2\+::\+Stream\+Convertor}.
+
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a8ae8e1b6ada26785c70db1255daca798}\label{classx2_1_1_lexical_to_grammar_stream_a8ae8e1b6ada26785c70db1255daca798}} 
+\index{x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}!get@{get}}
+\index{get@{get}!x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}}
+\subsubsection{\texorpdfstring{get()}{get()}}
+{\footnotesize\ttfamily int x2\+::\+Lexical\+To\+Grammar\+Stream\+::get (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+same with operator$>$$>$ 
+
+Implements \hyperlink{classx2_1_1_stream_convertor_a1025f8d8b1b1e430a6476d74e2506b10}{x2\+::\+Stream\+Convertor}.
+
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a7b3d4b7bfc44a17905bae8dc8dcf7a40}\label{classx2_1_1_lexical_to_grammar_stream_a7b3d4b7bfc44a17905bae8dc8dcf7a40}} 
+\index{x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}!operator$>$$>$@{operator$>$$>$}}
+\index{operator$>$$>$@{operator$>$$>$}!x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}}
+\subsubsection{\texorpdfstring{operator$>$$>$()}{operator>>()}}
+{\footnotesize\ttfamily \hyperlink{classx2_1_1_stream_convertor}{Stream\+Convertor} \& x2\+::\+Lexical\+To\+Grammar\+Stream\+::operator$>$$>$ (\begin{DoxyParamCaption}\item[{int \&}]{i }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+The 3 following getting operations do not check the index,so it may cause index out of range exception 
+
+Implements \hyperlink{classx2_1_1_stream_convertor_a5b387cc560794db5ac2f0c35dd4023d1}{x2\+::\+Stream\+Convertor}.
+
+\mbox{\Hypertarget{classx2_1_1_lexical_to_grammar_stream_a67a0e2b6ed998fd1dea1c9829be4461f}\label{classx2_1_1_lexical_to_grammar_stream_a67a0e2b6ed998fd1dea1c9829be4461f}} 
+\index{x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}!peek@{peek}}
+\index{peek@{peek}!x2\+::\+Lexical\+To\+Grammar\+Stream@{x2\+::\+Lexical\+To\+Grammar\+Stream}}
+\subsubsection{\texorpdfstring{peek()}{peek()}}
+{\footnotesize\ttfamily int x2\+::\+Lexical\+To\+Grammar\+Stream\+::peek (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+get an input, but do not move the stream 
+
+Implements \hyperlink{classx2_1_1_stream_convertor_a9bc76cb1b81f1b11c9967f37f01bf2be}{x2\+::\+Stream\+Convertor}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Lexical\+Parser.\+h\end{DoxyCompactItemize}

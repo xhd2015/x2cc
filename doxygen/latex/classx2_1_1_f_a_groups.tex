@@ -1,0 +1,68 @@
+\hypertarget{classx2_1_1_f_a_groups}{}\section{x2\+:\+:F\+A\+Groups$<$ T $>$ Class Template Reference}
+\label{classx2_1_1_f_a_groups}\index{x2\+::\+F\+A\+Groups$<$ T $>$@{x2\+::\+F\+A\+Groups$<$ T $>$}}
+
+
+{\ttfamily \#include $<$F\+A\+Utils.\+h$>$}
+
+Inheritance diagram for x2\+:\+:F\+A\+Groups$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classx2_1_1_f_a_groups}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a0c6b1e7746fd561a386655d972e80b6c}\label{classx2_1_1_f_a_groups_a0c6b1e7746fd561a386655d972e80b6c}} 
+bool {\bfseries add\+Group} (const std\+::string \&name, const std\+::set$<$ T $>$ \&group)
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a3d84f81aa2a8f1e3c070e2e7e564b638}\label{classx2_1_1_f_a_groups_a3d84f81aa2a8f1e3c070e2e7e564b638}} 
+bool {\bfseries add\+Group} (const std\+::string \&name, std\+::set$<$ T $>$ \&\&group)
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a23f88d7b2340e3135b2d3c66d8c330f5}\label{classx2_1_1_f_a_groups_a23f88d7b2340e3135b2d3c66d8c330f5}} 
+bool {\bfseries in\+Group} (const T \&t, const std\+::string \&name) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_ac71065a983c8e48c47065769214b2da6}\label{classx2_1_1_f_a_groups_ac71065a983c8e48c47065769214b2da6}} 
+bool {\bfseries has\+Group} (const std\+::string \&name) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a36d6e1c69dfa5f5dad26d3e9243807e9}\label{classx2_1_1_f_a_groups_a36d6e1c69dfa5f5dad26d3e9243807e9}} 
+const std\+::set$<$ T $>$ \& {\bfseries get\+Group} (const std\+::string \&name) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a7bbfea3b525be2c654251497eeaa76bb}\label{classx2_1_1_f_a_groups_a7bbfea3b525be2c654251497eeaa76bb}} 
+bool {\bfseries is\+Group\+Undefined} (const std\+::string \&group) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a50f9de5cd5023c9b6320ad5dd1a03a22}\label{classx2_1_1_f_a_groups_a50f9de5cd5023c9b6320ad5dd1a03a22}} 
+bool {\bfseries is\+Group\+Undefined} (const std\+::set$<$ T $>$ \&group) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_af9d56e53d92a1e11b0a2bf1a9991bbe5}\label{classx2_1_1_f_a_groups_af9d56e53d92a1e11b0a2bf1a9991bbe5}} 
+bool {\bfseries add\+Group\+Union} (const std\+::string \&new\+Group, const std\+::vector$<$ std\+::string $>$ groups)
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a2a398b4a8151c3c54b6db40dfb8298ee}\label{classx2_1_1_f_a_groups_a2a398b4a8151c3c54b6db40dfb8298ee}} 
+bool {\bfseries add\+Group\+Diff} (const std\+::string \&new\+Group, const std\+::string \&group\+Base, const std\+::string \&group\+Defined)
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a37bfd53df1493cb777387d8f09aaf112}\label{classx2_1_1_f_a_groups_a37bfd53df1493cb777387d8f09aaf112}} 
+bool {\bfseries add\+Group\+Union} (const std\+::string \&new\+Group, const std\+::string \&groups1, const std\+::set$<$ T $>$ \&group\+Outter)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a5c5e18182fce69e70ed81937bbcae877}\label{classx2_1_1_f_a_groups_a5c5e18182fce69e70ed81937bbcae877}} 
+std\+::map$<$ std\+::string, std\+::set$<$ T $>$ $>$ {\bfseries groups}
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_f_a_groups_a9836c66d59da2c3d1e25811b608f6cc9}\label{classx2_1_1_f_a_groups_a9836c66d59da2c3d1e25811b608f6cc9}} 
+static const std\+::set$<$ T $>$ {\bfseries U\+N\+D\+E\+F\+I\+N\+E\+D\+\_\+\+G\+R\+O\+UP} = std\+::set$<$T$>$()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\newline
+class x2\+::\+F\+A\+Groups$<$ T $>$}
+
+T as group element type 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/F\+A\+Utils.\+h\end{DoxyCompactItemize}

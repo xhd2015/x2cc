@@ -15,12 +15,16 @@
 
 namespace x2
 {
-//如果T1=T2时,则无法通过方法名区分调用的方法
 /**
  *
  * 任意时刻保证：
  * 		如果a,b 在m1中，则b,a必在m2中；如果a,b在m2中，则b,a必在m1中
  * 		如果a,b不在m1中，则b,a不在m2中；如果a,b不在m2中，则b,a不在m1中
+ *
+ * 	\changelog 2017-4-26 20:59:09
+ * 		为了使其可以容纳相同的类型映射,将方法名修改.
+ *
+ * 	方法名 : addT1 和 addT2 分别表示以谁作为键来查询,添加和删除; 其中作为键的一方不会被删除或者修改
  */
 template <class T1,class T2>
 class MutualMap
@@ -34,8 +38,9 @@ public:
 public:
 	MutualMap()=default;
 	MutualMap(const T1& failedT1,const T2& failedT2);
+
 	MutualMap(const T1& failedT1,const T2& failedT2,std::initializer_list<std::pair<T1,T2>> list);
-	MutualMap(const T1& failedT1,const T2& failedT2,std::initializer_list<std::pair<T2,T1>> list);
+//	MutualMap(const T1& failedT1,const T2& failedT2,std::initializer_list<std::pair<T2,T1>> list);
 	MutualMap(MutualMap<T1,T2> && mm)=default;
 	MutualMap(const MutualMap<T1,T2> & mm)=default;
 	~MutualMap()=default;
@@ -43,31 +48,31 @@ public:
 	 * 两者都作为键，不可能直接更改其中任何一方的值
 	 * 如果没有查找到，还应当 有一个默认的返回值，即提供失败的值
 	 */
-	const T1&	get(const T2& t2)const;
-	const T2&   get(const T1& t1)const;
+	const T1&	getT2(const T2& t2)const;
+	const T2&   getT1(const T1& t1)const;
 	/**
 	 * get,if non-exist, add it
 	 */
-	const T1&	getAdd(const T2& t2,const T1& t1);
-	const T2&	getAdd(const T1& t1,const T2& t2);
+	const T1&	getAddT2(const T2& t2,const T1& t1);
+	const T2&	getAddT1(const T1& t1,const T2& t2);
 	/**
 	 * if any one is present,return failed,else return succeed
 	 */
-	bool add(const T1& t1,const T2& t2);
-	bool add(T1 && t1,T2 && t2);
-	bool add(const T2& t2,const T1& t1);
-	bool add(T2 && t2,T1 && t1);
+	bool addT1(const T1& t1,const T2& t2);
+	bool addT1(T1 && t1,T2 && t2);
+	bool addT2(const T2& t2,const T1& t1);
+	bool addT2(T2 && t2,T1 && t1);
 
 
-	T2 remove(const T1& t1);
-	T1 remove(const T2& t2);
+	T2 removeT1(const T1& t1);
+	T1 removeT2(const T2& t2);
 
 	/**
 	 * add, if t1 pair already exist,then t1 is kept,change <t1,_> to <t1,t2>
 	 * return if replaced
 	 */
-	bool addReplace(const T1 & t1,const T2& t2);
-	bool addReplace(const T2 & t2,const T1 & t1);
+	bool addReplaceT1(const T1 & t1,const T2& t2);
+	bool addReplaceT2(const T2 & t2,const T1 & t1);
 
 	std::string toString()const;
 
@@ -97,6 +102,7 @@ public:
 	int get(const T& t)const;
 	const T& get(int i)const;
 	int getAdd(const T& t);
+	void set(int i,const T& t);
 	/**
 	 * always succeed
 	 */
@@ -136,23 +142,23 @@ inline MutualMap<T1, T2>::MutualMap(const T1& failedT1,const T2& failedT2,
 {
 	for(auto &p:list)
 	{
-		this->add(p.first,p.second);
+		this->addT1(p.first,p.second);
 	}
 }
-template<class T1, class T2>
-inline MutualMap<T1, T2>::MutualMap(const T1& failedT1,const T2& failedT2,
-		std::initializer_list<std::pair<T2, T1> > list):
-		MutualMap(failedT1,failedT1)
-{
-	for(auto &p:list)
-	{
-		this->add(p.first,p.second);
-	}
-}
+//template<class T1, class T2>
+//inline MutualMap<T1, T2>::MutualMap(const T1& failedT1,const T2& failedT2,
+//		std::initializer_list<std::pair<T2, T1> > list):
+//		MutualMap(failedT1,failedT1)
+//{
+//	for(auto &p:list)
+//	{
+//		this->addT1(p.second,p.first);
+//	}
+//}
 
 
 template<class T1, class T2>
-inline const T1& MutualMap<T1, T2>::get(const T2& t2)const
+inline const T1& MutualMap<T1, T2>::getT2(const T2& t2)const
 {
 	const auto &it=m2.find(t2);
 	if(it==m2.end())return failedT1;
@@ -160,7 +166,7 @@ inline const T1& MutualMap<T1, T2>::get(const T2& t2)const
 }
 
 template<class T1, class T2>
-inline const T2& MutualMap<T1, T2>::get(const T1& t1)const
+inline const T2& MutualMap<T1, T2>::getT1(const T1& t1)const
 {
 	const auto &it=m1.find(t1);
 	if(it==m1.end())return failedT2;
@@ -168,23 +174,23 @@ inline const T2& MutualMap<T1, T2>::get(const T1& t1)const
 }
 
 template<class T1, class T2>
-inline const T1& MutualMap<T1, T2>::getAdd(const T2& t2,const T1& t1)
+inline const T1& MutualMap<T1, T2>::getAddT2(const T2& t2,const T1& t1)
 {
 	const auto &it=m2.find(t2);
-	if(it==m2.end()){this->add(t2, t1);return t1;}
+	if(it==m2.end()){this->addT2(t2, t1);return t1;}
 	return it->second;
 }
 
 template<class T1, class T2>
-inline const T2& MutualMap<T1, T2>::getAdd(const T1& t1,const T2& t2)
+inline const T2& MutualMap<T1, T2>::getAddT1(const T1& t1,const T2& t2)
 {
 	const auto &it=m1.find(t1);
-	if(it==m1.end()){this->add(t1,t2);return t2;}
+	if(it==m1.end()){this->addT1(t1,t2);return t2;}
 	return it->second;
 }
 
 template<class T1, class T2>
-inline bool MutualMap<T1, T2>::add(const T1& t1, const T2& t2)
+inline bool MutualMap<T1, T2>::addT1(const T1& t1, const T2& t2)
 {
 	auto it1=m1.find(t1);
 	if(it1!=m1.end())return false;
@@ -194,7 +200,7 @@ inline bool MutualMap<T1, T2>::add(const T1& t1, const T2& t2)
 }
 
 template<class T1, class T2>
-inline bool MutualMap<T1, T2>::add(T1&& t1, T2&& t2)
+inline bool MutualMap<T1, T2>::addT1(T1&& t1, T2&& t2)
 {
 	const T1& ct1=t1;
 	const T2& ct2=t2;
@@ -205,20 +211,20 @@ inline bool MutualMap<T1, T2>::add(T1&& t1, T2&& t2)
 	return true;
 }
 template<class T1, class T2>
-inline bool MutualMap<T1, T2>::add(const T2& t2, const T1& t1)
+inline bool MutualMap<T1, T2>::addT2(const T2& t2, const T1& t1)
 {
-	return add(t1,t2);
+	return addT1(t1,t2);
 }
 
 template<class T1, class T2>
-inline bool MutualMap<T1, T2>::add(T2&& t2, T1&& t1)
+inline bool MutualMap<T1, T2>::addT2(T2&& t2, T1&& t1)
 {
-	return add(t1,t2);
+	return addT1(t1,t2);
 }
 
 
 template<class T1, class T2>
-inline T2 MutualMap<T1, T2>::remove(const T1& t1)
+inline T2 MutualMap<T1, T2>::removeT1(const T1& t1)
 {
 	auto it1=m1.find(t1);
 	if(it1==m1.end())return failedT2;
@@ -230,7 +236,7 @@ inline T2 MutualMap<T1, T2>::remove(const T1& t1)
 }
 
 template<class T1, class T2>
-inline T1 MutualMap<T1, T2>::remove(const T2& t2)
+inline T1 MutualMap<T1, T2>::removeT2(const T2& t2)
 {
 	auto it2=m2.find(t2);
 	if(it2==m2.end())return failedT1;
@@ -242,10 +248,10 @@ inline T1 MutualMap<T1, T2>::remove(const T2& t2)
 }
 
 template<class T1, class T2>
-inline bool MutualMap<T1, T2>::addReplace(const T1& t1, const T2& t2)
+inline bool MutualMap<T1, T2>::addReplaceT1(const T1& t1, const T2& t2)
 {
 	typename std::map<T1,T2>::iterator it1=m1.find(t1);
-	if(it1==m1.end()){add(t1,t2);return false;}
+	if(it1==m1.end()){addT1(t1,t2);return false;}
 	typename std::map<T2,T1>::iterator it2=m2.find(it1->second);
 	m2.erase(it2);
 	it1->second = t2;
@@ -255,10 +261,10 @@ inline bool MutualMap<T1, T2>::addReplace(const T1& t1, const T2& t2)
 
 
 template<class T1, class T2>
-inline bool MutualMap<T1, T2>::addReplace(const T2& t2, const T1& t1)
+inline bool MutualMap<T1, T2>::addReplaceT2(const T2& t2, const T1& t1)
 {
 	auto &it2=m2.find(t2);
-	if(it2==m2.end()){add(t2,t1);return false;}
+	if(it2==m2.end()){addT2(t2,t1);return false;}
 	auto &it1=m1.find(it2->second);
 	m1.erase(it1);
 	it2->second = t1;
@@ -303,20 +309,25 @@ inline IndexedMap<T>::IndexedMap(const T& failedT,
 template<class T>
 inline int IndexedMap<T>::get(const T& t)const
 {
-	return this->Father::get(t);
+	return this->Father::getT2(t);
 }
 template<class T>
 inline const T& IndexedMap<T>::get(int i) const
 {
-	return this->Father::get(i);
+	return this->Father::getT1(i);
 }
 
 template<class T>
 inline int IndexedMap<T>::getAdd(const T& t)
 {
-	int i=this->Father::getAdd(t, max);
+	int i=this->Father::getAddT2(t, max);
 	if(i==max)max++;
 	return i;
+}
+template<class T>
+inline void IndexedMap<T>::set(int i,const T& t)
+{
+	this->Father::addReplaceT1(i, t);
 }
 
 template<class T>
@@ -324,7 +335,7 @@ inline void IndexedMap<T>::add(const T& t)
 {
 	auto it2=this->m2.find(t);
 	if(it2!=this->m2.end())return;
-	this->Father::add(this->max++, t);
+	this->Father::addT1(this->max++, t);
 }
 
 template<class T>

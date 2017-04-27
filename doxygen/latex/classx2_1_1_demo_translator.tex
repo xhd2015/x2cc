@@ -1,0 +1,109 @@
+\hypertarget{classx2_1_1_demo_translator}{}\section{x2\+:\+:Demo\+Translator Class Reference}
+\label{classx2_1_1_demo_translator}\index{x2\+::\+Demo\+Translator@{x2\+::\+Demo\+Translator}}
+
+
+A Grammar Translation Demonstrate to Clarify Some Concepts.  
+
+
+
+
+{\ttfamily \#include $<$Grammar\+Translate\+Utils.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_a353f41b11b2d282968ddde7f92c8844e}\label{classx2_1_1_demo_translator_a353f41b11b2d282968ddde7f92c8844e}} 
+using {\bfseries A\+C\+T\+I\+O\+N\+\_\+\+T\+Y\+PE} = L\+R1\+Gramma\+::\+A\+C\+T\+I\+O\+N\+\_\+\+T\+Y\+PE
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_aa08356e09fa72c26524568486fa70b42}\label{classx2_1_1_demo_translator_aa08356e09fa72c26524568486fa70b42}} 
+typedef std\+::tuple$<$ int, int, int, int $>$ {\bfseries Quad\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_a2d71ca79ab44ac76063bc0cedb84fc5e}\label{classx2_1_1_demo_translator_a2d71ca79ab44ac76063bc0cedb84fc5e}} 
+typedef std\+::vector$<$ Quad\+Type $>$ {\bfseries Translation\+Type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classx2_1_1_demo_translator_a5c8a3792ff989f0779f49b4b4824a66d}{Demo\+Translator} (const \hyperlink{classx2_1_1_l_r1_gramma}{L\+R1\+Gramma} \&grammar, const L\+R1\+Gramma\+::\+Info\+Type \&closures\+Info, const \hyperlink{classx2_1_1_gramma_a33681053b045219ea58cc68c3faa4975}{L\+R1\+Gramma\+::\+L\+R\+Analyze\+Table\+Type} \&analyze\+Table, int ending\+Sym, int init\+State=0)
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_aa0501ad4afe91afffea6491343c0616c}\label{classx2_1_1_demo_translator_aa0501ad4afe91afffea6491343c0616c}} 
+{\bfseries Demo\+Translator} (const \hyperlink{classx2_1_1_demo_translator}{Demo\+Translator} \&t)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_a4372d69215029ca5c8fe28489598cfd6}\label{classx2_1_1_demo_translator_a4372d69215029ca5c8fe28489598cfd6}} 
+{\bfseries Demo\+Translator} (\hyperlink{classx2_1_1_demo_translator}{Demo\+Translator} \&\&t)=default
+\item 
+virtual Translation\+Type \hyperlink{classx2_1_1_demo_translator_a5013adbe85fb2bb68d33433454787a02}{translate} (\hyperlink{classx2_1_1_stream_convertor}{Stream\+Convertor} \&input, \hyperlink{classx2_1_1_semantic_action}{Semantic\+Action} \&action) const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_adbc8cab8e875be2b3bddeb18bfb8eebd}\label{classx2_1_1_demo_translator_adbc8cab8e875be2b3bddeb18bfb8eebd}} 
+const \hyperlink{classx2_1_1_l_r1_gramma}{L\+R1\+Gramma} \& {\bfseries grammar}
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_a6be6d8958fe9fc1caf0264c9a6a2077f}\label{classx2_1_1_demo_translator_a6be6d8958fe9fc1caf0264c9a6a2077f}} 
+const L\+R1\+Gramma\+::\+Info\+Type \& {\bfseries closures\+Info}
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_ae1a8138d37f33b2b5662c2327a83c041}\label{classx2_1_1_demo_translator_ae1a8138d37f33b2b5662c2327a83c041}} 
+const \hyperlink{classx2_1_1_gramma_a33681053b045219ea58cc68c3faa4975}{Gramma\+::\+L\+R\+Analyze\+Table\+Type} \& {\bfseries analyze\+Table}
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_aff2ec433bc4326e419fcbc3c1971badb}\label{classx2_1_1_demo_translator_aff2ec433bc4326e419fcbc3c1971badb}} 
+int {\bfseries ending\+Sym}
+\item 
+\mbox{\Hypertarget{classx2_1_1_demo_translator_a8c1f23b69aab28178a293ded8262a13a}\label{classx2_1_1_demo_translator_a8c1f23b69aab28178a293ded8262a13a}} 
+int {\bfseries init\+State}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A Grammar Translation Demonstrate to Clarify Some Concepts. 
+
+Given a grammar\+: A -\/$>$ T id = E ; A -\/$>$ id = E ; E -\/$>$ ( E ) E -\/$>$ id E -\/$>$ intval E -\/$>$ charval E -\/$>$ E + E E -\/$>$　E $\ast$ E C -\/$>$ A T -\/$>$ int T -\/$>$ char T -\/$>$ string
+
+An Input\+: int a=0; char c=\textquotesingle{}t\textquotesingle{}; a=c; a=d; int a=1;
+
+The Translator should point out that\+:
+\begin{DoxyEnumerate}
+\item a=c is impossible because their types are not compitable
+\item a=d is impossible because d is not defined
+\item int a=1 is impossible because a is already defined
+\item it should generate a proper code for the right parts
+\end{DoxyEnumerate}
+
+自动机构造算法\+: 首先将\+Corrupt\+Table转化为标准的分析表\+Analyze\+Tale类型 初始化\+D\+FA,E\+M\+P\+T\+Y取相同值, failed取\+U\+N\+D\+E\+F\+I\+N\+E\+D值(-\/2), 开始状态为\+I0, 结束状态为为空 遍历\+G\+O\+T\+O表添加变量类型的转移
+
+A\+D\+V\+A\+N\+CE\+: 翻译器是通用的,因此只定义所有翻译器公用的部分. 包括文法引用,分析表引用 语义动作是一个单独的类,指明了某个归约式产生的时候进行某种动作 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classx2_1_1_demo_translator_a5c8a3792ff989f0779f49b4b4824a66d}\label{classx2_1_1_demo_translator_a5c8a3792ff989f0779f49b4b4824a66d}} 
+\index{x2\+::\+Demo\+Translator@{x2\+::\+Demo\+Translator}!Demo\+Translator@{Demo\+Translator}}
+\index{Demo\+Translator@{Demo\+Translator}!x2\+::\+Demo\+Translator@{x2\+::\+Demo\+Translator}}
+\subsubsection{\texorpdfstring{Demo\+Translator()}{DemoTranslator()}}
+{\footnotesize\ttfamily x2\+::\+Demo\+Translator\+::\+Demo\+Translator (\begin{DoxyParamCaption}\item[{const \hyperlink{classx2_1_1_l_r1_gramma}{L\+R1\+Gramma} \&}]{grammar,  }\item[{const L\+R1\+Gramma\+::\+Info\+Type \&}]{closures\+Info,  }\item[{const \hyperlink{classx2_1_1_gramma_a33681053b045219ea58cc68c3faa4975}{L\+R1\+Gramma\+::\+L\+R\+Analyze\+Table\+Type} \&}]{analyze\+Table,  }\item[{int}]{ending\+Sym,  }\item[{int}]{init\+State = {\ttfamily 0} }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+\begin{DoxyParams}{Parameters}
+{\em grammar} & 待翻译输入流中使用的文法 \\
+\hline
+{\em closures\+Info} & 规范集项目族和\+G\+O\+T\+O表,处理方法参见\+L\+R1\+Gramma类的to\+String(info) \\
+\hline
+{\em analyze\+Table} & 规范的\+L\+R分析表 \\
+\hline
+{\em ending\+Sym} & 指定结束符号 \$ \\
+\hline
+{\em init\+State} & 指定这个分析表的起始状态,默认情况下所有的分析表起始状态为0 \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_demo_translator_a5013adbe85fb2bb68d33433454787a02}\label{classx2_1_1_demo_translator_a5013adbe85fb2bb68d33433454787a02}} 
+\index{x2\+::\+Demo\+Translator@{x2\+::\+Demo\+Translator}!translate@{translate}}
+\index{translate@{translate}!x2\+::\+Demo\+Translator@{x2\+::\+Demo\+Translator}}
+\subsubsection{\texorpdfstring{translate()}{translate()}}
+{\footnotesize\ttfamily Demo\+Translator\+::\+Translation\+Type x2\+::\+Demo\+Translator\+::translate (\begin{DoxyParamCaption}\item[{\hyperlink{classx2_1_1_stream_convertor}{Stream\+Convertor} \&}]{input,  }\item[{\hyperlink{classx2_1_1_semantic_action}{Semantic\+Action} \&}]{action }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}}
+
+在 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Grammar\+Translate\+Utils.\+h\end{DoxyCompactItemize}

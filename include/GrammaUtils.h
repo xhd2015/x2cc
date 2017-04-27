@@ -19,6 +19,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <MutualMap.h>
+#include <sstream>
 namespace x2
 {
   //====================
@@ -68,6 +69,11 @@ namespace x2
     AS_MACRO int		get(const std::string & s)const;
     AS_MACRO int		getAdd(const std::string & sym,const std::string & type="TERMINATOR");
     AS_MACRO int		getAdd(const std::string & sym,int type);
+    /**
+     * add,if exist,replace it.
+     */
+    int addReplace(const std::string & sym,const std::string & type="TERMINATOR");
+    int addReplace(const std::string & sym,int type);
     AS_MACRO int		getEmpty()const;
     AS_MACRO bool	isSymbolEmpty(const std::string &sym)const;
     AS_MACRO bool	isSymbolTerm(const std::string &sym)const;
@@ -77,6 +83,7 @@ namespace x2
 
     AS_MACRO int addTerm(const std::string &s);//return the index that generated
     AS_MACRO int addVar(const std::string & s);
+    		 int addEmpty(const std::string& s);
     AS_MACRO bool isSymbolEmpty(int i)const;
     AS_MACRO bool isSymbolTerm(int i)const;
     AS_MACRO bool isSymbolVar(int i)const;
@@ -160,6 +167,19 @@ namespace x2
     typedef std::map<int,std::vector<GrammaSentence> > ProductionsType;
     typedef std::map<int,std::set<int> > SetsType;
     typedef std::vector<int>::size_type size_type;
+
+  /**
+   * @brief	带有冲突类型的LR分析表
+   * @detail 请注意,LR分析表对于所有的LR文法都是通用的.
+   * tuple<int,int,int>		<i,j, action>
+   */
+    typedef std::map<std::pair<int,int>,std::set<std::tuple<int,int,int>>> LRCorruptTableType;
+    /**
+     * @brief 不带冲突的LR分析表,也称为标准的分析表
+     */
+    typedef std::map<std::pair<int,int>,std::tuple<int,int,int>> LRAnalyzeTableType;
+
+
     Gramma()=default;
     Gramma(const GrammaSymbols & gsyms);
     Gramma(GrammaSymbols&& gsyms);
@@ -171,6 +191,9 @@ namespace x2
 	   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist);
     Gramma(const std::initializer_list<std::pair<std::string,std::initializer_list<std::string>>> &prodlist);
     Gramma(const std::vector<std::pair<std::string,std::vector<std::string>>> &prodlist);
+    Gramma(std::initializer_list<std::string> list);//通过"A B C d"的形式,不加中间的箭头,末尾不能有空格
+    Gramma(const std::vector<std::string> &list);
+
 
 
     void addProduction(int i,const GrammaSentence &gs);
@@ -184,6 +207,7 @@ namespace x2
      * added 2017-04-21 21:49:47
      */
     void addProduction(const std::string& head,const std::initializer_list<std::string> & gs);
+    void addProduction(const std::string& all);
 
     bool canSymbolEmpty(int i);
     bool canSentenceEmpty(const GrammaSentence& s);//可以构造一个非空表，以及一个关于句型的第一个非空符号的位置（左起最长空串的长度）
@@ -234,6 +258,11 @@ namespace x2
     Gramma duplicate(); //symbols , productions will change
     Gramma duplicateShareSymbols();//Symbols will not change,but if any one change,then everything changed
 
+    /**
+     * @brief 提供一个最简单的将冲突的分析表转换成标准分析表的方法：仅仅保留第一项
+     */
+    static LRAnalyzeTableType convertCorruptToStandardSimply(const LRCorruptTableType & table);
+
     AS_MACRO std::string toString()const;
     AS_MACRO std::string toString(int i)const;
     AS_MACRO std::string toString(const GrammaSentence &gs)const;
@@ -246,22 +275,88 @@ namespace x2
     std::string toString(const SetsType& set)const;
     std::string toString(const std::set<int> & set)const;
 
-//    void addTerm();// 2 --> 345 list of int
-//    void addVar();
-//    void isTermIn();
-
     AS_MACRO const GrammaSymbols & getGrammaSymbols();
-
-
-
-
 
   public:
     GrammaSymbols gsyms;
+  protected:
     ProductionsType prods;
-//    SetsType	first;
-//    SetsType	follow;
   };
+
+//  //<block note="reconstruct" time="2017-04-22 15:27:43">
+//  /**
+//   * General Model:
+//   *  i,j   -->  which production?
+//   *  k		-->	 position of the dot
+//   *
+//   *  //LR1
+//   *  s		-->	 symbol of looking ahead
+//   *
+//   *  known types : LR(0) Items, LR(1) Items, SLR(1) items  LALR(1) items
+//   *  从广泛的意义上来说（就行为层面），每个项目类型的 Closure,Goto,Analyse Table,求法是有所不同的
+//   *  统一的接口就是 接受某个通用文法作为参数，计算某个项目集的Closure
+//   *
+//   *  除此之外，toString方法也是不同的
+//   *  但是它们的分析表类型都是一样的
+//   *
+//   */
+//  class LRItem{
+//  public:
+//	  typedef std::set<LRItem> 		ClosureType;
+//	  typedef std::vector<ClosureType>	ClosuresVector;
+//	  typedef std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> InfoType;
+//	  typedef std::map<std::pair<int,int>,std::set<std::tuple<int,int,int>>> CorruptTableType;
+//
+//	  LRItem();
+//	  virtual ~LRItem()=default;
+//	  virtual int	getNthSymboleAfterDot(unsigned int j)const=0;
+//	  virtual int		    getFirstSymbolAfterDot()const=0;
+//	  virtual ClosureType	getClosure()const;
+//
+//  protected:
+//	  const Gramma	&g;
+////	  virtual ;
+//  };
+//
+//  /**
+//   * 不必将 项目集真正地存入语法之中，因为一个语法的项目集要么不求，要么整体求出，通常是一个计算的过程
+//   *不必缓存
+//   */
+//  template<class ItemType>
+//  class LRGrammar:public Gramma{
+//  public:
+//	  enum{
+//		 ACTION_SHIFT_IN,
+//		 ACTION_REDUCE,
+//		 ACTION_ACCEPT,
+//		 ACTION_ERROR,
+//	 };
+//	  using ClosureType			=	ItemType::ClosureType;
+//	  using ClosureVector		=	ItemType::ClosureVector;
+//	  using InfoType			=	ItemType::InfoType;
+//	  using CorruptTableType	=	ItemType::CorruptTableType;
+//
+//	  typedef LRGrammar<ItemType> This;
+//	  typedef Gramma	Father;
+//
+//	  int	getExtStart()const;
+//	  int   getEnd()const;
+//
+//	  InfoType getAllClosures()const;
+//	  virtual ClosureType    getGoto(const ClosureType & items,int x)const;
+//	  virtual CorruptTableType	constructAnaylzeTable()const;
+//
+//
+//
+//  protected:
+//	  int sstart;//拓广之后的start
+//	  int send;//必须定义结束符号
+//	  std::string dotString;
+//	  static const std::string DOT_STRING;
+//  };
+//  template <class ItemType>
+//  const std::string LRGrammar<ItemType>::DOT_STRING=".";
+//  //</block>
 
   /**
    * LRGramma
@@ -271,6 +366,9 @@ namespace x2
 	  typedef LRGramma This;
 	  typedef Gramma	Father;
 	  typedef std::tuple<int,int,int>	ItemType;
+	  typedef std::set<ItemType> 		ClosureType;
+	  typedef std::vector<ClosureType>	ClosuresVector;
+	  typedef std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> InfoType;
 	  /**
 	   * 这里的ClosureType和教材上类型有所不同，教材上的类型是
 	   *  	std::map<std::set<ItemType>,std::set<ItemType>> ClosureType
@@ -279,8 +377,6 @@ namespace x2
 	   *   Closure(I1,I2,...,In) = Closure(I1) u Closure(I2) u ... u Closure(In)
 	   *
 	   */
-	  typedef std::set<ItemType> ClosureType;
-	  typedef std::vector<ClosureType> ClosuresVector;//对所有的项目集进行管理，所有的运算基于闭包在ClosuresVector中的下标
 
 
 	  LRGramma()=default;
@@ -307,7 +403,12 @@ namespace x2
 	   *
 	   *  call toString(tup) to dump those information.
 	   */
-	  std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> getAllClosures();
+	  InfoType getAllClosures();
+	  /**
+	   * added 2017-04-22 12:32:52
+	   */
+	  LRCorruptTableType constructAnalyzeTableLR0(const InfoType& info);
+	  LRCorruptTableType constructAnalyzeTableSLR(const InfoType& info);
 
 	  /**
 	   * HIGH-WAY getClosure ==  shut down//deprecated
@@ -322,13 +423,12 @@ namespace x2
 	   */
 	  ClosureType getGotoInVector(int iclo,int x, ClosuresVector& itemsets, std::map<ItemType,int>	&	C0);
 	  ClosureType getGoto(const ClosureType & items,int x);
-	  int			getClosure(int i);//求下标i对应的项目集
 
 	  AS_MACRO int		  getFirstSymbolAfterDot(const ItemType & i);
 	  int				  getNthSymboleAfterDot(const ItemType & i,unsigned int j);
 
-	  AS_MACRO int	getGStart()const;
-	  AS_MACRO int  getGEnd()const;
+	  AS_MACRO int	getExtStart()const;
+	  AS_MACRO int  getEnd()const;
 
 	  AS_MACRO		std::string toString()const;
 	  std::string toString(const ItemType& item)const;
@@ -355,10 +455,9 @@ namespace x2
 	  typedef std::tuple<int,int,int,int> ItemType;
 	  typedef std::set<ItemType> 		ClosureType;
 	  typedef std::vector<ClosureType>	ClosuresVector;
-	  typedef std::tuple<ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> InfoType;
-	  typedef std::map<std::pair<int,int>,std::tuple<int,int,int>> 				AnaylzeTableType;
-	  typedef std::map<std::pair<int,int>,std::set<std::tuple<int,int,int>>>	CorruptTableType;
-	 enum{
+	  typedef std::map<std::pair<int,int>,int> GotoInfoType;
+	  typedef std::tuple<ClosuresVector,std::set<int>,GotoInfoType> InfoType;
+	 enum ACTION_TYPE{
 		 ACTION_SHIFT_IN,
 		 ACTION_REDUCE,
 		 ACTION_ACCEPT,
@@ -371,6 +470,8 @@ namespace x2
 	 AS_MACRO LR1Gramma(LRGramma&& lrg);
 	  AS_MACRO LR1Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
 		   const std::initializer_list<std::pair<int,GrammaSentence> > &prodlist,int oristart,int oriend,const std::string & strstart);
+	  LR1Gramma(const Gramma & g,const std::string & oriStart,const std::string &oriEnd,const std::string &extStart);
+	  LR1Gramma(Gramma && g,const std::string & oriStart,const std::string &oriEnd,const std::string &extStart);
 
 	  ClosureType	getClosure(const ItemType& i);
 	  ClosureType	getClosure(const ItemType& i,const Gramma::SetsType &firstset);
@@ -382,17 +483,27 @@ namespace x2
 	   */
 	  AS_MACRO static bool			doInsert(ClosureType & C,const ItemType &i);
 	  InfoType				getAllClosures();
-	  CorruptTableType constructAnalyzeTable(const InfoType& info);
+	  LRCorruptTableType constructAnalyzeTable(const InfoType& info);
 	  AS_MACRO int		  getFirstSymbolAfterDot(const ItemType & i);
 	  int		  getNthSymboleAfterDot(const ItemType & i,unsigned int j);
 
+
+	  /**
+	   * 依据优先级和结合性来消除冲突.
+	   *
+	   *   看优先级,相同优先级看结合性
+	   *    具体规则:
+	   *    	保留最高优先级的产生式
+	   *    	在同优先级的产生式组中,保留归约式中的一个
+	   */
+//	  static
 
 	  AS_MACRO std::string toString()const;
 	  std::string toString(const ItemType& i)const;
 	  std::string toString(const ClosureType& closure)const;
 	  std::string toString(const InfoType& info)const;
-	  std::string toString(const AnaylzeTableType& tableInfo)const;
-	  std::string toString(const CorruptTableType& tableInfo)const;
+	  std::string toString(const LRAnalyzeTableType& tableInfo)const;
+	  std::string toString(const LRCorruptTableType& tableInfo)const;
   };
 
   //===========function macrso
@@ -402,6 +513,7 @@ namespace x2
 		symString(UNDEFINED_STRING)
   {
 	  emptyIndex=symString.getAdd(emptyString);
+	  symInfo[emptyIndex]=TYPE_EMPTY;
   }
   inline GrammaSymbols::GrammaSymbols(GrammaSymbols &&gsyms):
 	  symInfo(std::move(gsyms.symInfo)),
@@ -437,7 +549,7 @@ namespace x2
    }
   inline int GrammaSymbols::getAdd(const std::string & s,const std::string & type)
    {
- 	  return this->getAdd(s, This::TYPES_INFO.get(type));
+ 	  return this->getAdd(s, This::TYPES_INFO.getT2(type));
    }
 
   inline int GrammaSymbols::getAdd(const std::string& sym, int type)
@@ -451,6 +563,20 @@ namespace x2
  	  return i;
    }
 
+  inline int GrammaSymbols::addReplace(const std::string& sym,
+  		const std::string& type)
+  {
+	  return this->addReplace(sym, This::TYPES_INFO.getT2(type));
+  }
+
+  inline int GrammaSymbols::addReplace(const std::string& sym, int type)
+  {
+ 	  int i=this->symString.getAdd(sym);
+	  if(type==TYPE_EMPTY)return this->emptyIndex;
+	  else this->add(i,type);
+ 	  return i;
+  }
+
   inline  int GrammaSymbols::getEmpty()const
    {
      return this->emptyIndex;
@@ -463,7 +589,11 @@ namespace x2
    {
      return this->getAdd(s,TYPE_VAR);
    }
-
+  inline int GrammaSymbols::addEmpty(const std::string& s)
+  {
+	  this->symString.set(this->emptyIndex, s);
+	  return this->emptyIndex;
+  }
   inline bool GrammaSymbols::isSymbolEmpty(int i)const
   {
     return getSymbolType(i)==TYPE_EMPTY;
@@ -517,9 +647,8 @@ namespace x2
   inline  std::string	GrammaSymbols::toString()const
     {
       std::string s;
-      s+=std::string("( ")+std::to_string(emptyIndex) + " , " + GrammaSymbols::TYPES_INFO.get(TYPE_EMPTY) +" , "+ this->getString(emptyIndex) + " ) \n";
       std::for_each(std::begin(this->symInfo),std::end(this->symInfo),[&s,this](const TypeInfo::value_type &item){
-        s+=std::string("( ") +std::to_string(item.first) + " , " + GrammaSymbols::TYPES_INFO.get(item.second) +" , "+ this->getString(item.first) + " ) \n";
+        s+=std::string("( ") +std::to_string(item.first) + " , " + GrammaSymbols::TYPES_INFO.getT1(item.second) +" , "+ this->getString(item.first) + " ) \n";
       });
       return s;
     }
@@ -551,6 +680,87 @@ namespace x2
 
 
   //======class Gramma
+  inline Gramma::Gramma(std::initializer_list<std::string> list)
+  {
+	  for(auto &s:list)
+		  this->addProduction(s);
+  }
+  inline Gramma::Gramma(const std::vector<std::string> &list)
+  {
+	  for(auto &s:list)
+		  this->addProduction(s);
+  }
+
+  inline void Gramma::addProduction(int i,const GrammaSentence &gs)
+  {
+    ProductionsType::iterator it=this->prods.find(i);
+    if(it==this->prods.end())
+      {
+	std::vector<GrammaSentence> v;
+	v.push_back(gs);
+	this->prods[i]=std::move(v);
+      }
+    else{
+	it->second.push_back(gs);
+    }
+  }
+  inline void Gramma::addProduction(int i,GrammaSentence &&gs)
+  {
+    ProductionsType::iterator it=this->prods.find(i);
+    if(it==this->prods.end())
+      {
+	std::vector<GrammaSentence> v;
+	v.push_back(gs);
+	this->prods[i]=std::move(v);
+      }
+    else{
+	it->second.push_back(gs);
+    }
+  }
+
+  inline void Gramma::addProduction(const std::string& head, const std::vector<std::string>& gs)
+  {
+	  //headi = this->gsyms.addReplace(head,VAR)
+	  int ihead=this->gsyms.addReplace(head,GrammaSymbols::TYPE_VAR);
+
+	  //for s in gs, si = this->gsyms.getAdd(s,TERM)
+	  GrammaSentence grammars;
+	  for(auto & s:gs)
+	  {
+		  grammars.push_back(this->gsyms.getAdd(s, GrammaSymbols::TYPE_TERM));
+	  }
+	  this->addProduction(ihead, std::move(grammars));
+
+  }
+
+  inline void Gramma::addProduction(const std::string& head,const std::initializer_list<std::string>& gs)
+  {
+	  //headi = this->gsyms.addReplace(head,VAR)
+	  int ihead=this->gsyms.addReplace(head,GrammaSymbols::TYPE_VAR);
+
+	  //for s in gs, si = this->gsyms.getAdd(s,TERM)
+	  GrammaSentence grammars;
+	  for(auto & s:gs)
+	  {
+		  grammars.push_back(this->gsyms.getAdd(s, GrammaSymbols::TYPE_TERM));
+	  }
+	  this->addProduction(ihead, std::move(grammars));
+  }
+
+  inline void Gramma::addProduction(const std::string& all)
+  {
+	  std::stringstream ss(all);
+	  std::string s;
+	  ss>>s;
+	  int ihead=this->gsyms.addReplace(s, GrammaSymbols::TYPE_VAR);
+	  GrammaSentence grammars;
+	  while(!ss.eof())
+	  {
+		  ss>>s;
+		  grammars.push_back(this->gsyms.getAdd(s, GrammaSymbols::TYPE_TERM));
+	  }
+	  this->addProduction(ihead, std::move(grammars));
+  }
   const std::vector<GrammaSentence>& Gramma::getRightSentences(int i)const
    {
      return this->prods.at(i);
@@ -593,6 +803,19 @@ namespace x2
   {
     reduceLeftFactor(prods[i] , gsyms.getString(i),0);
   }
+
+  inline typename Gramma::LRAnalyzeTableType Gramma::convertCorruptToStandardSimply(
+  		const LRCorruptTableType& table)
+  {
+	  LRAnalyzeTableType goodTable;
+	  for(auto &p : table)
+	  {
+		  goodTable[p.first]=*(p.second.begin());
+	  }
+	  return goodTable;
+  }
+
+
   std::string Gramma::toString()const
   {
     std::string s;
@@ -628,21 +851,15 @@ namespace x2
   }
   //============class LRGramma
   inline LRGramma::LRGramma(const Gramma& g,int oristart,int oriend,const std::string & strstart):
- 		send(oriend),dotString(".")
+ 		Gramma(g),send(oriend),dotString(".")
   {
- 	 gsyms = g.gsyms;
- 	 prods = g.prods;
-
  	 sstart = gsyms.addVar(strstart);
  	 GrammaSentence gs={oristart};
  	 addProduction(sstart,std::move(gs));
   }
  inline LRGramma::LRGramma(Gramma&& g,int oristart,int oriend,const std::string & strstart):
- 		send(oriend),dotString(".")
+ 		Gramma(std::move(g)),send(oriend),dotString(".")
   {
- 	 gsyms = std::move(g.gsyms);
- 	 prods = std::move(g.prods);
-
  	 sstart = gsyms.addVar(strstart);
  	 GrammaSentence gs={oristart};
  	 addProduction(sstart,std::move(gs));
@@ -673,11 +890,11 @@ namespace x2
   {
  	 return getNthSymboleAfterDot(i,1);
   }
-  int			LRGramma::getGStart()const
+  int			LRGramma::getExtStart()const
   {
 	  return sstart;
   }
-  int LRGramma::getGEnd()const
+  int LRGramma::getEnd()const
   {
 	  return send;
   }
@@ -705,6 +922,20 @@ namespace x2
 	{
 
 	}
+
+  inline LR1Gramma::LR1Gramma(const Gramma& g, const std::string& oriStart,
+  		const std::string& oriEnd, const std::string& extStart):
+  				Father(g,oriStart,oriEnd,extStart)
+  {
+  }
+
+  inline LR1Gramma::LR1Gramma(Gramma&& g, const std::string& oriStart,
+  		const std::string& oriEnd, const std::string& extStart):
+		Father(std::move(g),oriStart,oriEnd,extStart)
+  {
+  }
+
+
   /**
    * return false (means no update)
    */

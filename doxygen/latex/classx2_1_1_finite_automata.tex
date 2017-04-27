@@ -1,0 +1,140 @@
+\hypertarget{classx2_1_1_finite_automata}{}\section{x2\+:\+:Finite\+Automata$<$ T $>$ Class Template Reference}
+\label{classx2_1_1_finite_automata}\index{x2\+::\+Finite\+Automata$<$ T $>$@{x2\+::\+Finite\+Automata$<$ T $>$}}
+
+
+{\ttfamily \#include $<$F\+A\+Utils.\+h$>$}
+
+Inheritance diagram for x2\+:\+:Finite\+Automata$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classx2_1_1_finite_automata}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a1e633b48bb19ff2de32c037f305eb084}\label{classx2_1_1_finite_automata_a1e633b48bb19ff2de32c037f305eb084}} 
+typedef std\+::vector$<$ T $>$ {\bfseries Input\+Stream\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a31301b2b4958a62b3565e41c23eca2e4}\label{classx2_1_1_finite_automata_a31301b2b4958a62b3565e41c23eca2e4}} 
+typedef \hyperlink{classx2_1_1_finite_automata}{Finite\+Automata}$<$ T $>$ {\bfseries This}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_ab8b9e1d69f545925a2d0ae7b6d91bdc4}\label{classx2_1_1_finite_automata_ab8b9e1d69f545925a2d0ae7b6d91bdc4}} 
+typedef std\+::function$<$ void(int, const T \&)$>$ {\bfseries Process\+Fun\+Type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a7ab5a598af5fe719caccb661c71829d6}\label{classx2_1_1_finite_automata_a7ab5a598af5fe719caccb661c71829d6}} 
+{\bfseries Finite\+Automata} (const T \&emptyT, const T \&failedT, int start\+State, const std\+::vector$<$ int $>$ \&ending\+States)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a1a9802db45527e15f561af9b6e8c8af7}\label{classx2_1_1_finite_automata_a1a9802db45527e15f561af9b6e8c8af7}} 
+{\bfseries Finite\+Automata} (const T \&emptyT, const T \&failedT, const std\+::string \&start\+State, const std\+::vector$<$ std\+::string $>$ \&ending\+States)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_aace90dedecd2d57a9a058801c608aa9a}\label{classx2_1_1_finite_automata_aace90dedecd2d57a9a058801c608aa9a}} 
+{\bfseries Finite\+Automata} (\hyperlink{classx2_1_1_finite_automata_manager}{Finite\+Automata\+Manager}$<$ T $>$ \&\&faman, int start\+State, const std\+::vector$<$ int $>$ \&ending\+States)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a3a32bbd929198b40ad1a829cb5e1677c}\label{classx2_1_1_finite_automata_a3a32bbd929198b40ad1a829cb5e1677c}} 
+{\bfseries Finite\+Automata} (\hyperlink{classx2_1_1_finite_automata_manager}{Finite\+Automata\+Manager}$<$ T $>$ \&\&faman, const std\+::string \&start\+State, const std\+::vector$<$ std\+::string $>$ \&ending\+States)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a1c7905401495f3496476c49ba2a22760}\label{classx2_1_1_finite_automata_a1c7905401495f3496476c49ba2a22760}} 
+const std\+::string \& {\bfseries get\+Current\+State} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a23c483414a3639840cf6697615852512}\label{classx2_1_1_finite_automata_a23c483414a3639840cf6697615852512}} 
+int {\bfseries query\+State} (const std\+::string \&state) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a85ff5c6205df2affc904cce0765050a7}\label{classx2_1_1_finite_automata_a85ff5c6205df2affc904cce0765050a7}} 
+int {\bfseries query\+Symbol} (const T \&t) const
+\item 
+int \hyperlink{classx2_1_1_finite_automata_a44ca86f1589eeaa77ab73f953033c5a5}{query\+State\+Add} (const std\+::string \&state)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a36bd258d031bea1d3e31dbc674047c51}\label{classx2_1_1_finite_automata_a36bd258d031bea1d3e31dbc674047c51}} 
+int {\bfseries query\+Symbol\+Add} (const T \&t)
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a96ed2d1841cde70fb1d7d51a62fbb2e4}\label{classx2_1_1_finite_automata_a96ed2d1841cde70fb1d7d51a62fbb2e4}} 
+const std\+::string \& {\bfseries query\+State} (int state) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a2fb9ac68cd1c068b1ccb56d54ba04181}\label{classx2_1_1_finite_automata_a2fb9ac68cd1c068b1ccb56d54ba04181}} 
+const T \& {\bfseries query\+Symbol} (int sym) const
+\item 
+void \hyperlink{classx2_1_1_finite_automata_ab645c9a82ae95bda44e60dce1568bcad}{reset} ()
+\item 
+bool \hyperlink{classx2_1_1_finite_automata_a993fb22633638494c8a267cd2c5329fc}{at\+End} () const
+\item 
+virtual void \hyperlink{classx2_1_1_finite_automata_ac8f011bb86cb9e47370274ae200fc769}{add\+Transition} (int qin, int in, int qout)=0
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a0a6920e26afbb6ec5f3ead1803cf132a}\label{classx2_1_1_finite_automata_a0a6920e26afbb6ec5f3ead1803cf132a}} 
+virtual void {\bfseries get\+Match} (const Input\+Stream\+Type \&instream, \hyperlink{classx2_1_1_output_stream_processor}{Output\+Stream\+Processor}$<$ T $>$ \&outstream)=0
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a0cdcee5c903196276d63e6befd3608f5}\label{classx2_1_1_finite_automata_a0cdcee5c903196276d63e6befd3608f5}} 
+virtual void {\bfseries get\+Match} (const Input\+Stream\+Type \&instream, Process\+Fun\+Type process)=0
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a08657406175592e9312e6f6a7609b14d}\label{classx2_1_1_finite_automata_a08657406175592e9312e6f6a7609b14d}} 
+std\+::string {\bfseries to\+String} () const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a260a676437a198ee7d0c9a3881ac6089}\label{classx2_1_1_finite_automata_a260a676437a198ee7d0c9a3881ac6089}} 
+\hyperlink{classx2_1_1_finite_automata_manager}{Finite\+Automata\+Manager}$<$ T $>$ {\bfseries F\+Aman}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a682403e099f477d982734253cda1fb4d}\label{classx2_1_1_finite_automata_a682403e099f477d982734253cda1fb4d}} 
+int {\bfseries start\+State}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a5d56c81d319e70709c46dad540ce5ae7}\label{classx2_1_1_finite_automata_a5d56c81d319e70709c46dad540ce5ae7}} 
+std\+::set$<$ int $>$ {\bfseries ending\+States}
+\item 
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a36073aa55410869390e8276ce6e5ebd5}\label{classx2_1_1_finite_automata_a36073aa55410869390e8276ce6e5ebd5}} 
+int {\bfseries cur\+State}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\newline
+class x2\+::\+Finite\+Automata$<$ T $>$}
+
+输入流既可以是 vector，也可以是string；
+
+如果输入流是int，需要另外处理
+
+\+: in C++ does not mean extending, it means that it has such part 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_finite_automata_ac8f011bb86cb9e47370274ae200fc769}\label{classx2_1_1_finite_automata_ac8f011bb86cb9e47370274ae200fc769}} 
+\index{x2\+::\+Finite\+Automata@{x2\+::\+Finite\+Automata}!add\+Transition@{add\+Transition}}
+\index{add\+Transition@{add\+Transition}!x2\+::\+Finite\+Automata@{x2\+::\+Finite\+Automata}}
+\subsubsection{\texorpdfstring{add\+Transition()}{addTransition()}}
+{\footnotesize\ttfamily template$<$class T$>$ \\
+virtual void \hyperlink{classx2_1_1_finite_automata}{x2\+::\+Finite\+Automata}$<$ T $>$\+::add\+Transition (\begin{DoxyParamCaption}\item[{int}]{qin,  }\item[{int}]{in,  }\item[{int}]{qout }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+default is add-\/replace 
+
+Implemented in \hyperlink{classx2_1_1_determinastic_f_a_adbd0f99ea29d31abd9f9675ee5b9fdef}{x2\+::\+Determinastic\+F\+A$<$ T $>$}.
+
+\mbox{\Hypertarget{classx2_1_1_finite_automata_a993fb22633638494c8a267cd2c5329fc}\label{classx2_1_1_finite_automata_a993fb22633638494c8a267cd2c5329fc}} 
+\index{x2\+::\+Finite\+Automata@{x2\+::\+Finite\+Automata}!at\+End@{at\+End}}
+\index{at\+End@{at\+End}!x2\+::\+Finite\+Automata@{x2\+::\+Finite\+Automata}}
+\subsubsection{\texorpdfstring{at\+End()}{atEnd()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+bool \hyperlink{classx2_1_1_finite_automata}{x2\+::\+Finite\+Automata}$<$ T $>$\+::at\+End (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+if current state is accepted \mbox{\Hypertarget{classx2_1_1_finite_automata_a44ca86f1589eeaa77ab73f953033c5a5}\label{classx2_1_1_finite_automata_a44ca86f1589eeaa77ab73f953033c5a5}} 
+\index{x2\+::\+Finite\+Automata@{x2\+::\+Finite\+Automata}!query\+State\+Add@{query\+State\+Add}}
+\index{query\+State\+Add@{query\+State\+Add}!x2\+::\+Finite\+Automata@{x2\+::\+Finite\+Automata}}
+\subsubsection{\texorpdfstring{query\+State\+Add()}{queryStateAdd()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+int \hyperlink{classx2_1_1_finite_automata}{x2\+::\+Finite\+Automata}$<$ T $>$\+::query\+State\+Add (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{state }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+if non-\/exist, add it and return \mbox{\Hypertarget{classx2_1_1_finite_automata_ab645c9a82ae95bda44e60dce1568bcad}\label{classx2_1_1_finite_automata_ab645c9a82ae95bda44e60dce1568bcad}} 
+\index{x2\+::\+Finite\+Automata@{x2\+::\+Finite\+Automata}!reset@{reset}}
+\index{reset@{reset}!x2\+::\+Finite\+Automata@{x2\+::\+Finite\+Automata}}
+\subsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \hyperlink{classx2_1_1_finite_automata}{x2\+::\+Finite\+Automata}$<$ T $>$\+::reset (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+reset all state-\/related information, restart at start\+State 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/F\+A\+Utils.\+h\end{DoxyCompactItemize}

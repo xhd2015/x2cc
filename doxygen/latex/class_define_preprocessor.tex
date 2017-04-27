@@ -1,0 +1,62 @@
+\hypertarget{class_define_preprocessor}{}\section{Define\+Preprocessor Class Reference}
+\label{class_define_preprocessor}\index{Define\+Preprocessor@{Define\+Preprocessor}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_ad755374607c28fa94a34170e4957c96d}\label{class_define_preprocessor_ad755374607c28fa94a34170e4957c96d}} 
+typedef std\+::vector$<$ std\+::string $>$ {\bfseries String\+List}
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_a32693278b748b3d593bbd7d48838ffc6}\label{class_define_preprocessor_a32693278b748b3d593bbd7d48838ffc6}} 
+typedef std\+::vector$<$ int $>$ {\bfseries Int\+List}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_ae59f8c550eb2a7e393b29e54671bc313}\label{class_define_preprocessor_ae59f8c550eb2a7e393b29e54671bc313}} 
+void {\bfseries init\+With\+Line} (const char $\ast$s, size\+\_\+t \&index, size\+\_\+t len, int \&type)
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_a26bd3fdc4f9e46034c6618216665de06}\label{class_define_preprocessor_a26bd3fdc4f9e46034c6618216665de06}} 
+void {\bfseries init\+With\+Line} (const std\+::string \&s, size\+\_\+t \&index, int \&type)
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_af9f161b798f293c736a1fd56bf6df12a}\label{class_define_preprocessor_af9f161b798f293c736a1fd56bf6df12a}} 
+const String\+List \& {\bfseries get\+Args} () const
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_a6e7905597e21e318de883ae8af865207}\label{class_define_preprocessor_a6e7905597e21e318de883ae8af865207}} 
+void {\bfseries set\+Args} (const String\+List \&args)
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_a229418ee0bf5e3fd03ec4d374e8d94df}\label{class_define_preprocessor_a229418ee0bf5e3fd03ec4d374e8d94df}} 
+const Int\+List \& {\bfseries get\+Body} () const
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_ae08e22d30f083cb61177244c861f4f08}\label{class_define_preprocessor_ae08e22d30f083cb61177244c861f4f08}} 
+void {\bfseries set\+Body} (const Int\+List \&body)
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_ab4527473d5fce9081deb535e7d8df110}\label{class_define_preprocessor_ab4527473d5fce9081deb535e7d8df110}} 
+const std\+::string \& {\bfseries get\+Macro\+Name} () const
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_a8c1a3c9d6f11505db5b751f7c0341779}\label{class_define_preprocessor_a8c1a3c9d6f11505db5b751f7c0341779}} 
+void {\bfseries set\+Macro\+Name} (const std\+::string \&macro\+Name)
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_a1e11e3eaf4d9f66a698e4163db502273}\label{class_define_preprocessor_a1e11e3eaf4d9f66a698e4163db502273}} 
+const std\+::string \& {\bfseries get\+Definition} () const
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_a4a45d6d2656b32a06a034829815dfaa2}\label{class_define_preprocessor_a4a45d6d2656b32a06a034829815dfaa2}} 
+std\+::string {\bfseries original\+Def}
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_aa380811e12d51b3fb0a484b1c99af10a}\label{class_define_preprocessor_aa380811e12d51b3fb0a484b1c99af10a}} 
+std\+::string {\bfseries macro\+Name}
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_aab2b652146c89e2d1d031e142f215325}\label{class_define_preprocessor_aab2b652146c89e2d1d031e142f215325}} 
+String\+List {\bfseries args}
+\item 
+\mbox{\Hypertarget{class_define_preprocessor_ae9127f4461cc7c20a84242abd7f45780}\label{class_define_preprocessor_ae9127f4461cc7c20a84242abd7f45780}} 
+Int\+List {\bfseries body}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Lexical\+Parser.\+h\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/src/Lexical\+Parser.\+cpp\end{DoxyCompactItemize}

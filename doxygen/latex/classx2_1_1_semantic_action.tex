@@ -1,0 +1,69 @@
+\hypertarget{classx2_1_1_semantic_action}{}\section{x2\+:\+:Semantic\+Action Class Reference}
+\label{classx2_1_1_semantic_action}\index{x2\+::\+Semantic\+Action@{x2\+::\+Semantic\+Action}}
+
+
+{\ttfamily \#include $<$Grammar\+Translate\+Utils.\+h$>$}
+
+Inheritance diagram for x2\+:\+:Semantic\+Action\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classx2_1_1_semantic_action}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{classx2_1_1_semantic_action_a859c5de657a2c684fef66e04a324e980}{on\+Reduce} (int i, int j)=0
+\item 
+virtual void \hyperlink{classx2_1_1_semantic_action_a00d94c579c5962c74ccd5ee6bc9ef70c}{on\+No\+Goto\+Error} ()=0
+\item 
+virtual void \hyperlink{classx2_1_1_semantic_action_ac8afb7342d18d7d633c234047b16fe27}{on\+No\+Action\+Error} ()=0
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+语义动作(也就是语义规则) 使用者应当根据自己的需求来实现on\+Reduce方法 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_semantic_action_ac8afb7342d18d7d633c234047b16fe27}\label{classx2_1_1_semantic_action_ac8afb7342d18d7d633c234047b16fe27}} 
+\index{x2\+::\+Semantic\+Action@{x2\+::\+Semantic\+Action}!on\+No\+Action\+Error@{on\+No\+Action\+Error}}
+\index{on\+No\+Action\+Error@{on\+No\+Action\+Error}!x2\+::\+Semantic\+Action@{x2\+::\+Semantic\+Action}}
+\subsubsection{\texorpdfstring{on\+No\+Action\+Error()}{onNoActionError()}}
+{\footnotesize\ttfamily virtual void x2\+::\+Semantic\+Action\+::on\+No\+Action\+Error (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+在\+Action\mbox{[}state,a\mbox{]}没有对应的转移的时候调用 
+
+Implemented in \hyperlink{classx2_1_1_default_semantic_action_a6485fcbff1d9b9d63d40112d8887790d}{x2\+::\+Default\+Semantic\+Action}.
+
+\mbox{\Hypertarget{classx2_1_1_semantic_action_a00d94c579c5962c74ccd5ee6bc9ef70c}\label{classx2_1_1_semantic_action_a00d94c579c5962c74ccd5ee6bc9ef70c}} 
+\index{x2\+::\+Semantic\+Action@{x2\+::\+Semantic\+Action}!on\+No\+Goto\+Error@{on\+No\+Goto\+Error}}
+\index{on\+No\+Goto\+Error@{on\+No\+Goto\+Error}!x2\+::\+Semantic\+Action@{x2\+::\+Semantic\+Action}}
+\subsubsection{\texorpdfstring{on\+No\+Goto\+Error()}{onNoGotoError()}}
+{\footnotesize\ttfamily virtual void x2\+::\+Semantic\+Action\+::on\+No\+Goto\+Error (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+在\+G\+O\+TO\mbox{[}state,A\mbox{]}没有对应表项的时候调用 
+
+Implemented in \hyperlink{classx2_1_1_default_semantic_action_acbd05d5f08396b9df966494bd4422a54}{x2\+::\+Default\+Semantic\+Action}.
+
+\mbox{\Hypertarget{classx2_1_1_semantic_action_a859c5de657a2c684fef66e04a324e980}\label{classx2_1_1_semantic_action_a859c5de657a2c684fef66e04a324e980}} 
+\index{x2\+::\+Semantic\+Action@{x2\+::\+Semantic\+Action}!on\+Reduce@{on\+Reduce}}
+\index{on\+Reduce@{on\+Reduce}!x2\+::\+Semantic\+Action@{x2\+::\+Semantic\+Action}}
+\subsubsection{\texorpdfstring{on\+Reduce()}{onReduce()}}
+{\footnotesize\ttfamily virtual void x2\+::\+Semantic\+Action\+::on\+Reduce (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+在产生一个归约式的时候调用. 
+\begin{DoxyParams}{Parameters}
+{\em i} & \\
+\hline
+{\em j} & $<$i,j$>$指定使用的产生式,因为它只是个索引,所以你必须知道它所使用的文法实体 \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \hyperlink{classx2_1_1_default_semantic_action_a25f6cc0ccc04c61ad57bfcf10b9c0cb9}{x2\+::\+Default\+Semantic\+Action}.
+
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Grammar\+Translate\+Utils.\+h\end{DoxyCompactItemize}

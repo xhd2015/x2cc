@@ -1,0 +1,258 @@
+\hypertarget{classx2_1_1_gramma}{}\section{x2\+:\+:Gramma Class Reference}
+\label{classx2_1_1_gramma}\index{x2\+::\+Gramma@{x2\+::\+Gramma}}
+
+
+{\ttfamily \#include $<$Gramma\+Utils.\+h$>$}
+
+Inheritance diagram for x2\+:\+:Gramma\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classx2_1_1_gramma}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_aa8b50e42698370df0a3dbe44e8c6f182}\label{classx2_1_1_gramma_aa8b50e42698370df0a3dbe44e8c6f182}} 
+typedef \hyperlink{classx2_1_1_gramma}{Gramma} {\bfseries This}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_abbd7903e9220c50d0fc76a327b57fb1c}\label{classx2_1_1_gramma_abbd7903e9220c50d0fc76a327b57fb1c}} 
+typedef std\+::map$<$ int, std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ $>$ {\bfseries Productions\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a49dba600dd70cf11797ec8b887712cfd}\label{classx2_1_1_gramma_a49dba600dd70cf11797ec8b887712cfd}} 
+typedef std\+::map$<$ int, std\+::set$<$ int $>$ $>$ {\bfseries Sets\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_aff012603885ff5f5618774fc210fb3d1}\label{classx2_1_1_gramma_aff012603885ff5f5618774fc210fb3d1}} 
+typedef std\+::vector$<$ int $>$\+::size\+\_\+type {\bfseries size\+\_\+type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a03901eb5b196689b901fbf23e5bb9f0e}\label{classx2_1_1_gramma_a03901eb5b196689b901fbf23e5bb9f0e}} 
+typedef std\+::map$<$ std\+::pair$<$ int, int $>$, std\+::set$<$ std\+::tuple$<$ int, int, int $>$ $>$ $>$ \hyperlink{classx2_1_1_gramma_a03901eb5b196689b901fbf23e5bb9f0e}{L\+R\+Corrupt\+Table\+Type}
+\begin{DoxyCompactList}\small\item\em 带有冲突类型的\+L\+R分析表  请注意,L\+R分析表对于所有的\+L\+R文法都是通用的. tuple$<$int,int,int$>$ $<$i,j, action$>$ \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a33681053b045219ea58cc68c3faa4975}\label{classx2_1_1_gramma_a33681053b045219ea58cc68c3faa4975}} 
+typedef std\+::map$<$ std\+::pair$<$ int, int $>$, std\+::tuple$<$ int, int, int $>$ $>$ \hyperlink{classx2_1_1_gramma_a33681053b045219ea58cc68c3faa4975}{L\+R\+Analyze\+Table\+Type}
+\begin{DoxyCompactList}\small\item\em 不带冲突的\+L\+R分析表,也称为标准的分析表 \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_aaa8482a5cebd401c1d194bf9eae74622}\label{classx2_1_1_gramma_aaa8482a5cebd401c1d194bf9eae74622}} 
+{\bfseries Gramma} (const \hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&gsyms)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a83a39b4b3d064dd01117cab3a3ff1292}\label{classx2_1_1_gramma_a83a39b4b3d064dd01117cab3a3ff1292}} 
+{\bfseries Gramma} (\hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&\&gsyms)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_af6646cc2b56c3757361c4353bbb5d4d7}\label{classx2_1_1_gramma_af6646cc2b56c3757361c4353bbb5d4d7}} 
+{\bfseries Gramma} (const std\+::initializer\+\_\+list$<$ std\+::pair$<$ int, std\+::string $>$ $>$ \&list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ad808555763361340d4d5ac83b21cae59}\label{classx2_1_1_gramma_ad808555763361340d4d5ac83b21cae59}} 
+{\bfseries Gramma} (const std\+::string \&file)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_abc2824d9f948e57df12e62668872953b}\label{classx2_1_1_gramma_abc2824d9f948e57df12e62668872953b}} 
+{\bfseries Gramma} (std\+::istream \&in)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a4951974a0021d5ba56b32d75d8de4e53}\label{classx2_1_1_gramma_a4951974a0021d5ba56b32d75d8de4e53}} 
+{\bfseries Gramma} (const std\+::initializer\+\_\+list$<$ std\+::pair$<$ int, std\+::string $>$ $>$ \&list, const std\+::initializer\+\_\+list$<$ std\+::pair$<$ int, \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ $>$ \&prodlist)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_aeab98669a1cc0e99274334dea8148f2a}\label{classx2_1_1_gramma_aeab98669a1cc0e99274334dea8148f2a}} 
+{\bfseries Gramma} (const std\+::initializer\+\_\+list$<$ std\+::pair$<$ std\+::string, std\+::initializer\+\_\+list$<$ std\+::string $>$$>$$>$ \&prodlist)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_abd5c0c3cb506b2261e9c5af2d243f27b}\label{classx2_1_1_gramma_abd5c0c3cb506b2261e9c5af2d243f27b}} 
+{\bfseries Gramma} (const std\+::vector$<$ std\+::pair$<$ std\+::string, std\+::vector$<$ std\+::string $>$$>$$>$ \&prodlist)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_af5e2d1e16f16be36dab8d5caed577bb3}\label{classx2_1_1_gramma_af5e2d1e16f16be36dab8d5caed577bb3}} 
+{\bfseries Gramma} (std\+::initializer\+\_\+list$<$ std\+::string $>$ list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a32aff8f7801e9247ad2b9e54343c06aa}\label{classx2_1_1_gramma_a32aff8f7801e9247ad2b9e54343c06aa}} 
+{\bfseries Gramma} (const std\+::vector$<$ std\+::string $>$ \&list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ae2f19aee6d2718fafb04cad678519e4a}\label{classx2_1_1_gramma_ae2f19aee6d2718fafb04cad678519e4a}} 
+void {\bfseries add\+Production} (int i, const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&gs)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ace0d616133f9cd0b8ed81d7e98963f34}\label{classx2_1_1_gramma_ace0d616133f9cd0b8ed81d7e98963f34}} 
+void {\bfseries add\+Production} (int i, \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&\&gs)
+\item 
+void \hyperlink{classx2_1_1_gramma_aaf4cbec7886ba7eaf878ca75a517e4e0}{add\+Production} (const std\+::string \&head, const std\+::vector$<$ std\+::string $>$ \&gs)
+\item 
+void \hyperlink{classx2_1_1_gramma_a86ff823a6b5aefacbc9a024414c078d8}{add\+Production} (const std\+::string \&head, const std\+::initializer\+\_\+list$<$ std\+::string $>$ \&gs)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ab1701d83a618434e4025b42d59c3ed05}\label{classx2_1_1_gramma_ab1701d83a618434e4025b42d59c3ed05}} 
+void {\bfseries add\+Production} (const std\+::string \&all)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a10072e9945425e348fe164ae11dbd48e}\label{classx2_1_1_gramma_a10072e9945425e348fe164ae11dbd48e}} 
+bool {\bfseries can\+Symbol\+Empty} (int i)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a3ba8caf8e40ce5ce3e02fadd7fed0309}\label{classx2_1_1_gramma_a3ba8caf8e40ce5ce3e02fadd7fed0309}} 
+bool {\bfseries can\+Sentence\+Empty} (const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&s)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ade7340fc0ee5e8514314465d5cae3348}\label{classx2_1_1_gramma_ade7340fc0ee5e8514314465d5cae3348}} 
+bool {\bfseries can\+Sentence\+Empty} (const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&s, int end)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a11f1d43bcba6ed42c3bc6771745eb9c5}\label{classx2_1_1_gramma_a11f1d43bcba6ed42c3bc6771745eb9c5}} 
+bool {\bfseries can\+Sentence\+Empty} (const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&s, int start, int end)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ae3eaf6c1a28873ca324ec3cc33f3e47c}\label{classx2_1_1_gramma_ae3eaf6c1a28873ca324ec3cc33f3e47c}} 
+A\+S\+\_\+\+M\+A\+C\+RO const std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ \& {\bfseries get\+Right\+Sentences} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a1d34706fe75ade7df4e0e45800d9a652}\label{classx2_1_1_gramma_a1d34706fe75ade7df4e0e45800d9a652}} 
+A\+S\+\_\+\+M\+A\+C\+RO std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ \& {\bfseries get\+Right\+Sentences} (int i)
+\item 
+void \hyperlink{classx2_1_1_gramma_aa5e24a49dbf499af546703b594ef4a51}{replace\+First\+Production} (int i, const int j)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a621ddb8f04f2c00e747940bde3bbf6e6}\label{classx2_1_1_gramma_a621ddb8f04f2c00e747940bde3bbf6e6}} 
+void {\bfseries reduce\+Left\+Recursive} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ab87bf7edf41374f02def88a3ebcb4407}\label{classx2_1_1_gramma_ab87bf7edf41374f02def88a3ebcb4407}} 
+void {\bfseries eliminate\+Self\+Deduction} (int i)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a1a94a73d06f42e99630d434f79593bdc}\label{classx2_1_1_gramma_a1a94a73d06f42e99630d434f79593bdc}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries eliminate\+Self\+Deduction} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a5fb5250196eadcb35ab2f3c33ffaee4a}\label{classx2_1_1_gramma_a5fb5250196eadcb35ab2f3c33ffaee4a}} 
+void {\bfseries eliminate\+Duplication} (int i)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ac9f8249e01fe17a2b2fd6cc1e4e7155a}\label{classx2_1_1_gramma_ac9f8249e01fe17a2b2fd6cc1e4e7155a}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries eliminate\+Duplication} ()
+\item 
+void \hyperlink{classx2_1_1_gramma_abc0b45a3d37e2955bc89d74bb5234697}{reduce\+Direct\+Left\+Recursive} (int i)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ab0c313d702258f7d93aad0faf2095eb0}\label{classx2_1_1_gramma_ab0c313d702258f7d93aad0faf2095eb0}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries reduce\+Direct\+Left\+Recursive} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a0f5c977a9bcb4b8547fb41e2085b8c70}\label{classx2_1_1_gramma_a0f5c977a9bcb4b8547fb41e2085b8c70}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries reduce\+Left\+Factor} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a326ea520b5348ec08e6e6f496220a080}\label{classx2_1_1_gramma_a326ea520b5348ec08e6e6f496220a080}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries reduce\+Left\+Factor} (int i)
+\item 
+int \hyperlink{classx2_1_1_gramma_a883d11029de8fb73053b478870b78c89}{reduce} (std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ \&data, const std\+::string \&varname, int start, int end, std\+::vector$<$ int $>$ \&subset)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a242995260a76097e8a342b362106dff4}\label{classx2_1_1_gramma_a242995260a76097e8a342b362106dff4}} 
+void {\bfseries reduce\+Left\+Factor} (std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ \&data, const std\+::string \&varname, int i)
+\item 
+std\+::vector$<$ int $>$ \hyperlink{classx2_1_1_gramma_a17a55403158293775921697a94a7f2c1}{get\+Productions\+Head} () const
+\item 
+void \hyperlink{classx2_1_1_gramma_a15e7c86a1dae673945a108f1bf2fb80c}{reduce\+Left\+Factor} (int i, int j)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_abc71debab97cec29b1a417c6801ca73a}\label{classx2_1_1_gramma_abc71debab97cec29b1a417c6801ca73a}} 
+Sets\+Type {\bfseries calc\+First} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a4f587bc53e41f69627c7b30454813a20}\label{classx2_1_1_gramma_a4f587bc53e41f69627c7b30454813a20}} 
+std\+::set$<$ int $>$ {\bfseries calc\+First} (const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&gs, int start, int end, const Sets\+Type \&firstset)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a7936a7fb2f169fb995c55f0b114098a3}\label{classx2_1_1_gramma_a7936a7fb2f169fb995c55f0b114098a3}} 
+Sets\+Type {\bfseries calc\+Follow} (const Sets\+Type \&firstset, int start\+Sym, int end\+Sym)
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_aa3a32e4425700a215bf112ccb8a2cf6b}\label{classx2_1_1_gramma_aa3a32e4425700a215bf112ccb8a2cf6b}} 
+\hyperlink{classx2_1_1_gramma}{Gramma} {\bfseries duplicate} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a48f86b362ff1dc0d66b950032ff8de8a}\label{classx2_1_1_gramma_a48f86b362ff1dc0d66b950032ff8de8a}} 
+\hyperlink{classx2_1_1_gramma}{Gramma} {\bfseries duplicate\+Share\+Symbols} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_aaf454e5652ec9d278950d0db09506798}\label{classx2_1_1_gramma_aaf454e5652ec9d278950d0db09506798}} 
+A\+S\+\_\+\+M\+A\+C\+RO std\+::string {\bfseries to\+String} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_aabbb04e38d5027b21ae2ab03bfbfaa17}\label{classx2_1_1_gramma_aabbb04e38d5027b21ae2ab03bfbfaa17}} 
+A\+S\+\_\+\+M\+A\+C\+RO std\+::string {\bfseries to\+String} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a8f79c3c8284ad9a7b2a080e0cc327137}\label{classx2_1_1_gramma_a8f79c3c8284ad9a7b2a080e0cc327137}} 
+A\+S\+\_\+\+M\+A\+C\+RO std\+::string {\bfseries to\+String} (const \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} \&gs) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a6853c16fd634bad1051ab8f8d212f3b8}\label{classx2_1_1_gramma_a6853c16fd634bad1051ab8f8d212f3b8}} 
+A\+S\+\_\+\+M\+A\+C\+RO std\+::string {\bfseries to\+String} (int i, const std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ \&gss) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a0027de55c6f5cba74472f907aee33c61}\label{classx2_1_1_gramma_a0027de55c6f5cba74472f907aee33c61}} 
+A\+S\+\_\+\+M\+A\+C\+RO std\+::string {\bfseries to\+String} (int i, int j) const
+\item 
+std\+::string \hyperlink{classx2_1_1_gramma_a04fc8a9d7e0dcc709706ac9bc117fb35}{to\+String} (const Sets\+Type \&set) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_ab88c409d2f637b743e224d5bf12bdc2c}\label{classx2_1_1_gramma_ab88c409d2f637b743e224d5bf12bdc2c}} 
+std\+::string {\bfseries to\+String} (const std\+::set$<$ int $>$ \&set) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a52c38fc9e80328e3779f41df5717e33e}\label{classx2_1_1_gramma_a52c38fc9e80328e3779f41df5717e33e}} 
+A\+S\+\_\+\+M\+A\+C\+RO const \hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \& {\bfseries get\+Gramma\+Symbols} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a803bd74e9d0c3d7199bc03439b1df537}\label{classx2_1_1_gramma_a803bd74e9d0c3d7199bc03439b1df537}} 
+static \hyperlink{classx2_1_1_gramma_a33681053b045219ea58cc68c3faa4975}{L\+R\+Analyze\+Table\+Type} \hyperlink{classx2_1_1_gramma_a803bd74e9d0c3d7199bc03439b1df537}{convert\+Corrupt\+To\+Standard\+Simply} (const \hyperlink{classx2_1_1_gramma_a03901eb5b196689b901fbf23e5bb9f0e}{L\+R\+Corrupt\+Table\+Type} \&table)
+\begin{DoxyCompactList}\small\item\em 提供一个最简单的将冲突的分析表转换成标准分析表的方法：仅仅保留第一项 \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_af1a00aadbdd36bb81faf35c739eca913}\label{classx2_1_1_gramma_af1a00aadbdd36bb81faf35c739eca913}} 
+\hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} {\bfseries gsyms}
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_gramma_a0b545b47424e8e783b21e84ac746eb05}\label{classx2_1_1_gramma_a0b545b47424e8e783b21e84ac746eb05}} 
+Productions\+Type {\bfseries prods}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+LL Utilities are automatically loadeed Gramma状态约定： 如果syms中存在一个非终结符号，则prods必然包含至少一个产生式（统一性） prods中的所有产生式，左部只能来自syms表的非终结符，右部只能是syms符号的一个组合
+
+First集中只能含有空符号或者终结符
+
+我的优化的原意是消除冗余，但是现在看来没有那个必要了
+
+some conditions\+: S -\/$>$ S 毫无意义， 会在消除直接左递归的过程中消除掉，但是这属于循环推导，可能会引起消除间接左递归的失败 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_gramma_aaf4cbec7886ba7eaf878ca75a517e4e0}\label{classx2_1_1_gramma_aaf4cbec7886ba7eaf878ca75a517e4e0}} 
+\index{x2\+::\+Gramma@{x2\+::\+Gramma}!add\+Production@{add\+Production}}
+\index{add\+Production@{add\+Production}!x2\+::\+Gramma@{x2\+::\+Gramma}}
+\subsubsection{\texorpdfstring{add\+Production()}{addProduction()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily void x2\+::\+Gramma\+::add\+Production (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{head,  }\item[{const std\+::vector$<$ std\+::string $>$ \&}]{gs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+added 2017-\/04-\/21 21\+:49\+:40 \mbox{\Hypertarget{classx2_1_1_gramma_a86ff823a6b5aefacbc9a024414c078d8}\label{classx2_1_1_gramma_a86ff823a6b5aefacbc9a024414c078d8}} 
+\index{x2\+::\+Gramma@{x2\+::\+Gramma}!add\+Production@{add\+Production}}
+\index{add\+Production@{add\+Production}!x2\+::\+Gramma@{x2\+::\+Gramma}}
+\subsubsection{\texorpdfstring{add\+Production()}{addProduction()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily void x2\+::\+Gramma\+::add\+Production (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{head,  }\item[{const std\+::initializer\+\_\+list$<$ std\+::string $>$ \&}]{gs }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+added 2017-\/04-\/21 21\+:49\+:47 \mbox{\Hypertarget{classx2_1_1_gramma_a17a55403158293775921697a94a7f2c1}\label{classx2_1_1_gramma_a17a55403158293775921697a94a7f2c1}} 
+\index{x2\+::\+Gramma@{x2\+::\+Gramma}!get\+Productions\+Head@{get\+Productions\+Head}}
+\index{get\+Productions\+Head@{get\+Productions\+Head}!x2\+::\+Gramma@{x2\+::\+Gramma}}
+\subsubsection{\texorpdfstring{get\+Productions\+Head()}{getProductionsHead()}}
+{\footnotesize\ttfamily std\+::vector$<$ int $>$ x2\+::\+Gramma\+::get\+Productions\+Head (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+获得当前的产生式的所有键，以避免发生prods修改时，迭代器失效 \mbox{\Hypertarget{classx2_1_1_gramma_a883d11029de8fb73053b478870b78c89}\label{classx2_1_1_gramma_a883d11029de8fb73053b478870b78c89}} 
+\index{x2\+::\+Gramma@{x2\+::\+Gramma}!reduce@{reduce}}
+\index{reduce@{reduce}!x2\+::\+Gramma@{x2\+::\+Gramma}}
+\subsubsection{\texorpdfstring{reduce()}{reduce()}}
+{\footnotesize\ttfamily int x2\+::\+Gramma\+::reduce (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ \&}]{data,  }\item[{const std\+::string \&}]{varname,  }\item[{int}]{start,  }\item[{int}]{end,  }\item[{std\+::vector$<$ int $>$ \&}]{subset }\end{DoxyParamCaption})}
+
+start from start, end at end,not including end \mbox{\Hypertarget{classx2_1_1_gramma_abc0b45a3d37e2955bc89d74bb5234697}\label{classx2_1_1_gramma_abc0b45a3d37e2955bc89d74bb5234697}} 
+\index{x2\+::\+Gramma@{x2\+::\+Gramma}!reduce\+Direct\+Left\+Recursive@{reduce\+Direct\+Left\+Recursive}}
+\index{reduce\+Direct\+Left\+Recursive@{reduce\+Direct\+Left\+Recursive}!x2\+::\+Gramma@{x2\+::\+Gramma}}
+\subsubsection{\texorpdfstring{reduce\+Direct\+Left\+Recursive()}{reduceDirectLeftRecursive()}}
+{\footnotesize\ttfamily void x2\+::\+Gramma\+::reduce\+Direct\+Left\+Recursive (\begin{DoxyParamCaption}\item[{int}]{i }\end{DoxyParamCaption})}
+
+将i归为两类：以s开头和不以s开头 \mbox{\Hypertarget{classx2_1_1_gramma_a15e7c86a1dae673945a108f1bf2fb80c}\label{classx2_1_1_gramma_a15e7c86a1dae673945a108f1bf2fb80c}} 
+\index{x2\+::\+Gramma@{x2\+::\+Gramma}!reduce\+Left\+Factor@{reduce\+Left\+Factor}}
+\index{reduce\+Left\+Factor@{reduce\+Left\+Factor}!x2\+::\+Gramma@{x2\+::\+Gramma}}
+\subsubsection{\texorpdfstring{reduce\+Left\+Factor()}{reduceLeftFactor()}}
+{\footnotesize\ttfamily void x2\+::\+Gramma\+::reduce\+Left\+Factor (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{int}]{j }\end{DoxyParamCaption})}
+
+消除 i中所有以j开头的左因子 查找以最长公共前缀，将前缀后面的串替换成一个新的语法变量，然后删除重复的串
+
+引入的语法变量名称为原变量加上\textquotesingle{} \mbox{\Hypertarget{classx2_1_1_gramma_aa5e24a49dbf499af546703b594ef4a51}\label{classx2_1_1_gramma_aa5e24a49dbf499af546703b594ef4a51}} 
+\index{x2\+::\+Gramma@{x2\+::\+Gramma}!replace\+First\+Production@{replace\+First\+Production}}
+\index{replace\+First\+Production@{replace\+First\+Production}!x2\+::\+Gramma@{x2\+::\+Gramma}}
+\subsubsection{\texorpdfstring{replace\+First\+Production()}{replaceFirstProduction()}}
+{\footnotesize\ttfamily void x2\+::\+Gramma\+::replace\+First\+Production (\begin{DoxyParamCaption}\item[{int}]{i,  }\item[{const int}]{j }\end{DoxyParamCaption})}
+
+对 i -\/$>$ j ..进行替换 \mbox{\Hypertarget{classx2_1_1_gramma_a04fc8a9d7e0dcc709706ac9bc117fb35}\label{classx2_1_1_gramma_a04fc8a9d7e0dcc709706ac9bc117fb35}} 
+\index{x2\+::\+Gramma@{x2\+::\+Gramma}!to\+String@{to\+String}}
+\index{to\+String@{to\+String}!x2\+::\+Gramma@{x2\+::\+Gramma}}
+\subsubsection{\texorpdfstring{to\+String()}{toString()}}
+{\footnotesize\ttfamily std\+::string x2\+::\+Gramma\+::to\+String (\begin{DoxyParamCaption}\item[{const Sets\+Type \&}]{set }\end{DoxyParamCaption}) const}
+
+for F\+O\+L\+L\+OW \& F\+I\+R\+ST 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Gramma\+Utils.\+h\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/src/Gramma\+Utils.\+cpp\end{DoxyCompactItemize}

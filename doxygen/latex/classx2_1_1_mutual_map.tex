@@ -1,0 +1,135 @@
+\hypertarget{classx2_1_1_mutual_map}{}\section{x2\+:\+:Mutual\+Map$<$ T1, T2 $>$ Class Template Reference}
+\label{classx2_1_1_mutual_map}\index{x2\+::\+Mutual\+Map$<$ T1, T2 $>$@{x2\+::\+Mutual\+Map$<$ T1, T2 $>$}}
+
+
+{\ttfamily \#include $<$Mutual\+Map.\+h$>$}
+
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_aab4506822de38fe4801e6fd26dcfc4a8}\label{classx2_1_1_mutual_map_aab4506822de38fe4801e6fd26dcfc4a8}} 
+typedef \hyperlink{classx2_1_1_mutual_map}{Mutual\+Map}$<$ T1, T2 $>$ {\bfseries This}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a5b2d1fecd17aa67effd5f530f3bfcb77}\label{classx2_1_1_mutual_map_a5b2d1fecd17aa67effd5f530f3bfcb77}} 
+typedef T1 {\bfseries Type1}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_afa9a6a304444f00fc24e2a643731ec6e}\label{classx2_1_1_mutual_map_afa9a6a304444f00fc24e2a643731ec6e}} 
+typedef T2 {\bfseries Type2}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a2b67e110065e0e79fb558e662980d6ba}\label{classx2_1_1_mutual_map_a2b67e110065e0e79fb558e662980d6ba}} 
+typedef std\+::map$<$ Type1, Type2 $>$ {\bfseries Map\+Type1}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a3d131315a967f500f9273ee5b41e9e72}\label{classx2_1_1_mutual_map_a3d131315a967f500f9273ee5b41e9e72}} 
+typedef std\+::map$<$ Type2, Type1 $>$ {\bfseries Map\+Type2}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a0aec006dfe740b3aca9b8f5cd3ede3e0}\label{classx2_1_1_mutual_map_a0aec006dfe740b3aca9b8f5cd3ede3e0}} 
+{\bfseries Mutual\+Map} (const T1 \&failed\+T1, const T2 \&failed\+T2)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_acb2a15b336a6c70edd3d4fe9a26ee546}\label{classx2_1_1_mutual_map_acb2a15b336a6c70edd3d4fe9a26ee546}} 
+{\bfseries Mutual\+Map} (const T1 \&failed\+T1, const T2 \&failed\+T2, std\+::initializer\+\_\+list$<$ std\+::pair$<$ T1, T2 $>$$>$ list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a0f8373a36782451417531b32de7ede92}\label{classx2_1_1_mutual_map_a0f8373a36782451417531b32de7ede92}} 
+{\bfseries Mutual\+Map} (\hyperlink{classx2_1_1_mutual_map}{Mutual\+Map}$<$ T1, T2 $>$ \&\&mm)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_ac22842edf0d0c2ff714ecf863162d614}\label{classx2_1_1_mutual_map_ac22842edf0d0c2ff714ecf863162d614}} 
+{\bfseries Mutual\+Map} (const \hyperlink{classx2_1_1_mutual_map}{Mutual\+Map}$<$ T1, T2 $>$ \&mm)=default
+\item 
+const T1 \& \hyperlink{classx2_1_1_mutual_map_acff746e0227b363d23d7a854a9673d44}{get\+T2} (const T2 \&t2) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_ad0e2ed1c35c156ac7f379c737ea2a98d}\label{classx2_1_1_mutual_map_ad0e2ed1c35c156ac7f379c737ea2a98d}} 
+const T2 \& {\bfseries get\+T1} (const T1 \&t1) const
+\item 
+const T1 \& \hyperlink{classx2_1_1_mutual_map_aba13a2fb8bd6343efc7874da48c5156c}{get\+Add\+T2} (const T2 \&t2, const T1 \&t1)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_aebbfcc0501af0e6080f71d6ca4c468df}\label{classx2_1_1_mutual_map_aebbfcc0501af0e6080f71d6ca4c468df}} 
+const T2 \& {\bfseries get\+Add\+T1} (const T1 \&t1, const T2 \&t2)
+\item 
+bool \hyperlink{classx2_1_1_mutual_map_ac9572b3e52982e24e77978ee7e3ab44b}{add\+T1} (const T1 \&t1, const T2 \&t2)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a3aff757ccd0b3c5adf5d91dd9b792bfd}\label{classx2_1_1_mutual_map_a3aff757ccd0b3c5adf5d91dd9b792bfd}} 
+bool {\bfseries add\+T1} (T1 \&\&t1, T2 \&\&t2)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a46bd0595e1983a9d4239a9c005ad45dc}\label{classx2_1_1_mutual_map_a46bd0595e1983a9d4239a9c005ad45dc}} 
+bool {\bfseries add\+T2} (const T2 \&t2, const T1 \&t1)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a585053ba0d6293850ca4af5b4a259cec}\label{classx2_1_1_mutual_map_a585053ba0d6293850ca4af5b4a259cec}} 
+bool {\bfseries add\+T2} (T2 \&\&t2, T1 \&\&t1)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a095d9b2f5e11716764c78e64a93f691d}\label{classx2_1_1_mutual_map_a095d9b2f5e11716764c78e64a93f691d}} 
+T2 {\bfseries remove\+T1} (const T1 \&t1)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a31ae2da8838537afba8bec8e0c560090}\label{classx2_1_1_mutual_map_a31ae2da8838537afba8bec8e0c560090}} 
+T1 {\bfseries remove\+T2} (const T2 \&t2)
+\item 
+bool \hyperlink{classx2_1_1_mutual_map_adcf6a37d18e6db2939cb205c73ca9b72}{add\+Replace\+T1} (const T1 \&t1, const T2 \&t2)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_ad0e9896b9abf29c9a6a81b69511387f1}\label{classx2_1_1_mutual_map_ad0e9896b9abf29c9a6a81b69511387f1}} 
+bool {\bfseries add\+Replace\+T2} (const T2 \&t2, const T1 \&t1)
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a79a7822f40483ef63a78100ed1700e6a}\label{classx2_1_1_mutual_map_a79a7822f40483ef63a78100ed1700e6a}} 
+std\+::string {\bfseries to\+String} () const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a85e97b24c0cc1633aadc3739fa60569b}\label{classx2_1_1_mutual_map_a85e97b24c0cc1633aadc3739fa60569b}} 
+Map\+Type1 {\bfseries m1}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a5f8f5940664f7842ad7b4c898a34e0a8}\label{classx2_1_1_mutual_map_a5f8f5940664f7842ad7b4c898a34e0a8}} 
+Map\+Type2 {\bfseries m2}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a6c536ae71190e39f0c9ab7d75dd2f160}\label{classx2_1_1_mutual_map_a6c536ae71190e39f0c9ab7d75dd2f160}} 
+Type1 {\bfseries failed\+T1}
+\item 
+\mbox{\Hypertarget{classx2_1_1_mutual_map_a24c70f6ed99841b01ce43fa4514151c6}\label{classx2_1_1_mutual_map_a24c70f6ed99841b01ce43fa4514151c6}} 
+Type2 {\bfseries failed\+T2}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T1, class T2$>$\newline
+class x2\+::\+Mutual\+Map$<$ T1, T2 $>$}
+
+任意时刻保证： 如果a,b 在m1中，则b,a必在m2中；如果a,b在m2中，则b,a必在m1中 如果a,b不在m1中，则b,a不在m2中；如果a,b不在m2中，则b,a不在m1中
+
+2017-\/4-\/26 20\+:59\+:09 为了使其可以容纳相同的类型映射,将方法名修改.
+
+方法名 \+: add\+T1 和 add\+T2 分别表示以谁作为键来查询,添加和删除; 其中作为键的一方不会被删除或者修改 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_mutual_map_adcf6a37d18e6db2939cb205c73ca9b72}\label{classx2_1_1_mutual_map_adcf6a37d18e6db2939cb205c73ca9b72}} 
+\index{x2\+::\+Mutual\+Map@{x2\+::\+Mutual\+Map}!add\+Replace\+T1@{add\+Replace\+T1}}
+\index{add\+Replace\+T1@{add\+Replace\+T1}!x2\+::\+Mutual\+Map@{x2\+::\+Mutual\+Map}}
+\subsubsection{\texorpdfstring{add\+Replace\+T1()}{addReplaceT1()}}
+{\footnotesize\ttfamily template$<$class T1, class T2$>$ \\
+bool \hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$ T1, T2 $>$\+::add\+Replace\+T1 (\begin{DoxyParamCaption}\item[{const T1 \&}]{t1,  }\item[{const T2 \&}]{t2 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+add, if t1 pair already exist,then t1 is kept,change $<$t1,\+\_\+$>$ to $<$t1,t2$>$ return if replaced \mbox{\Hypertarget{classx2_1_1_mutual_map_ac9572b3e52982e24e77978ee7e3ab44b}\label{classx2_1_1_mutual_map_ac9572b3e52982e24e77978ee7e3ab44b}} 
+\index{x2\+::\+Mutual\+Map@{x2\+::\+Mutual\+Map}!add\+T1@{add\+T1}}
+\index{add\+T1@{add\+T1}!x2\+::\+Mutual\+Map@{x2\+::\+Mutual\+Map}}
+\subsubsection{\texorpdfstring{add\+T1()}{addT1()}}
+{\footnotesize\ttfamily template$<$class T1, class T2$>$ \\
+bool \hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$ T1, T2 $>$\+::add\+T1 (\begin{DoxyParamCaption}\item[{const T1 \&}]{t1,  }\item[{const T2 \&}]{t2 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+if any one is present,return failed,else return succeed \mbox{\Hypertarget{classx2_1_1_mutual_map_aba13a2fb8bd6343efc7874da48c5156c}\label{classx2_1_1_mutual_map_aba13a2fb8bd6343efc7874da48c5156c}} 
+\index{x2\+::\+Mutual\+Map@{x2\+::\+Mutual\+Map}!get\+Add\+T2@{get\+Add\+T2}}
+\index{get\+Add\+T2@{get\+Add\+T2}!x2\+::\+Mutual\+Map@{x2\+::\+Mutual\+Map}}
+\subsubsection{\texorpdfstring{get\+Add\+T2()}{getAddT2()}}
+{\footnotesize\ttfamily template$<$class T1, class T2$>$ \\
+const T1 \& \hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$ T1, T2 $>$\+::get\+Add\+T2 (\begin{DoxyParamCaption}\item[{const T2 \&}]{t2,  }\item[{const T1 \&}]{t1 }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+get,if non-\/exist, add it \mbox{\Hypertarget{classx2_1_1_mutual_map_acff746e0227b363d23d7a854a9673d44}\label{classx2_1_1_mutual_map_acff746e0227b363d23d7a854a9673d44}} 
+\index{x2\+::\+Mutual\+Map@{x2\+::\+Mutual\+Map}!get\+T2@{get\+T2}}
+\index{get\+T2@{get\+T2}!x2\+::\+Mutual\+Map@{x2\+::\+Mutual\+Map}}
+\subsubsection{\texorpdfstring{get\+T2()}{getT2()}}
+{\footnotesize\ttfamily template$<$class T1 , class T2$>$ \\
+const T1 \& \hyperlink{classx2_1_1_mutual_map}{x2\+::\+Mutual\+Map}$<$ T1, T2 $>$\+::get\+T2 (\begin{DoxyParamCaption}\item[{const T2 \&}]{t2 }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
+
+两者都作为键，不可能直接更改其中任何一方的值 如果没有查找到，还应当 有一个默认的返回值，即提供失败的值 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Mutual\+Map.\+h\end{DoxyCompactItemize}

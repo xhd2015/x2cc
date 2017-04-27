@@ -19,3 +19,4 @@ continue"
 //but for some reason,you must use #usesyntax
 
 #usesyntax APP from X,it is defined in X
+p p

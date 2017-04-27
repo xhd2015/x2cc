@@ -43,7 +43,7 @@ endif
 all: compiler-debug.exe
 
 dependents:
-	-cd D:/Pool/eclipse-workspace/leetcode/Debug && $(MAKE) all
+	-cd D:/Pool/eclipse-workspace/leetcode/Debug && $(MAKE) clean all
 
 # Tool invocations
 compiler-debug.exe: $(OBJS) $(USER_OBJS) D:/Pool/eclipse-workspace/leetcode/Debug/leetcode.exe

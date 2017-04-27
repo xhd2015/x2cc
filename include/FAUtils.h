@@ -38,9 +38,6 @@ template<class T>
 class FiniteAutomataManager
 { //只是一个管理器，管理状态，管理符号表
 public:
-	/**
-	 * when not found,return what?
-	 */
 	FiniteAutomataManager(const  T& emptyT,const T& failedT);
 	FiniteAutomataManager(const  T& emptyT,const T& failedT,std::initializer_list<T> symList,
 			std::initializer_list<std::string> stateList
@@ -58,30 +55,29 @@ public:
 	int queryStateAdd(const std::string & state);
 	int querySymbolAdd(const T& t);
 	const std::string& queryState(int state)const;
+	/**
+	 * 查找符号下标对应值
+	 */
 	const T& 		querySymbol(int sym)const;
 	std::string toString()const;
 
 
 protected:
+	/**
+	 * 符号的整数形式
+	 */
 	x2::MutualMap<int, T> symbols;
+	/**
+	 * 状态的整数形式
+	 */
 	x2::MutualMap<int, std::string> states;
 	int maxIndexSym,maxIndexState;//max is last un-available
 	static int EMPTY_INDEX, UNDEFINED_INDEX;
 	static std::string EMPTY_STRING, UNDEFINED_STRING;
 };
 
-//针对int类型的特化
 /**
- * 暂时什么都不提供
- */
-template <>
-class FiniteAutomataManager<int>
-{
-
-};
-
-/**
- * T as a group
+ * T as group element type
  */
 template <class T>
 class FAGroups{
@@ -333,7 +329,7 @@ template<class T>
 FiniteAutomataManager<T>::FiniteAutomataManager(const  T& emptyT,const T& failedT) :
 		symbols(UNDEFINED_INDEX, failedT),states(UNDEFINED_INDEX,UNDEFINED_STRING),maxIndexSym(0),maxIndexState(0)
 {
-	symbols.add(EMPTY_INDEX, emptyT);
+	symbols.addT1(EMPTY_INDEX, emptyT);
 }
 template<class T>
 inline FiniteAutomataManager<T>::FiniteAutomataManager(const T& emptyT,
@@ -372,12 +368,12 @@ inline int x2::FiniteAutomataManager<T>::queryState(
 template<class T>
 inline int x2::FiniteAutomataManager<T>::querySymbol(const T& t) const
 {
-	return this->symbols.get(t);
+	return this->symbols.getT2(t);
 }
 template<class T>
 inline int FiniteAutomataManager<T>::queryStateAdd(const std::string& state)
 {
-	int i=this->states.getAdd(state,this->maxIndexState);
+	int i=this->states.getAddT2(state,this->maxIndexState);
 	if(i==this->maxIndexState)this->maxIndexState++;
 	return i;
 }
@@ -385,7 +381,7 @@ inline int FiniteAutomataManager<T>::queryStateAdd(const std::string& state)
 template<class T>
 inline int FiniteAutomataManager<T>::querySymbolAdd(const T& t)
 {
-	int i=this->symbols.getAdd(t,this->maxIndexSym);
+	int i=this->symbols.getAddT2(t,this->maxIndexSym);
 	if(i==this->maxIndexSym)this->maxIndexSym++;
 	return i;
 }
@@ -394,12 +390,12 @@ template<class T>
 inline const std::string& x2::FiniteAutomataManager<T>::queryState(
 		int state) const
 {
-	return this->states.get(state);
+	return this->states.getT1(state);
 }
 template<class T>
 inline const T& x2::FiniteAutomataManager<T>::querySymbol(int sym) const
 {
-	return this->symbols.get(sym);
+	return this->symbols.getT1(sym);
 }
 
 template<class T>
@@ -579,6 +575,7 @@ inline int x2::FiniteAutomata<T>::queryState(const std::string& state)const
 {
 	return this->FAman.queryState(state);
 }
+
 
 template<class T>
 inline int x2::FiniteAutomata<T>::querySymbol(const T& t)const

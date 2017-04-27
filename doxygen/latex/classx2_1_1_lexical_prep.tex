@@ -1,0 +1,76 @@
+\hypertarget{classx2_1_1_lexical_prep}{}\section{x2\+:\+:Lexical\+Prep Class Reference}
+\label{classx2_1_1_lexical_prep}\index{x2\+::\+Lexical\+Prep@{x2\+::\+Lexical\+Prep}}
+Inheritance diagram for x2\+:\+:Lexical\+Prep\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classx2_1_1_lexical_prep}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_a824c45c7a34058d731b60324815a8384}\label{classx2_1_1_lexical_prep_a824c45c7a34058d731b60324815a8384}} 
+enum \{ \newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+L\+A\+ST} =-\/1, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+E\+R\+R\+OR} =-\/2, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+S\+T\+A\+RT} =0, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+ER}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+I\+D\+\_\+\+S\+T\+A\+RT}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+I\+D\+\_\+\+E\+ND}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+N\+U\+M\+B\+ER}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+I\+R\+E\+C\+T\+I\+V\+E\+\_\+\+S\+T\+A\+RT}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+I\+R\+E\+C\+T\+I\+V\+E\+\_\+\+E\+ND}
+ \}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_a2d842e29a3f190c8e8aab0158e2f2d8d}\label{classx2_1_1_lexical_prep_a2d842e29a3f190c8e8aab0158e2f2d8d}} 
+enum \{ \newline
+{\bfseries S\+E\+T\+\_\+\+S\+T\+A\+RT} =-\/1000, 
+{\bfseries S\+E\+T\+\_\+\+B\+IN}, 
+{\bfseries S\+E\+T\+\_\+\+H\+EX}, 
+{\bfseries S\+E\+T\+\_\+\+D\+EC}, 
+\newline
+{\bfseries S\+E\+T\+\_\+\+L\+O\+W\+ER}, 
+{\bfseries S\+E\+T\+\_\+\+U\+P\+P\+ER}, 
+{\bfseries S\+E\+T\+\_\+\+L\+E\+T\+T\+ER}, 
+{\bfseries S\+E\+T\+\_\+\+W\+O\+R\+D\+\_\+\+S\+T\+A\+RT}, 
+\newline
+{\bfseries S\+E\+T\+\_\+\+W\+O\+R\+D\+\_\+\+E\+ND}, 
+{\bfseries S\+E\+T\+\_\+\+I\+N\+L\+I\+N\+E\+\_\+\+S\+P\+A\+CE}, 
+{\bfseries S\+E\+T\+\_\+\+S\+P\+A\+CE}, 
+{\bfseries S\+E\+T\+\_\+\+N\+O\+N\+\_\+\+W\+O\+RD}
+ \}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_a85dac42b31f4e252c5bd41225ddc8192}\label{classx2_1_1_lexical_prep_a85dac42b31f4e252c5bd41225ddc8192}} 
+typedef \hyperlink{classx2_1_1_lexical_prep}{Lexical\+Prep} {\bfseries This}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_a5dfa1a4f6a396958da74affec6c1df67}\label{classx2_1_1_lexical_prep_a5dfa1a4f6a396958da74affec6c1df67}} 
+typedef std\+::map$<$ int, std\+::map$<$ int, int $>$ $>$ {\bfseries Trans\+Map}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_ad13cec8bb420d73eeee81a9ec179b1a1}\label{classx2_1_1_lexical_prep_ad13cec8bb420d73eeee81a9ec179b1a1}} 
+{\bfseries Lexical\+Prep} (int i)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_ab53c6c59c506b4622f9f9cb98c334c95}\label{classx2_1_1_lexical_prep_ab53c6c59c506b4622f9f9cb98c334c95}} 
+void {\bfseries parse} (const char $\ast$buffer, size\+\_\+t len, size\+\_\+t \&index)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_aaa47b259983af53f1b7731c3577f24c2}\label{classx2_1_1_lexical_prep_aaa47b259983af53f1b7731c3577f24c2}} 
+int {\bfseries get\+Next\+State} (int cur\+State, char ch)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_abde0d268131038bd92c45b0e1d686fa8}\label{classx2_1_1_lexical_prep_abde0d268131038bd92c45b0e1d686fa8}} 
+void {\bfseries error} (const char $\ast$buffer, size\+\_\+t len, size\+\_\+t \&index, int \&state)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_prep_a0e6e7b8dc9e35fbc65db5c95359a156e}\label{classx2_1_1_lexical_prep_a0e6e7b8dc9e35fbc65db5c95359a156e}} 
+Trans\+Map {\bfseries trans\+Map}
+\end{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Lexical\+Parser.\+h\end{DoxyCompactItemize}

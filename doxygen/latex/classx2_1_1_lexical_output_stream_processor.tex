@@ -1,0 +1,84 @@
+\hypertarget{classx2_1_1_lexical_output_stream_processor}{}\section{x2\+:\+:Lexical\+Output\+Stream\+Processor$<$ T, V $>$ Class Template Reference}
+\label{classx2_1_1_lexical_output_stream_processor}\index{x2\+::\+Lexical\+Output\+Stream\+Processor$<$ T, V $>$@{x2\+::\+Lexical\+Output\+Stream\+Processor$<$ T, V $>$}}
+
+
+{\ttfamily \#include $<$F\+A\+Utils.\+h$>$}
+
+Inheritance diagram for x2\+:\+:Lexical\+Output\+Stream\+Processor$<$ T, V $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classx2_1_1_lexical_output_stream_processor}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classx2_1_1_lexical_output_stream_processor_a221c7064aea399ed949761e3e784acd7}{P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+A\+C\+T\+I\+ON} \{ {\bfseries P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+A\+P\+P\+E\+ND} =0, 
+{\bfseries P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+N\+EW} =1, 
+{\bfseries P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+N\+E\+W\+A\+P\+P\+E\+ND} =2, 
+{\bfseries P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+I\+G\+N\+O\+RE} =3
+ \}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_af5c4b994e1ac814f7c39d21e0caa8375}\label{classx2_1_1_lexical_output_stream_processor_af5c4b994e1ac814f7c39d21e0caa8375}} 
+typedef std\+::vector$<$ std\+::pair$<$ V, int $>$ $>$ {\bfseries Output\+Stream\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a9db9908c3ea85542720488129efc4245}\label{classx2_1_1_lexical_output_stream_processor_a9db9908c3ea85542720488129efc4245}} 
+typedef std\+::map$<$ std\+::pair$<$ int, int $>$, std\+::pair$<$ int, int $>$ $>$ {\bfseries Action\+Type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a3c6459aa48678f1f021c2173949b1da8}\label{classx2_1_1_lexical_output_stream_processor_a3c6459aa48678f1f021c2173949b1da8}} 
+{\bfseries Lexical\+Output\+Stream\+Processor} (\hyperlink{classx2_1_1_finite_automata}{Finite\+Automata}$<$ T $>$ \&da)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a776187b870429aec3d29639cfec125cb}\label{classx2_1_1_lexical_output_stream_processor_a776187b870429aec3d29639cfec125cb}} 
+Output\+Stream\+Type \& {\bfseries get\+Cached\+Stream} ()
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a604f90577a9a2edb5a46d48e23bdbe3f}\label{classx2_1_1_lexical_output_stream_processor_a604f90577a9a2edb5a46d48e23bdbe3f}} 
+const Output\+Stream\+Type \& {\bfseries get\+Cached\+Stream} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_af48a62609df67717be94c7d9bb979807}\label{classx2_1_1_lexical_output_stream_processor_af48a62609df67717be94c7d9bb979807}} 
+virtual void {\bfseries process} (int cur\+State, const T \&in)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a4733c0d4578dbce6e87804fbe7db327e}\label{classx2_1_1_lexical_output_stream_processor_a4733c0d4578dbce6e87804fbe7db327e}} 
+void {\bfseries add\+Type} (std\+::pair$<$ std\+::string, T $>$ key, std\+::pair$<$ std\+::string, int $>$ value)
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a7e25ccd87f2694194cb28545194ccd1c}\label{classx2_1_1_lexical_output_stream_processor_a7e25ccd87f2694194cb28545194ccd1c}} 
+void {\bfseries add\+Type} (std\+::pair$<$ int, int $>$ key, std\+::pair$<$ int, int $>$ value)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a26c478133a4944e7eb19872d6ca78eba}\label{classx2_1_1_lexical_output_stream_processor_a26c478133a4944e7eb19872d6ca78eba}} 
+\hyperlink{classx2_1_1_finite_automata}{Finite\+Automata}$<$ T $>$ \& {\bfseries fa}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a255e05cf7a51dc60d2b7afe02ff4eec6}\label{classx2_1_1_lexical_output_stream_processor_a255e05cf7a51dc60d2b7afe02ff4eec6}} 
+Output\+Stream\+Type {\bfseries cached\+Stream}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a54670c34772bcf9763f45065d7564d52}\label{classx2_1_1_lexical_output_stream_processor_a54670c34772bcf9763f45065d7564d52}} 
+Action\+Type {\bfseries actions}
+\item 
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a79c52ead270f8e1b6c2ed44a362c4267}\label{classx2_1_1_lexical_output_stream_processor_a79c52ead270f8e1b6c2ed44a362c4267}} 
+\hyperlink{classx2_1_1_indexed_map}{Indexed\+Map}$<$ std\+::string $>$ {\bfseries type\+Info}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T, class V$>$\newline
+class x2\+::\+Lexical\+Output\+Stream\+Processor$<$ T, V $>$}
+
+一般的词法分析器要求输出 $<$ 值，类型$>$=\char`\"{}\char`\"{}$>$两种 有些值，比如int，类型是\+I\+D，\+I\+D-\/int就可以作为一种语法引导符号 V is a vector-\/like container V supports\+: constructs from \{\} push\+\_\+back(\+T) 
+
+\subsection{Member Enumeration Documentation}
+\mbox{\Hypertarget{classx2_1_1_lexical_output_stream_processor_a221c7064aea399ed949761e3e784acd7}\label{classx2_1_1_lexical_output_stream_processor_a221c7064aea399ed949761e3e784acd7}} 
+\index{x2\+::\+Lexical\+Output\+Stream\+Processor@{x2\+::\+Lexical\+Output\+Stream\+Processor}!P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+A\+C\+T\+I\+ON@{P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+A\+C\+T\+I\+ON}}
+\index{P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+A\+C\+T\+I\+ON@{P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+A\+C\+T\+I\+ON}!x2\+::\+Lexical\+Output\+Stream\+Processor@{x2\+::\+Lexical\+Output\+Stream\+Processor}}
+\subsubsection{\texorpdfstring{P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+A\+C\+T\+I\+ON}{POSITION\_ACTION}}
+{\footnotesize\ttfamily template$<$class T, class V$>$ \\
+enum \hyperlink{classx2_1_1_lexical_output_stream_processor_a221c7064aea399ed949761e3e784acd7}{x2\+::\+Lexical\+Output\+Stream\+Processor\+::\+P\+O\+S\+I\+T\+I\+O\+N\+\_\+\+A\+C\+T\+I\+ON}}
+
+position = new or keep 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/F\+A\+Utils.\+h\end{DoxyCompactItemize}

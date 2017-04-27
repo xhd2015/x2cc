@@ -31,6 +31,7 @@ using std::pair;
 		SET_DEC,
 		SET_HEX,
  */
+namespace x2{
 const LexicalParser::JUDGE_CHAR LexicalParser::judgeArr[LexicalParser::SET_SIZE]={
 		LexicalParser::isInAlpha,
 		LexicalParser::isInWord,
@@ -141,6 +142,16 @@ LexicalParser::CharType	LexicalParser::charType={
     {'\\',TYPE_TRANSFER},
 };
 
+std::set<string> DefaultLexcialToGrammarStream::ID_IS_VALUE={
+				"int",
+				"char",
+				"string",
+				"return",
+				"true",
+				"false",
+		};
+
+//====class : LexicalParser
 
 LexicalParser::LexicalParser() {
 	// TODO Auto-generated constructor stub
@@ -400,25 +411,26 @@ char	LexicalParser::findValue(char key,const char* buffer,size_t len)
  * 			 	recognise "..." to STRING,take care of \"
  *
  */
-void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& index, size_t len)
+typename LexicalParser::WordStream LexicalParser::parseWords(std::istream & in)
 {
-
+	WordStream stream;
 	char ch;
-	int i;
-//	char *buf=new char[100];
-//	int bufi=0;
+	bool nextCh=true;
 	int curState=STATE_START,nextState=STATE_START,lastState;
 	bool	prepP=false;
 	int wordP=DOING_ONE_WROD;
 	int curType;
 	int val,times;
-//	vector<char>	oneword={'<','>'}; //include algorithm for that
-//	vector<char>	ignore={'\t','\ '};
 	string currentOutput;
-	for(i=index;i<=(int)len;i++)
+	while(true)
 	{
-	    if(i==(int)len)ch=0;
-	    else	ch=buffer[i];
+		if(nextCh)
+		{
+			if(!in.eof()) ch=in.get();
+			else ch=0;
+		}else{
+			nextCh=true; /*recover automatically*/
+		}
 	    if(wordP==DONE_ONE_WORD)wordP=DOING_ONE_WROD;
 		switch(curState)
 		{
@@ -430,15 +442,13 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 			  }
 			else if(This::isInSpecial(ch))
 			{
-			    if(ch=='#'){prepP=true;}
-			   if(ch=='/'){
+			  if(ch=='#'){prepP=true;}
+			  wordP=DONE_ONE_WORD;
+//			  curType=This::charType[ch];
+			  curType=TYPE_SINGLE;
+			  currentOutput.push_back(ch);
+			}else if(ch=='/'){
 				nextState=STATE_NOTE;
-//				printf("going note\n");
-			    }else{
-			      wordP=DONE_ONE_WORD;
-			      curType=This::charType[ch];
-			      currentOutput.push_back(ch);
-			    }
 			}else if(ch=='\r'){
 			    //pass
 			}else if(ch=='\t' || ch==' '){
@@ -447,7 +457,7 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 				nextState=STATE_KEEP_SPACE;
 				currentOutput.push_back(ch);
 			      }else{
-
+			    	  //keep at state_start
 			      }
 			    //pass
 			}else if(ch=='\n'){
@@ -468,13 +478,14 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 			    nextState=STATE_STRING;
 			}else if(ch=='\''){
 			    nextState=STATE_CHAR;
-			}else if(ch==0){
-			    i--;
-			    nextState=STATE_END;
 			}else if(ch=='\\'){
 			    lastState=STATE_START;
 			    nextState=STATE_TRANSFER_LANGUAGE;
+			}else if(ch==0 || ch=='\0' || ch==-1){
+			    nextCh=false;
+			    nextState=STATE_END;
 			}else{
+				std::cout << "ch is "<<(int)ch << std::endl;
 			    nextState=STATE_UNRECOGNIZED_CHAR;
 			    currentOutput.push_back(ch);
 			}
@@ -486,7 +497,7 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 			    lastState=STATE_ID;
 			    nextState=STATE_TRANSFER_LANGUAGE;
 			}else{
-				i--;
+			    nextCh=false;
 				nextState=STATE_START;
 				wordP=DONE_ONE_WORD;
 				curType=TYPE_ID;
@@ -495,7 +506,8 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 		case STATE_KEEP_SPACE:
 		      if(ch==' '||ch=='\t')currentOutput.push_back(ch);
 		      else{
-			  i--;nextState=STATE_START;wordP=DONE_ONE_WORD;curType=TYPE_SPACE;
+				    nextCh=false;
+				    nextState=STATE_START;wordP=DONE_ONE_WORD;curType=TYPE_SPACE;
 		      }
 		      break;
 		case STATE_NUMBER:
@@ -508,7 +520,7 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 				currentOutput.push_back(ch);
 				nextState=STATE_DECILMAL_NUMBER;
 			}else{
-				i--;
+			    nextCh=false;
 				nextState=STATE_START;
 				curType=TYPE_NUMBER_DECIMAL;
 				wordP=DONE_ONE_WORD;
@@ -519,7 +531,7 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 				currentOutput.push_back(ch);
 				nextState=STATE_DECILMAL_NUMBER;
 			}else{
-				i--;
+			    nextCh=false;
 				wordP=DONE_ONE_WORD;
 				curType=TYPE_NUMBER_DECIMAL;
 				nextState=STATE_START;
@@ -533,7 +545,7 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 			      //pass
 			}
 			else{
-				i--;
+			    nextCh=false;
 				nextState=STATE_START;
 				curType=TYPE_NUMBER_HEX;
 				wordP=DONE_ONE_WORD;
@@ -545,7 +557,7 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 			}else if(ch=='_'){
 					//do nothing,as an extension, we support number like 0b0011_0100
 			}else{
-				i--;
+			    nextCh=false;
 				wordP=DONE_ONE_WORD;
 				curType=TYPE_NUMBER_BIN;
 				nextState=STATE_START;
@@ -591,23 +603,26 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 				times=0;val=0;
 				nextState=STATE_TRANSFER_COMMON_U1;
 			}else{
-			    i--;
+			    nextCh=false;
 			    nextState=STATE_TRANSFER_INVALID;
 			}
 
 			break;
 		case STATE_TRANSFER_COMMON_X1:
 			if(This::isInHex(ch)){val=This::getCharVal(ch);nextState=STATE_TRANSFER_COMMON_X2;}
-			else {nextState=STATE_TRANSFER_HEX_NOT_ENOGUH;i--;}
+			else {nextState=STATE_TRANSFER_HEX_NOT_ENOGUH;
+		    nextCh=false;}
 			break;
 		case STATE_TRANSFER_COMMON_X2:
 			if(This::isInHex(ch)){val=16*val + This::getCharVal(ch);currentOutput.push_back((char)val);nextState=lastState;}
-			else {nextState=STATE_TRANSFER_HEX_NOT_ENOGUH;i--;}
+			else {nextState=STATE_TRANSFER_HEX_NOT_ENOGUH;
+		    nextCh=false;}
 			break;
 		case STATE_TRANSFER_COMMON_U1:
 			 if(This::isInHex(ch)){val=16*val+This::getCharVal(ch);}
 			 else{
-			     nextState=STATE_TRANSFER_HEX_NOT_ENOGUH;i--;
+			     nextState=STATE_TRANSFER_HEX_NOT_ENOGUH;
+				    nextCh=false;
 			 }
 			if(++times==4)
 			  {
@@ -618,7 +633,8 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 			break;
 		case STATE_TRANSFER_LANGUAGE:
 			if(This::isInSpecial(ch)||ch=='\''||ch=='"'){nextState=lastState;currentOutput.push_back(ch);}
-			else {i--;nextState=STATE_TRANSFER_COMMON;}
+			else {
+			    nextCh=false;nextState=STATE_TRANSFER_COMMON;}
 			break;
 		case STATE_TRANSFER_STRING:
 			if(ch=='"'){nextState=lastState;wordP=DONE_ONE_WORD;currentOutput.push_back(ch);}
@@ -627,11 +643,13 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 			    nextState=lastState;
 			    currentOutput.push_back(ch);
 			  }
-			else {i--;nextState=STATE_TRANSFER_VALUE;}
+			else {
+			    nextCh=false;nextState=STATE_TRANSFER_VALUE;}
 			break;
 		case STATE_TRANSFER_CHAR:
 			if(ch=='\''){nextState=lastState;wordP=DONE_ONE_WORD;currentOutput.push_back(ch);}
-			else {i--;nextState=STATE_TRANSFER_VALUE;}
+			else {
+			    nextCh=false;nextState=STATE_TRANSFER_VALUE;}
 			break;
 		case STATE_TRANSFER_VALUE:
 			switch(ch)
@@ -645,7 +663,8 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 			  case 'r':
 			    currentOutput.push_back('\r'); goto END_VALUE;
 			  default:
-			     i--;
+
+				    nextCh=false;
 			     nextState=STATE_TRANSFER_COMMON;
 			     goto NEXT_STATE;
 			}
@@ -673,7 +692,8 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 		case STATE_NOTE:
 			if(ch=='/'){nextState=STATE_LINE_NOTE;}
 			else if(ch=='*')nextState=STATE_MULTILINE_NOTE;
-			else {i--;nextState=STATE_START;currentOutput.push_back('/');curType=TYPE_SINGLE;wordP=DONE_ONE_WORD;}
+			else {
+			    nextCh=false;;nextState=STATE_START;currentOutput.push_back('/');curType=TYPE_SINGLE;wordP=DONE_ONE_WORD;}
 			break;
 		case STATE_LINE_NOTE:
 			if(ch=='\r'){
@@ -713,11 +733,11 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 		      wordP=DONE_ONE_WORD;
 		      curType=TYPE_UNRECOGNIZED;
 		      nextState=STATE_START;
-		      i--;
+			  nextCh=false;
+//		      std::cout << "in unrecognized , char is "<<(int)ch<<std::endl;
 		      break;
 		case STATE_TRANSFER_INVALID:
 		      wordP=DONE_ONE_WORD;
-
 		      nextState=STATE_START;
 		  break;
 		case STATE_END:
@@ -734,7 +754,9 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 		}
 		if(wordP==DONE_ONE_WORD)
 		{
-			printf("(%s,%s)\n",currentOutput.c_str(),humanInfo[curType].c_str());
+//			if(curType==TYPE_UNRECOGNIZED)
+//				std::cout << "Unrecognized char "<<(int)ch<<std::endl;
+//			printf("(%s,%s)\n",currentOutput.c_str(),humanInfo[curType].c_str());
 			stream.push_back(pair<string,int>(currentOutput,curType));
 			currentOutput.clear();
 			curType=TYPE_NONE;
@@ -748,7 +770,7 @@ void LexicalParser::parseWords(WordStream &stream,const char* buffer, size_t& in
 	  {
 	    std::cout << "get lexical error : unexpected EOF for ("<<humanInfo[curType]<<","<<currentOutput<<")"<<std::endl;
 	  }
-
+	return stream;
 }
 /**
  *
@@ -937,7 +959,6 @@ void LexicalParser::error(const char* msg) const
 {
 	printf(" [ ERROR ]: %s\n",msg);
 }
-
 //===========class : PrinterDebugger
 
 PrintDebugger::PrintDebugger():
@@ -1102,3 +1123,6 @@ DefinePreprocessor::setMacroName (const std::string& macroName)
 {
   this->macroName = macroName;
 }
+
+} /* namespace x2 */
+

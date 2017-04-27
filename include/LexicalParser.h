@@ -13,18 +13,94 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <GrammaUtils.h>
 
 #define AS_MACRO inline __attribute__((always_inline))
 #define ARRSIZE(arr)	(sizeof(arr)/sizeof(arr[0]))
 #define BY_FULTON
 
+namespace x2{
+/**
+ * \brief A convert word stream, it converts any input type to integer(int)
+ *
+ * a stream is an ordered input sequence, which can move backward or move forward randomly.
+ * the stream is not consumed,so it can be repeatly traversed.
+ *
+ * It cannot be put,but only be taken.
+ *
+ */
+class StreamConvertor
+{
+public:
+	typedef std::vector<std::pair<std::string,int> > WordStream;
+	StreamConvertor()=default;
+	virtual ~StreamConvertor()=default;
+	virtual void goBackward();
+	virtual void goForward();
+	virtual void move(int i)=0;
+	virtual void goHead()=0;
+	virtual void goEnd()=0;
+	/**
+	 * get an input stream
+	 */
+	virtual StreamConvertor& operator>>(int &i)=0;
+	/**
+	 * get an input, but do not move the stream
+	 */
+	virtual int				peek()const=0;
+	/**
+	 * same with operator>>
+	 */
+	virtual int				get()=0;
+
+	/**
+	 *  judge if the stream is coming its ending
+	 */
+	virtual bool			eof()const=0;
+};
+
+/**
+ * @detail at every get,peek or >> operation,it's the user's obligation to check if the
+ * stream reaches its eof.
+ */
+class LexicalToGrammarStream : public StreamConvertor,public std::vector<int>{
+public:
+	typedef LexicalToGrammarStream This;
+	typedef StreamConvertor Father;
+	using SizeType=std::vector<int>::size_type;
+
+	LexicalToGrammarStream();
+	LexicalToGrammarStream(std::initializer_list<int> list);
+	LexicalToGrammarStream(std::vector<int> && list);
+	LexicalToGrammarStream(const vector<int> & list);
+	LexicalToGrammarStream(const LexicalToGrammarStream &stream)=default;
+	LexicalToGrammarStream(LexicalToGrammarStream && stream)=default;
+	virtual ~LexicalToGrammarStream()=default;
+
+	virtual void move(int i);
+	virtual void goHead();
+	virtual void goEnd();
+	/**
+	 * The 3 following getting operations do not check the index,so it may cause
+	 * index out of range exception
+	 */
+	virtual StreamConvertor& operator>>(int &i);
+	virtual int				peek()const;
+	virtual int				get();
+
+	virtual bool			eof()const;
+
+protected:
+	 SizeType curIndex;
+};
+
 class LexicalParser {
 public:
 	typedef LexicalParser This;
 	typedef bool (*JUDGE_CHAR)(char ch);
-	typedef std::vector<std::pair<std::string,int> > WordStream;
 	typedef std::map<int,std::string>	TransMap;
 	typedef std::map<char,int>		CharType;
+	using WordStream=typename LexicalToGrammarStream::WordStream;
 public:
 	enum{//accepted STATE is STATE_START
 		STATE_START,
@@ -72,7 +148,7 @@ public:
 //		TYPE_S1_INCLUDE=22,
 //		TYPE_S1_BODY=20,
 //		TYPE_S1_DIRECTIVE=21,
-		TYPE_NOTE=8,TYPE_INLINE_NOTE=54,TYPE_FREE_NOTE=55,TYPE_DOC_NOTE=56,
+		TYPE_NOTE=8,TYPE_INLINE_NOTE=55,TYPE_FREE_NOTE,TYPE_DOC_NOTE=57,
 		TYPE_LBRACE=9,
 		TYPE_RBRACE=10,
 		TYPE_LHBRACE=11,/*{ huge brace*/
@@ -137,7 +213,10 @@ public:
 	 */
 	void parseNumber(const char *buffer,size_t len)=delete;
 	void parseString(const char *buffer,size_t &index,size_t len)=delete;
-	void parseWords(WordStream &stream,const char *buffer,size_t &index,size_t len);
+	/**
+	 * 接受一个输入流 istream作为输入类型,转换成输出类 WordStream
+	 */
+	WordStream parseWords(std::istream & in);
 	void parsePreps(const char *buffer,size_t &index,size_t len)=delete;//each parser has a method: parse
 								    //it will give out the parsed results
 	//================ABOVE uses integrated DFA===============
@@ -167,6 +246,23 @@ public:
 	static const JUDGE_CHAR judgeArr[SET_SIZE];
 	static TransMap humanInfo;
 	static CharType	charType;//one basic requirement : all are expressed as TYPE_XXX,not the character itself.
+};
+/**
+ * @brief LexicalParse for c的一个转换流实现器
+ */
+class DefaultLexcialToGrammarStream : public LexicalToGrammarStream{
+public:
+		static std::set<std::string> ID_IS_VALUE;
+		/**
+		 * 抛弃note(注释）
+		 *
+		 * 将 TYPE=id时,检查内容
+		 * 			为int,返回int
+		 * 			为true/false,返回
+		 *
+		 */
+		DefaultLexcialToGrammarStream(const StreamConvertor::WordStream & wdstream,const Gramma &g);
+
 };
 
 class PrintDebugger{
@@ -270,6 +366,82 @@ public:
 
 //===========function macros
 
+
+
+//====class : StreamConvertor
+inline void StreamConvertor::goBackward()
+{
+	this->move(-1);
+}
+
+inline void StreamConvertor::goForward()
+{
+	this->move(1);
+}
+
+//=====class : LexicalToGrammarStream
+inline LexicalToGrammarStream::LexicalToGrammarStream():
+ curIndex(0)
+{
+
+}
+
+inline LexicalToGrammarStream::LexicalToGrammarStream(
+		std::initializer_list<int> list):
+		std::vector<int>(list),curIndex(0)
+{
+}
+
+inline LexicalToGrammarStream::LexicalToGrammarStream(std::vector<int>&& list):
+		std::vector<int>(list),curIndex(0)
+{
+}
+
+inline LexicalToGrammarStream::LexicalToGrammarStream(const vector<int>& list):
+		std::vector<int>(list),curIndex(0)
+{
+}
+
+
+
+
+
+inline void LexicalToGrammarStream::move(int i)
+{
+	this->curIndex +=(SizeType)i;
+}
+
+inline void LexicalToGrammarStream::goHead()
+{
+	this->curIndex=0;
+}
+
+inline void LexicalToGrammarStream::goEnd()
+{
+	this->curIndex=this->size();
+}
+
+inline StreamConvertor& LexicalToGrammarStream::operator>>(int& i)
+{
+	i=(*this)[this->curIndex++];
+	return *this;
+}
+
+
+inline int			LexicalToGrammarStream::peek()const
+{
+	return this->at(this->curIndex);
+}
+inline int			LexicalToGrammarStream::get()
+{
+	return this->at(this->curIndex++);
+}
+inline bool			LexicalToGrammarStream::eof()const
+{
+	return this->curIndex >= this->size();
+}
+
+//=====class : LexicalStream
 bool	LexicalParser::registerTypeString(int type,const std::string& s)
 {
   if(humanInfo.find(type)!=humanInfo.end())return false;
@@ -282,4 +454,39 @@ bool	LexicalParser::registerTypeString(int type,const std::string& s)
    return humanInfo[type];
  }
 
+ //======class : DefaultLexcialToGrammarStream
+ inline DefaultLexcialToGrammarStream::DefaultLexcialToGrammarStream(
+ 		const StreamConvertor::WordStream& wdstream, const Gramma& g)
+ {
+ 		for(auto & p : wdstream)
+ 		{
+ 			if(p.second==LexicalParser::TYPE_ID)
+ 			{
+ 				if(ID_IS_VALUE.find(p.first)!=ID_IS_VALUE.end())
+ 				{
+ 					this->push_back(g.gsyms.get(p.first));
+ 				}else{
+ 					this->push_back(g.gsyms.get("id"));
+ 				}
+ 			}else if(p.second==LexicalParser::TYPE_SINGLE){
+ 				this->push_back(g.gsyms.get(p.first));
+ 			}else if(p.second==LexicalParser::TYPE_NUMBER_BIN ||
+ 					p.second==LexicalParser::TYPE_NUMBER_HEX ||
+ 					p.second==LexicalParser::TYPE_NUMBER_DECIMAL){
+ 				this->push_back(g.gsyms.get("number"));
+ 			}else if(p.second == LexicalParser::TYPE_STRING){
+ 				this->push_back(g.gsyms.get("stringval"));
+ 			}else if(p.second == LexicalParser::TYPE_CHAR){
+ 				this->push_back(g.gsyms.get("charval"));
+ 			}else if(p.second == LexicalParser::TYPE_NOTE){
+ 				//pass
+ 			}else if(p.second == LexicalParser::TYPE_END){
+ 				this->push_back(g.gsyms.get("$"));
+ 			}else{
+ 				std::cout << "ERROR :" << LexicalParser::humanInfo[p.second] << std::endl;
+ 			}
+ 		}
+ }
+
+} /* namespace x2 */
 #endif /* LEXICALPARSER_H_ */

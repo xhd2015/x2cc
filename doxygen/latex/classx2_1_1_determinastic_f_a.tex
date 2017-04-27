@@ -1,0 +1,176 @@
+\hypertarget{classx2_1_1_determinastic_f_a}{}\section{x2\+:\+:Determinastic\+FA$<$ T $>$ Class Template Reference}
+\label{classx2_1_1_determinastic_f_a}\index{x2\+::\+Determinastic\+F\+A$<$ T $>$@{x2\+::\+Determinastic\+F\+A$<$ T $>$}}
+
+
+{\ttfamily \#include $<$F\+A\+Utils.\+h$>$}
+
+Inheritance diagram for x2\+:\+:Determinastic\+FA$<$ T $>$\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classx2_1_1_determinastic_f_a}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a378dc64bebafba6e061dfa0616f73713}\label{classx2_1_1_determinastic_f_a_a378dc64bebafba6e061dfa0616f73713}} 
+typedef \hyperlink{classx2_1_1_determinastic_f_a}{Determinastic\+FA}$<$ T $>$ {\bfseries This}
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a6ffacb3640a8d30ec12b6da8435a7026}\label{classx2_1_1_determinastic_f_a_a6ffacb3640a8d30ec12b6da8435a7026}} 
+typedef \hyperlink{classx2_1_1_finite_automata}{Finite\+Automata}$<$ T $>$ {\bfseries Father}
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a71618ce7ece8a7d8e969dfba34a71d6a}\label{classx2_1_1_determinastic_f_a_a71618ce7ece8a7d8e969dfba34a71d6a}} 
+typedef std\+::vector$<$ T $>$ {\bfseries Input\+Stream\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_aca059798241ef9f91ec1e613b27790cc}\label{classx2_1_1_determinastic_f_a_aca059798241ef9f91ec1e613b27790cc}} 
+typedef std\+::function$<$ void(int, const T \&)$>$ {\bfseries Process\+Fun\+Type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a26fca3362b7a400ba88d7eef9d9cccef}\label{classx2_1_1_determinastic_f_a_a26fca3362b7a400ba88d7eef9d9cccef}} 
+{\bfseries Determinastic\+FA} (const T \&emptyT, const T \&failedT, int start\+State, const std\+::vector$<$ int $>$ \&ending\+States)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a9564061d48e93d38a9de005aaaecb2e4}\label{classx2_1_1_determinastic_f_a_a9564061d48e93d38a9de005aaaecb2e4}} 
+{\bfseries Determinastic\+FA} (const T \&emptyT, const T \&failedT, const std\+::string \&start\+State, const std\+::vector$<$ std\+::string $>$ \&ending\+States)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_aa2affbfd0b67bd1a604c015ff4c3764f}\label{classx2_1_1_determinastic_f_a_aa2affbfd0b67bd1a604c015ff4c3764f}} 
+{\bfseries Determinastic\+FA} (\hyperlink{classx2_1_1_finite_automata_manager}{Finite\+Automata\+Manager}$<$ T $>$ \&\&faman, int start\+State, const std\+::vector$<$ int $>$ \&ending\+States)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a3abf4b94adfa0e9d88f48d5db31390d1}\label{classx2_1_1_determinastic_f_a_a3abf4b94adfa0e9d88f48d5db31390d1}} 
+{\bfseries Determinastic\+FA} (\hyperlink{classx2_1_1_finite_automata_manager}{Finite\+Automata\+Manager}$<$ T $>$ \&\&faman, const std\+::string \&start\+State, const std\+::vector$<$ std\+::string $>$ \&ending\+States)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_abca31bc4345ac45dd64d5af48c4adf01}\label{classx2_1_1_determinastic_f_a_abca31bc4345ac45dd64d5af48c4adf01}} 
+{\bfseries Determinastic\+FA} (const std\+::string \&start\+State, const std\+::vector$<$ std\+::string $>$ \&ending\+States)
+\item 
+bool \hyperlink{classx2_1_1_determinastic_f_a_a830e6d1612b263d9ef126b29709f4c46}{add\+Transition\+No\+Replace} (int qin, int in, int qout)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_adc6cda2e6a84bacff95f5430c4cbadd6}\label{classx2_1_1_determinastic_f_a_adc6cda2e6a84bacff95f5430c4cbadd6}} 
+bool {\bfseries add\+Transition\+No\+Replace} (const std\+::string \&qin, const T \&in, const std\+::string \&qout)
+\item 
+void \hyperlink{classx2_1_1_determinastic_f_a_a28c9f0dc652f38e8a08d67e2d911d56d}{add\+Transition\+By\+Group} (const std\+::string \&qin, const std\+::string \&group\+Name, const std\+::string \&qout)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_ad373a317b0f3ba584f0ccfab895dff74}\label{classx2_1_1_determinastic_f_a_ad373a317b0f3ba584f0ccfab895dff74}} 
+void {\bfseries add\+Transition\+By\+Group} (const std\+::string \&qin, const std\+::set$<$ T $>$ \&group, const std\+::string \&qout)
+\item 
+void \hyperlink{classx2_1_1_determinastic_f_a_ab5efc90ac528b9d8383b993aa93b6ced}{add\+Transition\+Undefined} (const std\+::string \&qin, const std\+::string \&group\+Base, const std\+::string \&group\+Defined, const std\+::string \&qout)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_aabaaf1756a7628e0652dde5a31e41627}\label{classx2_1_1_determinastic_f_a_aabaaf1756a7628e0652dde5a31e41627}} 
+void {\bfseries add\+Transition\+Undefined} (const std\+::string \&qin, const std\+::set$<$ T $>$ \&group\+Base, const std\+::set$<$ T $>$ \&group\+Defined, const std\+::string \&qout)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a2f71e4692153903869b8200df6b8161d}\label{classx2_1_1_determinastic_f_a_a2f71e4692153903869b8200df6b8161d}} 
+void {\bfseries add\+Transition\+Undefined} (const std\+::string \&qin, const std\+::set$<$ T $>$ \&group\+Base, const std\+::string \&group\+Defined, const std\+::string \&qout)
+\item 
+void \hyperlink{classx2_1_1_determinastic_f_a_adbd0f99ea29d31abd9f9675ee5b9fdef}{add\+Transition} (int qin, int in, int qout)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a64c85bde0d8df31c30758cfcb1acaf2c}\label{classx2_1_1_determinastic_f_a_a64c85bde0d8df31c30758cfcb1acaf2c}} 
+void {\bfseries add\+Transition} (const std\+::string \&qin, const T \&in, const std\+::string \&qout)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a2dce2abc6c295032900475c6d3a2bfcf}\label{classx2_1_1_determinastic_f_a_a2dce2abc6c295032900475c6d3a2bfcf}} 
+void {\bfseries add\+Goback} (int qin, int qout)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a63cba8c5c4df112ab140d1d8c674635b}\label{classx2_1_1_determinastic_f_a_a63cba8c5c4df112ab140d1d8c674635b}} 
+void {\bfseries add\+Goback} (const std\+::string \&qin, const std\+::string \&qout)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a3761a086c847df17777820e80dae2470}\label{classx2_1_1_determinastic_f_a_a3761a086c847df17777820e80dae2470}} 
+void {\bfseries add\+Goback} (const std\+::initializer\+\_\+list$<$ std\+::pair$<$ std\+::string, std\+::string $>$$>$ list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a0253fbb1048b2ff90dc79b9d9379be96}\label{classx2_1_1_determinastic_f_a_a0253fbb1048b2ff90dc79b9d9379be96}} 
+void {\bfseries add\+Goback} (const std\+::vector$<$ std\+::pair$<$ std\+::string, std\+::string $>$$>$ list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_ab25d920d2d20793dda5c507d9a109649}\label{classx2_1_1_determinastic_f_a_ab25d920d2d20793dda5c507d9a109649}} 
+void {\bfseries add\+Stop} (int q)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a619dbc83e0a3e33e8fd8f9199f827011}\label{classx2_1_1_determinastic_f_a_a619dbc83e0a3e33e8fd8f9199f827011}} 
+void {\bfseries add\+Stop} (std\+::initializer\+\_\+list$<$ int $>$ list)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_ab6979f20952c95845a5fc55c5cd71ab3}\label{classx2_1_1_determinastic_f_a_ab6979f20952c95845a5fc55c5cd71ab3}} 
+void {\bfseries add\+Stop} (const std\+::string \&q)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_ad25513f1d72fd086db1f4dba68ac632b}\label{classx2_1_1_determinastic_f_a_ad25513f1d72fd086db1f4dba68ac632b}} 
+void {\bfseries add\+Stop} (std\+::initializer\+\_\+list$<$ std\+::string $>$ list)
+\item 
+bool \hyperlink{classx2_1_1_determinastic_f_a_afd31af3cc87e3d372900fa62da926a69}{next} (const T \&in)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_acfec740ee6f94dfe4d522dc2224047bd}\label{classx2_1_1_determinastic_f_a_acfec740ee6f94dfe4d522dc2224047bd}} 
+bool {\bfseries next} (int in)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a3d453ac8a55453c3f87d1cb040924497}\label{classx2_1_1_determinastic_f_a_a3d453ac8a55453c3f87d1cb040924497}} 
+virtual void {\bfseries get\+Match} (const Input\+Stream\+Type \&instream, \hyperlink{classx2_1_1_output_stream_processor}{Output\+Stream\+Processor}$<$ T $>$ \&outstream)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a0f2257b373cedc43e09b187650d0b949}\label{classx2_1_1_determinastic_f_a_a0f2257b373cedc43e09b187650d0b949}} 
+virtual void {\bfseries get\+Match} (const Input\+Stream\+Type \&instream, Process\+Fun\+Type process)
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a60140cc24c0cc9369dd485cbcb550717}\label{classx2_1_1_determinastic_f_a_a60140cc24c0cc9369dd485cbcb550717}} 
+std\+::string {\bfseries to\+String} () const
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_af9b7f7a6ed38d7611e1cb8c774617167}\label{classx2_1_1_determinastic_f_a_af9b7f7a6ed38d7611e1cb8c774617167}} 
+std\+::map$<$ std\+::pair$<$ int, int $>$, int $>$ {\bfseries transitions}
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a2a7e3e6089bb8873125bb2983ff90ea7}\label{classx2_1_1_determinastic_f_a_a2a7e3e6089bb8873125bb2983ff90ea7}} 
+std\+::set$<$ std\+::pair$<$ int, int $>$ $>$ {\bfseries gobacks}
+\item 
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_abcb3e36327c33dde71139e8156734149}\label{classx2_1_1_determinastic_f_a_abcb3e36327c33dde71139e8156734149}} 
+std\+::set$<$ int $>$ {\bfseries stops}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$class T$>$\newline
+class x2\+::\+Determinastic\+F\+A$<$ T $>$}
+
+FA that can generate output stream.
+
+软约束： 对已经添加过的产生式不修改 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_adbd0f99ea29d31abd9f9675ee5b9fdef}\label{classx2_1_1_determinastic_f_a_adbd0f99ea29d31abd9f9675ee5b9fdef}} 
+\index{x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}!add\+Transition@{add\+Transition}}
+\index{add\+Transition@{add\+Transition}!x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}}
+\subsubsection{\texorpdfstring{add\+Transition()}{addTransition()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \hyperlink{classx2_1_1_determinastic_f_a}{x2\+::\+Determinastic\+FA}$<$ T $>$\+::add\+Transition (\begin{DoxyParamCaption}\item[{int}]{qin,  }\item[{int}]{in,  }\item[{int}]{qout }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [virtual]}}
+
+default is add-\/replace 
+
+Implements \hyperlink{classx2_1_1_finite_automata_ac8f011bb86cb9e47370274ae200fc769}{x2\+::\+Finite\+Automata$<$ T $>$}.
+
+\mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a28c9f0dc652f38e8a08d67e2d911d56d}\label{classx2_1_1_determinastic_f_a_a28c9f0dc652f38e8a08d67e2d911d56d}} 
+\index{x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}!add\+Transition\+By\+Group@{add\+Transition\+By\+Group}}
+\index{add\+Transition\+By\+Group@{add\+Transition\+By\+Group}!x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}}
+\subsubsection{\texorpdfstring{add\+Transition\+By\+Group()}{addTransitionByGroup()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \hyperlink{classx2_1_1_determinastic_f_a}{x2\+::\+Determinastic\+FA}$<$ T $>$\+::add\+Transition\+By\+Group (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{qin,  }\item[{const std\+::string \&}]{group\+Name,  }\item[{const std\+::string \&}]{qout }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+the group operation will not overload the single defined transition
+
+if a symbol in a group is not in the symbol list, it will be added. \mbox{\Hypertarget{classx2_1_1_determinastic_f_a_a830e6d1612b263d9ef126b29709f4c46}\label{classx2_1_1_determinastic_f_a_a830e6d1612b263d9ef126b29709f4c46}} 
+\index{x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}!add\+Transition\+No\+Replace@{add\+Transition\+No\+Replace}}
+\index{add\+Transition\+No\+Replace@{add\+Transition\+No\+Replace}!x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}}
+\subsubsection{\texorpdfstring{add\+Transition\+No\+Replace()}{addTransitionNoReplace()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+bool \hyperlink{classx2_1_1_determinastic_f_a}{x2\+::\+Determinastic\+FA}$<$ T $>$\+::add\+Transition\+No\+Replace (\begin{DoxyParamCaption}\item[{int}]{qin,  }\item[{int}]{in,  }\item[{int}]{qout }\end{DoxyParamCaption})}
+
+if non-\/exist,add it,else return failed. \mbox{\Hypertarget{classx2_1_1_determinastic_f_a_ab5efc90ac528b9d8383b993aa93b6ced}\label{classx2_1_1_determinastic_f_a_ab5efc90ac528b9d8383b993aa93b6ced}} 
+\index{x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}!add\+Transition\+Undefined@{add\+Transition\+Undefined}}
+\index{add\+Transition\+Undefined@{add\+Transition\+Undefined}!x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}}
+\subsubsection{\texorpdfstring{add\+Transition\+Undefined()}{addTransitionUndefined()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+void \hyperlink{classx2_1_1_determinastic_f_a}{x2\+::\+Determinastic\+FA}$<$ T $>$\+::add\+Transition\+Undefined (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{qin,  }\item[{const std\+::string \&}]{group\+Base,  }\item[{const std\+::string \&}]{group\+Defined,  }\item[{const std\+::string \&}]{qout }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+add g\+Base -\/ g\+Defined \mbox{\Hypertarget{classx2_1_1_determinastic_f_a_afd31af3cc87e3d372900fa62da926a69}\label{classx2_1_1_determinastic_f_a_afd31af3cc87e3d372900fa62da926a69}} 
+\index{x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}!next@{next}}
+\index{next@{next}!x2\+::\+Determinastic\+FA@{x2\+::\+Determinastic\+FA}}
+\subsubsection{\texorpdfstring{next()}{next()}}
+{\footnotesize\ttfamily template$<$class T $>$ \\
+bool \hyperlink{classx2_1_1_determinastic_f_a}{x2\+::\+Determinastic\+FA}$<$ T $>$\+::next (\begin{DoxyParamCaption}\item[{const T \&}]{in }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+goto next state on input in,if failed return failed,else return succeed. 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/F\+A\+Utils.\+h\end{DoxyCompactItemize}

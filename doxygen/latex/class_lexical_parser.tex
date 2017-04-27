@@ -1,0 +1,374 @@
+\hypertarget{class_lexical_parser}{}\section{Lexical\+Parser Class Reference}
+\label{class_lexical_parser}\index{Lexical\+Parser@{Lexical\+Parser}}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_ad0c3684f404a4ac58f189d49f89344c7}\label{class_lexical_parser_ad0c3684f404a4ac58f189d49f89344c7}} 
+enum \{ \newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+S\+T\+A\+RT}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+L\+E\+SS}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+G\+R\+E\+A\+T\+ER}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+O\+U\+B\+L\+E\+\_\+\+G\+R\+E\+A\+T\+ER}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+E\+Q\+U\+AL}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+I\+V\+ID}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+S\+T\+AR}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+N\+O\+TE}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+L\+I\+N\+E\+\_\+\+N\+O\+TE}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+M\+U\+L\+T\+I\+L\+I\+N\+E\+\_\+\+N\+O\+TE}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+M\+U\+L\+T\+I\+L\+I\+N\+E\+\_\+\+G\+O\+I\+N\+G\+\_\+\+E\+ND}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+C\+O\+M\+M\+ON}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+C\+O\+M\+M\+O\+N\+\_\+\+X1}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+C\+O\+M\+M\+O\+N\+\_\+\+X2}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+C\+O\+M\+M\+O\+N\+\_\+\+U1}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+C\+A\+R\+R\+I\+GE}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+L\+A\+N\+G\+U\+A\+GE}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+C\+H\+AR}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+S\+T\+R\+I\+NG}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+V\+A\+L\+UE}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+ID}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+K\+E\+E\+P\+\_\+\+S\+P\+A\+CE}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+S\+T\+R\+I\+NG}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+C\+H\+AR}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+N\+U\+M\+B\+ER}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+H\+E\+X\+\_\+\+N\+U\+M\+B\+ER}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+D\+E\+C\+I\+L\+M\+A\+L\+\_\+\+N\+U\+M\+B\+ER}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+B\+I\+N\+\_\+\+N\+U\+M\+B\+ER}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+N\+O\+\_\+\+C\+A\+RE}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+E\+ND}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+U\+N\+R\+E\+C\+O\+G\+N\+I\+Z\+E\+D\+\_\+\+C\+H\+AR}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+H\+E\+X\+\_\+\+N\+O\+T\+\_\+\+E\+N\+O\+G\+UH}, 
+\newline
+{\bfseries S\+T\+A\+T\+E\+\_\+\+T\+R\+A\+N\+S\+F\+E\+R\+\_\+\+I\+N\+V\+A\+L\+ID}, 
+{\bfseries S\+T\+A\+T\+E\+\_\+\+L\+A\+ST}
+ \}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a12dd26d3545560df5fc12d2c5035b470}\label{class_lexical_parser_a12dd26d3545560df5fc12d2c5035b470}} 
+enum \{ {\bfseries D\+O\+N\+E\+\_\+\+O\+N\+E\+\_\+\+W\+O\+RD}, 
+{\bfseries D\+O\+I\+N\+G\+\_\+\+O\+N\+E\+\_\+\+W\+R\+OD}
+ \}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a747ce4bb92b4236438d5d88e890c1e62}\label{class_lexical_parser_a747ce4bb92b4236438d5d88e890c1e62}} 
+enum \{ \newline
+{\bfseries T\+Y\+P\+E\+\_\+\+OP} =0, 
+{\bfseries T\+Y\+P\+E\+\_\+\+S\+E\+M\+I\+C\+O\+L\+ON} =1, 
+{\bfseries T\+Y\+P\+E\+\_\+\+S\+I\+N\+G\+LE} =44, 
+{\bfseries T\+Y\+P\+E\+\_\+\+EQ} =26, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+D\+IV}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+P\+L\+US}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+A\+ND}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+E\+XP}, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+M\+OD}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+D\+O\+L\+L\+AR}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+N\+OT}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+S\+UB}, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+C\+O\+M\+MA}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+W\+A\+VE}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+R\+Q\+U\+O\+TE}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+C\+O\+L\+ON}, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+E\+R\+E\+CT}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+A\+SK}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+P\+O\+I\+NT}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+U\+N\+D\+E\+R\+S\+C\+O\+RE} =48, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+L\+SQ}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+R\+SQ}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+AT}, 
+{\bfseries T\+Y\+P\+E\+\_\+\+Q\+U\+O\+TE}, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+D\+Q\+U\+O\+TE} =53, 
+{\bfseries T\+Y\+P\+E\+\_\+\+N\+U\+M\+B\+E\+R\+\_\+\+D\+E\+C\+I\+M\+AL} =2, 
+{\bfseries T\+Y\+P\+E\+\_\+\+N\+U\+M\+B\+E\+R\+\_\+\+B\+IN} =23, 
+{\bfseries T\+Y\+P\+E\+\_\+\+N\+U\+M\+B\+E\+R\+\_\+\+H\+EX} =24, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+ID} =3, 
+{\bfseries T\+Y\+P\+E\+\_\+\+S\+T\+R\+I\+NG} =4, 
+{\bfseries T\+Y\+P\+E\+\_\+\+C\+H\+AR} =5, 
+{\bfseries T\+Y\+P\+E\+\_\+\+T\+R\+A\+N\+S\+F\+ER} =6, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+S1} =16, 
+{\bfseries T\+Y\+P\+E\+\_\+\+N\+E\+W\+L\+I\+NE} =7, 
+{\bfseries T\+Y\+P\+E\+\_\+\+L\+E\+SS} =17, 
+{\bfseries T\+Y\+P\+E\+\_\+\+G\+R\+E\+A\+T\+ER} =18, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+N\+O\+TE} =8, 
+{\bfseries T\+Y\+P\+E\+\_\+\+I\+N\+L\+I\+N\+E\+\_\+\+N\+O\+TE} =54, 
+{\bfseries T\+Y\+P\+E\+\_\+\+F\+R\+E\+E\+\_\+\+N\+O\+TE} =55, 
+{\bfseries T\+Y\+P\+E\+\_\+\+D\+O\+C\+\_\+\+N\+O\+TE} =56, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+L\+B\+R\+A\+CE} =9, 
+{\bfseries T\+Y\+P\+E\+\_\+\+R\+B\+R\+A\+CE} =10, 
+{\bfseries T\+Y\+P\+E\+\_\+\+L\+H\+B\+R\+A\+CE} =11, 
+{\bfseries T\+Y\+P\+E\+\_\+\+R\+H\+B\+R\+A\+CE} =12, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+S\+T\+AR} =13, 
+{\bfseries T\+Y\+P\+E\+\_\+\+N\+O\+NE} =14, 
+{\bfseries T\+Y\+P\+E\+\_\+\+U\+N\+K\+N\+OW} =15, 
+{\bfseries T\+Y\+P\+E\+\_\+\+E\+R\+R\+OR} =25, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+U\+N\+R\+E\+C\+O\+G\+N\+I\+Z\+ED} =43, 
+{\bfseries T\+Y\+P\+E\+\_\+\+S\+P\+A\+CE} =45, 
+{\bfseries T\+Y\+P\+E\+\_\+\+E\+ND} =46, 
+{\bfseries T\+Y\+P\+E\+\_\+\+I\+N\+F\+O\+\_\+\+L\+O\+ST} =47, 
+\newline
+{\bfseries T\+Y\+P\+E\+\_\+\+L\+A\+ST} =54
+ \}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a964464004be6fad3bcf4714acc61ee11}\label{class_lexical_parser_a964464004be6fad3bcf4714acc61ee11}} 
+enum \{ \newline
+{\bfseries D\+I\+G\+I\+T\+\_\+\+B\+IN} =0, 
+{\bfseries D\+I\+G\+I\+T\+\_\+\+D\+E\+C\+I\+M\+AL}, 
+{\bfseries D\+I\+G\+I\+T\+\_\+\+H\+E\+X\+\_\+\+L\+O\+W\+ER}, 
+{\bfseries D\+I\+G\+I\+T\+\_\+\+H\+E\+X\+\_\+\+U\+P\+P\+ER}, 
+\newline
+{\bfseries D\+I\+G\+I\+T\+\_\+\+U\+N\+K\+N\+O\+WN}
+ \}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a187d7950fa81fc7b8873c892abc9be6d}\label{class_lexical_parser_a187d7950fa81fc7b8873c892abc9be6d}} 
+enum \{ \newline
+{\bfseries S\+E\+T\+\_\+\+A\+L\+P\+HA}, 
+{\bfseries S\+E\+T\+\_\+\+W\+O\+RD}, 
+{\bfseries S\+E\+T\+\_\+\+B\+IN}, 
+{\bfseries S\+E\+T\+\_\+\+D\+EC}, 
+\newline
+{\bfseries S\+E\+T\+\_\+\+H\+EX}, 
+{\bfseries S\+E\+T\+\_\+\+S\+P\+A\+CE}, 
+{\bfseries S\+E\+T\+\_\+\+S\+P\+E\+C\+I\+AL}, 
+{\bfseries S\+E\+T\+\_\+\+S\+I\+ZE}
+ \}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a897e5fc2ad0766512b6e7c7ae43f66a7}\label{class_lexical_parser_a897e5fc2ad0766512b6e7c7ae43f66a7}} 
+typedef \hyperlink{class_lexical_parser}{Lexical\+Parser} {\bfseries This}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_adb3ebe580622a5bfa2cf76d11e0bf801}\label{class_lexical_parser_adb3ebe580622a5bfa2cf76d11e0bf801}} 
+typedef bool($\ast$ {\bfseries J\+U\+D\+G\+E\+\_\+\+C\+H\+AR}) (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a2054bede65a625e955f15113d3fdbbe6}\label{class_lexical_parser_a2054bede65a625e955f15113d3fdbbe6}} 
+typedef std\+::vector$<$ std\+::pair$<$ std\+::string, int $>$ $>$ {\bfseries Word\+Stream}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a598b14788f03ae82bb3b419a63836999}\label{class_lexical_parser_a598b14788f03ae82bb3b419a63836999}} 
+typedef std\+::map$<$ int, std\+::string $>$ {\bfseries Trans\+Map}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a3122b02b703d5ab1328835bb3701bedf}\label{class_lexical_parser_a3122b02b703d5ab1328835bb3701bedf}} 
+typedef std\+::map$<$ char, int $>$ {\bfseries Char\+Type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_lexical_parser_a6cd877627322dd31c6a46273fc9b6894}{parse\+Number} (const char $\ast$buffer, size\+\_\+t len)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a7d93f76bc1eec8af4813121315b34c87}\label{class_lexical_parser_a7d93f76bc1eec8af4813121315b34c87}} 
+void {\bfseries parse\+String} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len)=delete
+\item 
+void \hyperlink{class_lexical_parser_a77d61f1f606f174e2006c931113417d1}{parse\+Words} (Word\+Stream \&stream, const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a1a25b55b47c23b685c54dd14b46425ab}\label{class_lexical_parser_a1a25b55b47c23b685c54dd14b46425ab}} 
+void {\bfseries parse\+Preps} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a8d501de0f79eb98993bed6cc8653e250}\label{class_lexical_parser_a8d501de0f79eb98993bed6cc8653e250}} 
+void {\bfseries parse\+Id} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len, std\+::string \&out, int \&type)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a9ee4628a8d8dbd1beb0be32ddb895a28}\label{class_lexical_parser_a9ee4628a8d8dbd1beb0be32ddb895a28}} 
+void {\bfseries parse\+Number} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len, std\+::string \&out, int \&type)=delete
+\item 
+void \hyperlink{class_lexical_parser_a6df790a89ab25c5d64cf28c6ac22d011}{parse\+Transfer\+Id} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len, std\+::string \&out, int \&type)=delete
+\item 
+void \hyperlink{class_lexical_parser_a958596ee7745fcd38d83ee81b1f96234}{parse\+Transfer\+Value} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len, std\+::string \&out, int \&type)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a3d0abc8c213c8ed2cc0ed13ba31bab8c}\label{class_lexical_parser_a3d0abc8c213c8ed2cc0ed13ba31bab8c}} 
+void {\bfseries parse\+Transfer\+Any} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len, std\+::string \&out, int \&type)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a79dea8c601ecea47d20f3311aeab25ac}\label{class_lexical_parser_a79dea8c601ecea47d20f3311aeab25ac}} 
+void {\bfseries parse\+String} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len, std\+::string \&out, int \&type)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_acce8093e7ff136520d7f7ab1dd4fa7ac}\label{class_lexical_parser_acce8093e7ff136520d7f7ab1dd4fa7ac}} 
+void {\bfseries parse\+Note} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len, std\+::string \&out, int \&type)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_ad81309f70f2e05f939e656e0e23cbb05}\label{class_lexical_parser_ad81309f70f2e05f939e656e0e23cbb05}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries skip\+Spaces} (const char $\ast$buffer, size\+\_\+t \&index, size\+\_\+t len)=delete
+\item 
+void \hyperlink{class_lexical_parser_ac9fe754e7346c2bdebbe868ee2db1308}{error} (const char $\ast$msg) const
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_adaae17b8e4528173b5edca9757bf8a35}\label{class_lexical_parser_adaae17b8e4528173b5edca9757bf8a35}} 
+static bool {\bfseries is\+Digit\+Type} (char ch, int type)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_ae38e8e58f3bf079f4a1d25af4b97700f}\label{class_lexical_parser_ae38e8e58f3bf079f4a1d25af4b97700f}} 
+static int {\bfseries tell\+Digit\+Type} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a4b92d70911a3862887a33e548f35c0a8}\label{class_lexical_parser_a4b92d70911a3862887a33e548f35c0a8}} 
+static bool {\bfseries is\+In\+Set} (char ch, const char $\ast$buffer, size\+\_\+t len)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a3f74716c7ead86d0b9b4a8dcead9b2d7}\label{class_lexical_parser_a3f74716c7ead86d0b9b4a8dcead9b2d7}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+In\+Set} (char ch, int set)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a31a848d15e17721efb8fc210440ecb7b}\label{class_lexical_parser_a31a848d15e17721efb8fc210440ecb7b}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+In\+Alpha} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a7c35e1a08076985dab998a01f47a6619}\label{class_lexical_parser_a7c35e1a08076985dab998a01f47a6619}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+In\+Word} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a10c8d5a5210e7ee7ec2f8e4703356a7b}\label{class_lexical_parser_a10c8d5a5210e7ee7ec2f8e4703356a7b}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+In\+Bin} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_af87abd2e2d59a7f4a541293a80b99a0e}\label{class_lexical_parser_af87abd2e2d59a7f4a541293a80b99a0e}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+In\+Dec} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a868e7cc1c5afe8423332e376a865630f}\label{class_lexical_parser_a868e7cc1c5afe8423332e376a865630f}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+In\+Hex} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a177c7103e060000af11aedfda6b32cd1}\label{class_lexical_parser_a177c7103e060000af11aedfda6b32cd1}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+In\+Space} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_aa450782361db02179cc50ce767153f4f}\label{class_lexical_parser_aa450782361db02179cc50ce767153f4f}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries is\+In\+Special} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a09d89b3e5918613cc95d5a551d5055c4}\label{class_lexical_parser_a09d89b3e5918613cc95d5a551d5055c4}} 
+static A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Special\+Type} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a7a6f196c85b2cbc87cadb7ca2d945635}\label{class_lexical_parser_a7a6f196c85b2cbc87cadb7ca2d945635}} 
+static A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Char\+Val} (char ch)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a5fc4389bf24e656bcda31e0e4cd12fff}\label{class_lexical_parser_a5fc4389bf24e656bcda31e0e4cd12fff}} 
+static A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Char\+Val} (const char $\ast$str)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a1116e6dd8fc2d2af3c130304e79c5286}\label{class_lexical_parser_a1116e6dd8fc2d2af3c130304e79c5286}} 
+static int {\bfseries eval\+String} (const std\+::string \&s, int type=T\+Y\+P\+E\+\_\+\+N\+U\+M\+B\+E\+R\+\_\+\+D\+E\+C\+I\+M\+AL)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a098bd59e9e2975320034afcfc41e0fd4}\label{class_lexical_parser_a098bd59e9e2975320034afcfc41e0fd4}} 
+static int {\bfseries eval\+String} (const char $\ast$buffer, size\+\_\+t len, int type=T\+Y\+P\+E\+\_\+\+N\+U\+M\+B\+E\+R\+\_\+\+D\+E\+C\+I\+M\+AL)=delete
+\item 
+\mbox{\Hypertarget{class_lexical_parser_adae63b5af6be9c93f08c1fbd0a0813a8}\label{class_lexical_parser_adae63b5af6be9c93f08c1fbd0a0813a8}} 
+static A\+S\+\_\+\+M\+A\+C\+RO const Trans\+Map \& {\bfseries get\+Human\+Readable} ()
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a00037c204ba0f3518960bee99d06e63e}\label{class_lexical_parser_a00037c204ba0f3518960bee99d06e63e}} 
+static A\+S\+\_\+\+M\+A\+C\+RO bool {\bfseries register\+Type\+String} (int type, const std\+::string \&s)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a508c217f6fe8876f4a9af6e9e54c5ed6}\label{class_lexical_parser_a508c217f6fe8876f4a9af6e9e54c5ed6}} 
+static A\+S\+\_\+\+M\+A\+C\+RO const std\+::string \& {\bfseries get\+Type\+String} (int type)
+\item 
+\mbox{\Hypertarget{class_lexical_parser_ae3eeac3e10f5be9163da349ebf3d4dd5}\label{class_lexical_parser_ae3eeac3e10f5be9163da349ebf3d4dd5}} 
+static char {\bfseries find\+Value} (char key, const char $\ast$buffer, size\+\_\+t len)
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static const J\+U\+D\+G\+E\+\_\+\+C\+H\+AR \hyperlink{class_lexical_parser_a1786cf007498ae783ed4b02115a40268}{judge\+Arr} \mbox{[}S\+E\+T\+\_\+\+S\+I\+ZE\mbox{]}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a379dc247745396a09907bab9c65ea8c5}\label{class_lexical_parser_a379dc247745396a09907bab9c65ea8c5}} 
+static Trans\+Map {\bfseries human\+Info}
+\item 
+\mbox{\Hypertarget{class_lexical_parser_a00cab1e0c155eb4832376a3240cd3564}\label{class_lexical_parser_a00cab1e0c155eb4832376a3240cd3564}} 
+static Char\+Type {\bfseries char\+Type}
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{class_lexical_parser_ac9fe754e7346c2bdebbe868ee2db1308}\label{class_lexical_parser_ac9fe754e7346c2bdebbe868ee2db1308}} 
+\index{Lexical\+Parser@{Lexical\+Parser}!error@{error}}
+\index{error@{error}!Lexical\+Parser@{Lexical\+Parser}}
+\subsubsection{\texorpdfstring{error()}{error()}}
+{\footnotesize\ttfamily void Lexical\+Parser\+::error (\begin{DoxyParamCaption}\item[{const char $\ast$}]{msg }\end{DoxyParamCaption}) const}
+
+/ is the leading character of notation, however this has arisen some problems,such as that we can never use / as another leading character again. \mbox{\Hypertarget{class_lexical_parser_a6cd877627322dd31c6a46273fc9b6894}\label{class_lexical_parser_a6cd877627322dd31c6a46273fc9b6894}} 
+\index{Lexical\+Parser@{Lexical\+Parser}!parse\+Number@{parse\+Number}}
+\index{parse\+Number@{parse\+Number}!Lexical\+Parser@{Lexical\+Parser}}
+\subsubsection{\texorpdfstring{parse\+Number()}{parseNumber()}}
+{\footnotesize\ttfamily void Lexical\+Parser\+::parse\+Number (\begin{DoxyParamCaption}\item[{const char $\ast$}]{buffer,  }\item[{size\+\_\+t}]{len }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+parsers \mbox{\Hypertarget{class_lexical_parser_a6df790a89ab25c5d64cf28c6ac22d011}\label{class_lexical_parser_a6df790a89ab25c5d64cf28c6ac22d011}} 
+\index{Lexical\+Parser@{Lexical\+Parser}!parse\+Transfer\+Id@{parse\+Transfer\+Id}}
+\index{parse\+Transfer\+Id@{parse\+Transfer\+Id}!Lexical\+Parser@{Lexical\+Parser}}
+\subsubsection{\texorpdfstring{parse\+Transfer\+Id()}{parseTransferId()}}
+{\footnotesize\ttfamily void Lexical\+Parser\+::parse\+Transfer\+Id (\begin{DoxyParamCaption}\item[{const char $\ast$}]{buffer,  }\item[{size\+\_\+t \&}]{index,  }\item[{size\+\_\+t}]{len,  }\item[{std\+::string \&}]{out,  }\item[{int \&}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+十六进制两位数 \textbackslash{} \textbackslash{} N\+E\+W\+L\+I\+NE 忽略这个换行 \textbackslash{}其他任何字符 即使这个字符是特殊字符，也将其作为\+I\+D的一部分 \mbox{\Hypertarget{class_lexical_parser_a958596ee7745fcd38d83ee81b1f96234}\label{class_lexical_parser_a958596ee7745fcd38d83ee81b1f96234}} 
+\index{Lexical\+Parser@{Lexical\+Parser}!parse\+Transfer\+Value@{parse\+Transfer\+Value}}
+\index{parse\+Transfer\+Value@{parse\+Transfer\+Value}!Lexical\+Parser@{Lexical\+Parser}}
+\subsubsection{\texorpdfstring{parse\+Transfer\+Value()}{parseTransferValue()}}
+{\footnotesize\ttfamily void Lexical\+Parser\+::parse\+Transfer\+Value (\begin{DoxyParamCaption}\item[{const char $\ast$}]{buffer,  }\item[{size\+\_\+t \&}]{index,  }\item[{size\+\_\+t}]{len,  }\item[{std\+::string \&}]{out,  }\item[{int \&}]{type }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [delete]}}
+
+十六进制 \mbox{\Hypertarget{class_lexical_parser_a77d61f1f606f174e2006c931113417d1}\label{class_lexical_parser_a77d61f1f606f174e2006c931113417d1}} 
+\index{Lexical\+Parser@{Lexical\+Parser}!parse\+Words@{parse\+Words}}
+\index{parse\+Words@{parse\+Words}!Lexical\+Parser@{Lexical\+Parser}}
+\subsubsection{\texorpdfstring{parse\+Words()}{parseWords()}}
+{\footnotesize\ttfamily void Lexical\+Parser\+::parse\+Words (\begin{DoxyParamCaption}\item[{Word\+Stream \&}]{stream,  }\item[{const char $\ast$}]{buffer,  }\item[{size\+\_\+t \&}]{index,  }\item[{size\+\_\+t}]{len }\end{DoxyParamCaption})}
+
+General purposed automata \begin{DoxyVerb}typedef int (*GET_NEXT_STATE)(int,char)
+    int getNextState(int state,char ch);
+
+    typedef void (*PROCESS_OUTPUT)(int state,char ch,char *buffer,size_t &bufindex)
+    void processOutput(int state,char ch,char *buffer,size_t &bufindex);
+
+    void errorProcess(int errState,char ch);
+
+
+    parseElement(const char *buffer,size_t &index,size_t len,char *buf,size_t &bufi,
+    int &curState,
+    int errState,int endState,GET_NEXT_STATE getNextState,PROCESS_OUTPUT processOutput)
+    {
+        int i;
+        char ch;
+        int nextState;
+    for(i=index;i<size_t;i++)
+    {
+        if(curState==errState)
+        {
+            return;
+        }else if(curState==endState){
+            return;
+        }
+        ch=buffer[i];
+        nextState=getNextState(curState,ch);
+        processOutput(curState,ch,buf,bufi);
+        curState=nextState;
+    }
+
+
+    }\end{DoxyVerb}
+
+
+first loop,merge \textquotesingle{}\textbackslash{}\textquotesingle{} \textquotesingle{}~\newline
+\textquotesingle{} to N\+O\+T\+H\+I\+NG merge \mbox{[}\mbox{]}$\ast$ to N\+O\+T\+H\+I\+NG merge ~\newline
+ to N\+O\+T\+H\+I\+NG if start is not \#\mbox{[}~\newline
+\mbox{]}$\ast$define else merge it into M\+A\+C\+R\+O\+E\+ND recognise \textquotesingle{}..\textquotesingle{} to C\+H\+AR,take care of \textbackslash{}\textquotesingle{}
+
+recognise \char`\"{}...\char`\"{} to S\+T\+R\+I\+NG,take care of " 
+
+\subsection{Member Data Documentation}
+\mbox{\Hypertarget{class_lexical_parser_a1786cf007498ae783ed4b02115a40268}\label{class_lexical_parser_a1786cf007498ae783ed4b02115a40268}} 
+\index{Lexical\+Parser@{Lexical\+Parser}!judge\+Arr@{judge\+Arr}}
+\index{judge\+Arr@{judge\+Arr}!Lexical\+Parser@{Lexical\+Parser}}
+\subsubsection{\texorpdfstring{judge\+Arr}{judgeArr}}
+{\footnotesize\ttfamily const Lexical\+Parser\+::\+J\+U\+D\+G\+E\+\_\+\+C\+H\+AR Lexical\+Parser\+::judge\+Arr\hspace{0.3cm}{\ttfamily [static]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}
+=\{
+        LexicalParser::isInAlpha,
+        LexicalParser::isInWord,
+        LexicalParser::isInBin,
+        LexicalParser::isInDec,
+        LexicalParser::isInHex,
+        LexicalParser::isInSpace,
+        LexicalParser::isInSpecial,
+\}
+\end{DoxyCode}
+enum\{ S\+E\+T\+\_\+\+A\+L\+P\+HA,//a-\/z A-\/Z S\+E\+T\+\_\+\+W\+O\+RD,//\+S\+E\+T\+\_\+\+A\+L\+P\+HA + \+\_\+ S\+E\+T\+\_\+\+B\+IN, S\+E\+T\+\_\+\+D\+EC, S\+E\+T\+\_\+\+H\+EX, 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Lexical\+Parser.\+h\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/src/Lexical\+Parser.\+cpp\end{DoxyCompactItemize}

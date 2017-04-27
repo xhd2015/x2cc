@@ -11,7 +11,7 @@
 
 #include <LexicalParser.h>
 
-
+namespace x2{
 bool LexicalParser::isInSet(char ch, int set) {
 	return (set>=0 && set < LexicalParser::SET_SIZE)?LexicalParser::judgeArr[set](ch):false;
 }
@@ -47,7 +47,7 @@ bool LexicalParser::isInSpace(char ch)
 bool LexicalParser::isInSpecial(char ch)
 {
   return (ch=='<' || ch=='>' || ch=='#' || ch=='='|| ch=='(' || ch==')' || ch=='{' || ch=='}' ||
-			    ch=='/' ||ch=='-' || ch=='+' || ch=='*' || ch=='[' || ch==']' || ch==',' ||ch==':' ||ch==';' || ch=='`' ||ch=='~'||
+			    ch=='-' || ch=='+' || ch=='*' || ch=='[' || ch==']' || ch==',' ||ch==':' ||ch==';' || ch=='`' ||ch=='~'||
 			    ch=='&' || ch=='^' || ch=='%' || ch=='$' || ch=='@'|| ch=='!' || ch=='.'||ch=='#' || ch=='?');
 }
 int LexicalParser::getCharVal(char ch)
@@ -55,6 +55,7 @@ int LexicalParser::getCharVal(char ch)
   if(This::isInDec(ch))return ch-'0';
   else if(ch>='a' && ch<='z')return ch-'a'+10;
   else if(ch>='A' && ch<='Z')return ch-'A'+10;
+  return -1;
 }
 //int LexicalParser::getCharVal(const char* str)
 //{
@@ -69,4 +70,5 @@ const std::map<int,std::string>& LexicalParser::getHumanReadable()
 //  while(index < len && LexicalParser::isInSpace(buffer[index++]));//skip all spaces
 //}
 
+} /* namespace x2 */
 #endif /* MACROS_LEXICALPARSER_MACROS_H_ */

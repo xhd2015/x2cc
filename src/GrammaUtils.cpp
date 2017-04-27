@@ -37,6 +37,8 @@ namespace x2
 		  {ACTION_REDUCE,"REDUCE"},
   };
 
+  const std::string LRGramma::DOT_STRING=".";
+
 
   //=======functions
 
@@ -116,21 +118,16 @@ namespace x2
 		  Gramma()
   {
 	  std::string s;
-	  std::set<int>	typeSure;
-	  typeSure.insert(this->gsyms.getEmpty());
-	  typeSure.insert(GrammaSymbols::UNDEFINED_INDEX);
 	  while(!in.eof())
 	  {
 		  std::getline(in, s);
 		  std::stringstream ss(s);
-		  std::string var;
+		  std::string var,discard;
 		  ss>>var;
-		  int start=gsyms.getAdd(var,GrammaSymbols::TYPE_VAR);
-		  typeSure.insert(start);
-		  GrammaSentence gs;
-
-		  ss>>var; //discard
+		  ss>>discard; //discard
 		  if(ss.eof())continue;
+		  GrammaSentence gs;
+		  int start=gsyms.addReplace(var,GrammaSymbols::TYPE_VAR);
 		  bool	inNote=false;
 		  while(!ss.eof())
 		  {
@@ -145,9 +142,6 @@ namespace x2
 			  gs.syms.push_back(gsyms.getEmpty());
 		  addProduction(start,gs);
 	  }
-	  for(auto &p:gsyms.symInfo) //correct type
-		  if(typeSure.find(p.first)==typeSure.end())
-			  p.second=GrammaSymbols::TYPE_TERM;
 
   }
   Gramma::Gramma(const std::initializer_list<std::pair<int,std::string> > &list,
@@ -175,63 +169,6 @@ namespace x2
 		  this->addProduction(p.first,p.second);
 	  }
   }
-  void Gramma::addProduction(int i,const GrammaSentence &gs)
-  {
-    ProductionsType::iterator it=this->prods.find(i);
-    if(it==this->prods.end())
-      {
-	std::vector<GrammaSentence> v;
-	v.push_back(gs);
-	this->prods[i]=std::move(v);
-      }
-    else{
-	it->second.push_back(gs);
-    }
-  }
-  void Gramma::addProduction(int i,GrammaSentence &&gs)
-  {
-    ProductionsType::iterator it=this->prods.find(i);
-    if(it==this->prods.end())
-      {
-	std::vector<GrammaSentence> v;
-	v.push_back(gs);
-	this->prods[i]=std::move(v);
-      }
-    else{
-	it->second.push_back(gs);
-    }
-  }
-
-  void Gramma::addProduction(const std::string& head, const std::vector<std::string>& gs)
-  {
-	  //headi = this->gsyms.getAdd(head,VAR)
-	  int ihead=this->gsyms.getAdd(head,GrammaSymbols::TYPE_VAR);
-
-	  //for s in gs, si = this->gsyms.getAdd(s,TERM)
-	  GrammaSentence grammars;
-	  for(auto & s:gs)
-	  {
-		  grammars.push_back(this->gsyms.getAdd(s, GrammaSymbols::TYPE_TERM));
-	  }
-	  this->addProduction(ihead, std::move(grammars));
-
-  }
-
-  void Gramma::addProduction(const std::string& head,const std::initializer_list<std::string>& gs)
-  {
-	  //headi = this->gsyms.getAdd(head,VAR)
-	  int ihead=this->gsyms.getAdd(head,GrammaSymbols::TYPE_VAR);
-
-	  //for s in gs, si = this->gsyms.getAdd(s,TERM)
-	  GrammaSentence grammars;
-	  for(auto & s:gs)
-	  {
-		  grammars.push_back(this->gsyms.getAdd(s, GrammaSymbols::TYPE_TERM));
-	  }
-	  this->addProduction(ihead, std::move(grammars));
-  }
-
-
   bool Gramma::canSymbolEmpty(int i)
   {
 //    std::cout << "symbol is " << toString(i) <<std::endl;
@@ -894,14 +831,14 @@ namespace x2
 	 GrammaSentence tempgs={oristart};
 	 addProduction(sstart,std::move(tempgs));
  }
- std::tuple<LRGramma::ClosuresVector,std::set<int>,std::map<std::pair<int,int>,int>> LRGramma::getAllClosures()
+ typename LRGramma::InfoType LRGramma::getAllClosures()
  {
 	 ClosuresVector itemsets;//项目族
 //	 std::map<ItemType,int>		C0;//ItemType --> {ItemType}
 	 std::map<std::pair<int,int>,int> C2;
 	 std::set<int>		iC; //the concanical closure
 
-	 ItemType tempitem=std::make_tuple(getGStart(),0,0);
+	 ItemType tempitem=std::make_tuple(getExtStart(),0,0);
 	 ClosureType temp;
 	 temp.insert(tempitem);
 //	 itemsets.push_back(temp); //S' -> .S
@@ -932,7 +869,7 @@ namespace x2
 //				 std::cout << "current production is " << toString(eachItem) << std::endl;
 				 int x=getFirstSymbolAfterDot(eachItem);
 //				 std::cout << "current expect SYMBOL is " << gsyms.getString(x) << std::endl;
-				 if(x!=gsyms.getEmpty() && x!=getGEnd())//不是空符号和结束符
+				 if(x!=gsyms.getEmpty() && x!=getEnd())//不是空符号和结束符
 				 {
 					 auto iic_x_key=std::pair<int,int>(iic,x);
 					 auto itgoto=C2.find(iic_x_key);
@@ -1124,8 +1061,8 @@ namespace x2
 	 int symIndex = dotIndex + j -1;
 	 if(symIndex< (int)gs.getLength())
 		 return gs.syms[symIndex];
-	 else if(std::get<0>(i) == getGStart() && j==gs.getLength()) //start的末尾是结束符号
-		 return getGEnd();
+	 else if(std::get<0>(i) == getExtStart() && j==gs.getLength()) //start的末尾是结束符号
+		 return getEnd();
 	 else
 		  return gsyms.getEmpty();
  }
@@ -1255,7 +1192,7 @@ namespace x2
 		 hasnew=false;
 		 for(auto &item : clo)
 		 {
-			 if(getFirstSymbolAfterDot(item)!=x || (std::get<0>(item)==getGStart() && x==getGEnd()))continue;
+			 if(getFirstSymbolAfterDot(item)!=x || (std::get<0>(item)==getExtStart() && x==getEnd()))continue;
 			 ItemType I=item;
 			 std::get<2>(I) += 1; //point to next
 			 ClosureType iClosure = getClosure(I,firstset);
@@ -1278,7 +1215,7 @@ namespace x2
 
 	 Gramma::SetsType calcedFirst = this->Gramma::calcFirst();
 
-	 ItemType tempitem=std::make_tuple(getGStart(),0,0,getGEnd());//由拓广文法的唯一产生式得到CLOSURE 0
+	 ItemType tempitem=std::make_tuple(getExtStart(),0,0,getEnd());//由拓广文法的唯一产生式得到CLOSURE 0
 	 ClosureType temp;
 	 temp.insert(tempitem);
 	 itemsets.push_back(getClosure(temp,calcedFirst));
@@ -1301,7 +1238,7 @@ namespace x2
 
 		 //对当前Closure的每个后继符号.x
 		 //如果GOTO(curClo,x)不属于
-		 std::map<ClosureType,int> tempitems;
+		 std::map<ClosureType,int>  tempitems;
 		 int						curIndex=0;
 		 int base=(int)itemsets.size();
 		 for(auto &eachItem : curClo)
@@ -1311,7 +1248,7 @@ namespace x2
 			 if(x!=gsyms.getEmpty() && C2.find({iic,x})==C2.end())
 			 {
 				 //===avoid S'->S.,$ to generate EMPTY
-				 if(std::get<0>(eachItem)==getGStart() && x==getGEnd())continue;
+				 if(std::get<0>(eachItem)==getExtStart() && x==getEnd())continue;
 
 				 ClosureType iic_x_goto=getGoto(curClo,x,calcedFirst);//获取Closure
 				 auto itemit=itemsetsRecord.find(iic_x_goto);//检查其是否已经存在
@@ -1361,12 +1298,12 @@ namespace x2
   *
   *
   */
-typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const InfoType& info)
+typename LR1Gramma::LRCorruptTableType 	LR1Gramma::constructAnalyzeTable(const InfoType& info)
  {
 	 	 const auto &vec=std::get<0>(info);//all closures
 		 const auto &iC=std::get<1>(info);//concanical closures
 		 const auto &C2=std::get<2>(info);//goto
-		LR1Gramma::CorruptTableType corruptAction;
+		LR1Gramma::LRCorruptTableType corruptAction;
 
 
 		for(int i:iC)
@@ -1377,18 +1314,15 @@ typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const Inf
 //				std::cout << "current item is "<<toString(item)<<std::endl;
 
 				 int nextsym=getFirstSymbolAfterDot(item);
-				 if(nextsym==6)
-				 {
-					 std::cout << std::endl;
-				 }
 				 if(gsyms.isSymbolVar(nextsym))continue;
 				 else if(gsyms.isSymbolTerm(nextsym))
 				 {
 					 std::pair<int,int> key={i,nextsym};
 					 if(corruptAction.find(key)==corruptAction.end())
 						 corruptAction[key]=std::set<std::tuple<int,int,int>>();
-					 if(nextsym!=getGEnd())
-						 corruptAction[key].insert({C2.at({i,nextsym}),-1,ACTION_SHIFT_IN});
+//						 corruptAction[key]=std::vector<std::tuple<int,int,int>>();
+					 if(nextsym!=getEnd())
+						 corruptAction[key].insert( {C2.at({i,nextsym}),-1,ACTION_SHIFT_IN});
 					 else
 						 corruptAction[key].insert({-1,-1,ACTION_ACCEPT});
 				 }
@@ -1397,6 +1331,7 @@ typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const Inf
 					 std::pair<int,int> key={i,std::get<3>(item)};
 					 if(corruptAction.find(key)==corruptAction.end())
 						 corruptAction[key]=std::set<std::tuple<int,int,int>>();
+//						 corruptAction[key]=std::vector<std::tuple<int,int,int>>();
 					 corruptAction[key].insert({std::get<0>(item),std::get<1>(item),ACTION_REDUCE});
 				 }
 			}
@@ -1418,8 +1353,8 @@ typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const Inf
 	 int symIndex = dotIndex + j -1;
 	 if(symIndex< (int)gs.getLength())
 		 return gs.syms[symIndex];
-	 else if(std::get<0>(i) == getGStart() && j==gs.getLength()) //start的末尾是结束符号
-		 return getGEnd();
+	 else if(std::get<0>(i) == getExtStart() && j==gs.getLength()) //start的末尾是结束符号
+		 return getEnd();
 	 else
 		  return gsyms.getEmpty();
  }
@@ -1459,7 +1394,7 @@ typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const Inf
 	 }
 	 return s;
  }
- std::string LR1Gramma::toString(const AnaylzeTableType& tableInfo)const
+ std::string LR1Gramma::toString(const LRAnalyzeTableType& tableInfo)const
  {
 	 std::string s("Analyze Table:\n");
 	 for(auto &p:tableInfo)
@@ -1486,7 +1421,7 @@ typename LR1Gramma::CorruptTableType 	LR1Gramma::constructAnalyzeTable(const Inf
 	 }
 	 return s;
  }
- std::string LR1Gramma::toString(const CorruptTableType& tableInfo)const
+ std::string LR1Gramma::toString(const LRCorruptTableType& tableInfo)const
  {
 	 std::string s("[Corrupt]Analyze Table:\n");
 	 for(auto &p:tableInfo)

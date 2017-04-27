@@ -1,0 +1,198 @@
+\hypertarget{classx2_1_1_l_r_gramma}{}\section{x2\+:\+:L\+R\+Gramma Class Reference}
+\label{classx2_1_1_l_r_gramma}\index{x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}}
+
+
+{\ttfamily \#include $<$Gramma\+Utils.\+h$>$}
+
+Inheritance diagram for x2\+:\+:L\+R\+Gramma\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{classx2_1_1_l_r_gramma}
+\end{center}
+\end{figure}
+\subsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a71192f7005e3f0369414c888a73be237}\label{classx2_1_1_l_r_gramma_a71192f7005e3f0369414c888a73be237}} 
+typedef \hyperlink{classx2_1_1_l_r_gramma}{L\+R\+Gramma} {\bfseries This}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a4841e95ceda2580dcb28924cde7eccf3}\label{classx2_1_1_l_r_gramma_a4841e95ceda2580dcb28924cde7eccf3}} 
+typedef \hyperlink{classx2_1_1_gramma}{Gramma} {\bfseries Father}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_ad6ec096bc4670fccd2e4778314d2e0cb}\label{classx2_1_1_l_r_gramma_ad6ec096bc4670fccd2e4778314d2e0cb}} 
+typedef std\+::tuple$<$ int, int, int $>$ {\bfseries Item\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a8df1989466f03aecabd14ec34ba6433b}\label{classx2_1_1_l_r_gramma_a8df1989466f03aecabd14ec34ba6433b}} 
+typedef std\+::set$<$ Item\+Type $>$ {\bfseries Closure\+Type}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a5d21d307296ccff26e15c9e0b1c13dfb}\label{classx2_1_1_l_r_gramma_a5d21d307296ccff26e15c9e0b1c13dfb}} 
+typedef std\+::vector$<$ Closure\+Type $>$ {\bfseries Closures\+Vector}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a5622c230cf16f9def37f4b61c7db4c20}\label{classx2_1_1_l_r_gramma_a5622c230cf16f9def37f4b61c7db4c20}} 
+typedef std\+::tuple$<$ Closures\+Vector, std\+::set$<$ int $>$, std\+::map$<$ std\+::pair$<$ int, int $>$, int $>$ $>$ {\bfseries Info\+Type}
+\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classx2_1_1_l_r_gramma_aaf38ee87d4dd3be25b48356f204ab17f}{L\+R\+Gramma} ()=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_ad8567e4bafe68acd70fb93b98da3afc9}\label{classx2_1_1_l_r_gramma_ad8567e4bafe68acd70fb93b98da3afc9}} 
+{\bfseries L\+R\+Gramma} (const \hyperlink{classx2_1_1_l_r_gramma}{L\+R\+Gramma} \&lrg)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a15273d95cdfeca70fbbaf22afd78213a}\label{classx2_1_1_l_r_gramma_a15273d95cdfeca70fbbaf22afd78213a}} 
+{\bfseries L\+R\+Gramma} (\hyperlink{classx2_1_1_l_r_gramma}{L\+R\+Gramma} \&\&lrg)=default
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a06de326709a3656338a6dc0f18ba8c1f}\label{classx2_1_1_l_r_gramma_a06de326709a3656338a6dc0f18ba8c1f}} 
+{\bfseries L\+R\+Gramma} (const \hyperlink{classx2_1_1_gramma}{Gramma} \&g, int oristart, int oriend, const std\+::string \&strstart)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_af5c52d1d6ced5980fbe4859bdcad130c}\label{classx2_1_1_l_r_gramma_af5c52d1d6ced5980fbe4859bdcad130c}} 
+{\bfseries L\+R\+Gramma} (\hyperlink{classx2_1_1_gramma}{Gramma} \&\&g, int oristart, int oriend, const std\+::string \&strstart)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a89bb2afe42f616a2ee9ba2efa41c103b}\label{classx2_1_1_l_r_gramma_a89bb2afe42f616a2ee9ba2efa41c103b}} 
+{\bfseries L\+R\+Gramma} (const std\+::initializer\+\_\+list$<$ std\+::pair$<$ int, std\+::string $>$ $>$ \&list, const std\+::initializer\+\_\+list$<$ std\+::pair$<$ int, \hyperlink{classx2_1_1_gramma_sentence}{Gramma\+Sentence} $>$ $>$ \&prodlist, int oristart, int oriend, const std\+::string \&strstart)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a2732ee4cc51030f039cf5f90b5475a51}\label{classx2_1_1_l_r_gramma_a2732ee4cc51030f039cf5f90b5475a51}} 
+{\bfseries L\+R\+Gramma} (const \hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&gs, const Productions\+Type \&prods, int oristart, int oriend, const std\+::string \&strstart)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_ae9b5a9130670906995f24b328f04e825}\label{classx2_1_1_l_r_gramma_ae9b5a9130670906995f24b328f04e825}} 
+{\bfseries L\+R\+Gramma} (const \hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&gs, Productions\+Type \&\&prods, int oristart, int oriend, const std\+::string \&strstart)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_aaa21674847491a3145be5c3ba32c094d}\label{classx2_1_1_l_r_gramma_aaa21674847491a3145be5c3ba32c094d}} 
+{\bfseries L\+R\+Gramma} (\hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&\&gs, const Productions\+Type \&prods, int oristart, int oriend, const std\+::string \&strstart)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_aee0d20fc4dea94380d6912ddd6b526c7}\label{classx2_1_1_l_r_gramma_aee0d20fc4dea94380d6912ddd6b526c7}} 
+{\bfseries L\+R\+Gramma} (\hyperlink{classx2_1_1_gramma_symbols}{Gramma\+Symbols} \&\&gs, Productions\+Type \&\&prods, int oristart, int oriend, const std\+::string \&strstart)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a1c9cea6688bcf7ec1dce11cdcceb4189}\label{classx2_1_1_l_r_gramma_a1c9cea6688bcf7ec1dce11cdcceb4189}} 
+{\bfseries L\+R\+Gramma} (const \hyperlink{classx2_1_1_gramma}{Gramma} \&g, const std\+::string \&ori\+Start, const std\+::string \&ori\+End, const std\+::string \&ext\+Start)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a89d445f6a3d58250f486d5261afca6fd}\label{classx2_1_1_l_r_gramma_a89d445f6a3d58250f486d5261afca6fd}} 
+{\bfseries L\+R\+Gramma} (\hyperlink{classx2_1_1_gramma}{Gramma} \&\&g, const std\+::string \&ori\+Start, const std\+::string \&ori\+End, const std\+::string \&ext\+Start)
+\item 
+Info\+Type \hyperlink{classx2_1_1_l_r_gramma_a03deaa81155f09b014629b32769b8228}{get\+All\+Closures} ()
+\item 
+\hyperlink{classx2_1_1_gramma_a03901eb5b196689b901fbf23e5bb9f0e}{L\+R\+Corrupt\+Table\+Type} \hyperlink{classx2_1_1_l_r_gramma_a93fdb0ff53f9960980ff955b318e1883}{construct\+Analyze\+Table\+L\+R0} (const Info\+Type \&info)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a0d56a6e69eccb330110304642ca0aca2}\label{classx2_1_1_l_r_gramma_a0d56a6e69eccb330110304642ca0aca2}} 
+\hyperlink{classx2_1_1_gramma_a03901eb5b196689b901fbf23e5bb9f0e}{L\+R\+Corrupt\+Table\+Type} {\bfseries construct\+Analyze\+Table\+S\+LR} (const Info\+Type \&info)
+\item 
+int \hyperlink{classx2_1_1_l_r_gramma_a6f9db2e24c2f5ccdbeb7f2a5c3e6f46e}{get\+Closure\+In\+Vector} (const Item\+Type \&i, Closures\+Vector \&itemsets, std\+::map$<$ Item\+Type, int $>$ \&C0)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_aa2b002dcbb20cbc063f45e0c91bcaf92}\label{classx2_1_1_l_r_gramma_aa2b002dcbb20cbc063f45e0c91bcaf92}} 
+Closure\+Type {\bfseries get\+Closure} (const Item\+Type \&i)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a68fcd9ffac09218b72d5188e37bd3330}\label{classx2_1_1_l_r_gramma_a68fcd9ffac09218b72d5188e37bd3330}} 
+void {\bfseries get\+Closure} (const Item\+Type \&i, Closure\+Type \&C)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_ac8ddf976b25cfbc6088653a341a95e14}\label{classx2_1_1_l_r_gramma_ac8ddf976b25cfbc6088653a341a95e14}} 
+Closure\+Type {\bfseries get\+Closure} (const Closure\+Type \&C)
+\item 
+Closure\+Type \hyperlink{classx2_1_1_l_r_gramma_a933cdf18c4a8515dbeef0cea0bdaf04e}{get\+Goto\+In\+Vector} (int iclo, int x, Closures\+Vector \&itemsets, std\+::map$<$ Item\+Type, int $>$ \&C0)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_aed7c1b2c750a4267d2482849efa80a0c}\label{classx2_1_1_l_r_gramma_aed7c1b2c750a4267d2482849efa80a0c}} 
+Closure\+Type {\bfseries get\+Goto} (const Closure\+Type \&items, int x)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_af93dc3f5f2754571065efcb5db90c61d}\label{classx2_1_1_l_r_gramma_af93dc3f5f2754571065efcb5db90c61d}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+First\+Symbol\+After\+Dot} (const Item\+Type \&i)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a264d5976acad1bcbbca757ff2732cda2}\label{classx2_1_1_l_r_gramma_a264d5976acad1bcbbca757ff2732cda2}} 
+int {\bfseries get\+Nth\+Symbole\+After\+Dot} (const Item\+Type \&i, unsigned int j)
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a3e5af1beed3487756cb31d7e1fe8f680}\label{classx2_1_1_l_r_gramma_a3e5af1beed3487756cb31d7e1fe8f680}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+Ext\+Start} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_aac75b15832f2ccba608d5caefe3f66ba}\label{classx2_1_1_l_r_gramma_aac75b15832f2ccba608d5caefe3f66ba}} 
+A\+S\+\_\+\+M\+A\+C\+RO int {\bfseries get\+End} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a687589eac850af2bcdb012b740531a2e}\label{classx2_1_1_l_r_gramma_a687589eac850af2bcdb012b740531a2e}} 
+A\+S\+\_\+\+M\+A\+C\+RO std\+::string {\bfseries to\+String} () const
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a0de96313ac9b29148dcf146fcae9af45}\label{classx2_1_1_l_r_gramma_a0de96313ac9b29148dcf146fcae9af45}} 
+std\+::string {\bfseries to\+String} (const Item\+Type \&item) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a91003d63b709ba51c5d1759ec89d61f4}\label{classx2_1_1_l_r_gramma_a91003d63b709ba51c5d1759ec89d61f4}} 
+std\+::string {\bfseries to\+String} (const Closure\+Type \&closure) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a1a15ca465ccc7d3b77a5e8780f519fa1}\label{classx2_1_1_l_r_gramma_a1a15ca465ccc7d3b77a5e8780f519fa1}} 
+std\+::string {\bfseries to\+String} (const std\+::tuple$<$ Closures\+Vector, std\+::set$<$ int $>$, std\+::map$<$ std\+::pair$<$ int, int $>$, int $>$$>$ \&tups) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_acd4d44e2d8b4a0d06599431bae7bad86}\label{classx2_1_1_l_r_gramma_acd4d44e2d8b4a0d06599431bae7bad86}} 
+std\+::string {\bfseries to\+String\+Set} (int i) const
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a66728cb47718f3041fb797ef2992a55e}\label{classx2_1_1_l_r_gramma_a66728cb47718f3041fb797ef2992a55e}} 
+A\+S\+\_\+\+M\+A\+C\+RO void {\bfseries set\+Dot\+String} (const std\+::string \&s)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_adac4892cff5dc2a78380612d7bb31597}\label{classx2_1_1_l_r_gramma_adac4892cff5dc2a78380612d7bb31597}} 
+int {\bfseries sstart}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a2e2226f01f334f7aec6f2a13c4e614f3}\label{classx2_1_1_l_r_gramma_a2e2226f01f334f7aec6f2a13c4e614f3}} 
+int {\bfseries send}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a9a36e830070363ce6b50d36bef3efd88}\label{classx2_1_1_l_r_gramma_a9a36e830070363ce6b50d36bef3efd88}} 
+std\+::string {\bfseries dot\+String}
+\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a2349263521150b34859af413c5dbbc2c}\label{classx2_1_1_l_r_gramma_a2349263521150b34859af413c5dbbc2c}} 
+static const std\+::string {\bfseries D\+O\+T\+\_\+\+S\+T\+R\+I\+NG} =\char`\"{}.\char`\"{}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+General Model\+: i,j --$>$ which production? k --$>$ position of the dot
+
+//\+L\+R1 s --$>$ symbol of looking ahead
+
+known types \+: L\+R(0) Items, L\+R(1) Items, S\+L\+R(1) items L\+A\+L\+R(1) items 从广泛的意义上来说（就行为层面），每个项目类型的 Closure,Goto,Analyse Table,求法是有所不同的 统一的接口就是 接受某个通用文法作为参数，计算某个项目集的\+Closure
+
+除此之外，to\+String方法也是不同的 但是它们的分析表类型都是一样的 不必将 项目集真正地存入语法之中，因为一个语法的项目集要么不求，要么整体求出，通常是一个计算的过程 不必缓存 \hyperlink{classx2_1_1_l_r_gramma}{L\+R\+Gramma} 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_aaf38ee87d4dd3be25b48356f204ab17f}\label{classx2_1_1_l_r_gramma_aaf38ee87d4dd3be25b48356f204ab17f}} 
+\index{x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}!L\+R\+Gramma@{L\+R\+Gramma}}
+\index{L\+R\+Gramma@{L\+R\+Gramma}!x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}}
+\subsubsection{\texorpdfstring{L\+R\+Gramma()}{LRGramma()}}
+{\footnotesize\ttfamily x2\+::\+L\+R\+Gramma\+::\+L\+R\+Gramma (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [default]}}
+
+这里的\+Closure\+Type和教材上类型有所不同，教材上的类型是 std\+::map$<$std\+::set$<$\+Item\+Type$>$,std\+::set$<$\+Item\+Type$>$$>$ Closure\+Type 这里为了方便，先定义单个项的闭包 如果是多个项 Closure(I1,I2,...,In) = Closure(\+I1) u Closure(\+I2) u ... u Closure(\+In) 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classx2_1_1_l_r_gramma_a93fdb0ff53f9960980ff955b318e1883}\label{classx2_1_1_l_r_gramma_a93fdb0ff53f9960980ff955b318e1883}} 
+\index{x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}!construct\+Analyze\+Table\+L\+R0@{construct\+Analyze\+Table\+L\+R0}}
+\index{construct\+Analyze\+Table\+L\+R0@{construct\+Analyze\+Table\+L\+R0}!x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}}
+\subsubsection{\texorpdfstring{construct\+Analyze\+Table\+L\+R0()}{constructAnalyzeTableLR0()}}
+{\footnotesize\ttfamily \hyperlink{classx2_1_1_gramma_a03901eb5b196689b901fbf23e5bb9f0e}{L\+R\+Corrupt\+Table\+Type} x2\+::\+L\+R\+Gramma\+::construct\+Analyze\+Table\+L\+R0 (\begin{DoxyParamCaption}\item[{const Info\+Type \&}]{info }\end{DoxyParamCaption})}
+
+added 2017-\/04-\/22 12\+:32\+:52 \mbox{\Hypertarget{classx2_1_1_l_r_gramma_a03deaa81155f09b014629b32769b8228}\label{classx2_1_1_l_r_gramma_a03deaa81155f09b014629b32769b8228}} 
+\index{x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}!get\+All\+Closures@{get\+All\+Closures}}
+\index{get\+All\+Closures@{get\+All\+Closures}!x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}}
+\subsubsection{\texorpdfstring{get\+All\+Closures()}{getAllClosures()}}
+{\footnotesize\ttfamily L\+R\+Gramma\+::\+Info\+Type x2\+::\+L\+R\+Gramma\+::get\+All\+Closures (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+return a tuple tuple\mbox{[}0\mbox{]} \+: contains closures that indexes in tuple\mbox{[}1\mbox{]} \& tuple\mbox{[}2\mbox{]} point to tuple\mbox{[}1\mbox{]} \+: a set of integers, those integers denote the concanical item sets of the gramma tuple\mbox{[}2\mbox{]} \+: the goto map. the key type is pair$<$int,int$>$, the first int denotes a closure in tuple\mbox{[}0\mbox{]},the second is a possible gramma symbol.
+
+call to\+String(tup) to dump those information. \mbox{\Hypertarget{classx2_1_1_l_r_gramma_a6f9db2e24c2f5ccdbeb7f2a5c3e6f46e}\label{classx2_1_1_l_r_gramma_a6f9db2e24c2f5ccdbeb7f2a5c3e6f46e}} 
+\index{x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}!get\+Closure\+In\+Vector@{get\+Closure\+In\+Vector}}
+\index{get\+Closure\+In\+Vector@{get\+Closure\+In\+Vector}!x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}}
+\subsubsection{\texorpdfstring{get\+Closure\+In\+Vector()}{getClosureInVector()}}
+{\footnotesize\ttfamily int x2\+::\+L\+R\+Gramma\+::get\+Closure\+In\+Vector (\begin{DoxyParamCaption}\item[{const Item\+Type \&}]{i,  }\item[{Closures\+Vector \&}]{itemsets,  }\item[{std\+::map$<$ Item\+Type, int $>$ \&}]{C0 }\end{DoxyParamCaption})}
+
+H\+I\+G\+H-\/\+W\+AY get\+Closure == shut down//deprecated 可能产生新的闭包
+
+if not set, then set at the end,get \mbox{\Hypertarget{classx2_1_1_l_r_gramma_a933cdf18c4a8515dbeef0cea0bdaf04e}\label{classx2_1_1_l_r_gramma_a933cdf18c4a8515dbeef0cea0bdaf04e}} 
+\index{x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}!get\+Goto\+In\+Vector@{get\+Goto\+In\+Vector}}
+\index{get\+Goto\+In\+Vector@{get\+Goto\+In\+Vector}!x2\+::\+L\+R\+Gramma@{x2\+::\+L\+R\+Gramma}}
+\subsubsection{\texorpdfstring{get\+Goto\+In\+Vector()}{getGotoInVector()}}
+{\footnotesize\ttfamily L\+R\+Gramma\+::\+Closure\+Type x2\+::\+L\+R\+Gramma\+::get\+Goto\+In\+Vector (\begin{DoxyParamCaption}\item[{int}]{iclo,  }\item[{int}]{x,  }\item[{Closures\+Vector \&}]{itemsets,  }\item[{std\+::map$<$ Item\+Type, int $>$ \&}]{C0 }\end{DoxyParamCaption})}
+
+H\+I\+G\+H-\/\+W\+AY get\+Goto == shut down//deprecated 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/include/Gramma\+Utils.\+h\item 
+D\+:/\+Pool/eclipse-\/workspace/compiler-\/debug/src/Gramma\+Utils.\+cpp\end{DoxyCompactItemize}
