@@ -1,0 +1,221 @@
+﻿int a=0;
+int print(int a)
+{
+	int num=printf("%d\n",a);
+	num = num -1;
+	return num;
+}
+//==========================================
+
+int id = number ; int id ( int id ) { int id = id ( stringval , id ) ; id = id - number ; return id ; } $ 
+
+Reducing TYPE -> int 		
+Reducing EXPRESSION -> number 
+Reducing VAR_DECLARATION -> TYPE id = EXPRESSION 
+Reducing TYPE -> int 
+Reducing TYPE -> int 
+Reducing TYPE -> int 
+Reducing EXPRESSION -> stringval 
+Reducing EXPRESSION -> id 
+Reducing CALL_STATEMENT -> id ( EXPRESSION , EXPRESSION ) 
+Reducing EXPRESSION -> CALL_STATEMENT 
+Reducing VAR_DECLARATION -> TYPE id = EXPRESSION 
+Reducing EXPRESSION -> id 
+Reducing EXPRESSION -> number 
+Reducing EXPRESSION -> EXPRESSION - EXPRESSION 
+Reducing ASSIGNMENT -> id = EXPRESSION 
+Reducing EXPRESSION -> id 
+Reducing RETURN_STATEMENT -> return EXPRESSION 
+Reducing FUN_DEFINITION -> TYPE id ( TYPE id ) { VAR_DECLARATION ; ASSIGNMENT ; RETURN_STATEMENT ; } 
+Reducing C -> VAR_DECLARATION ; FUN_DEFINITION 
+ACCEPT
+
+0.init
+{
+	符号表集合为S
+//DEPRECATED	当前符号表下标为is,代码流下标ig			//每一个genTemp都将is加1,每一个genCode都将ig加1
+	用is,ig指代当前上下文中,最初进入翻译时的符号表开始和代码开始,用 gis,gig代表全局的
+	符号栈为T(记录三元组  <文法符号的属性,在符号表中的开始下标bis,在代码流中的起始下标big>)
+		存放临时的属性
+			临时的属性包括立即值
+		存放一个指向符号表i的第j个符号的引用
+		用键 refType: 0表示立即值, 1表示在符号表中
+			refType=IN_SYMBOL_TABLE时,index为其下标
+		临时属性将会被简单复制,引用属性也会被简单复制
+	代码流G
+	符号表切换指令映射ST(记录 <代码起始,动作,参数>) //用于在四元式代码生成时,从0下标开始处理,每次遇到一个下标如果映射中存在动作就执行.通常来说,每个起始代码只有一个符号表指令动作
+}
+1.
+Reducing TYPE -> int 	
+{
+	$0 = makeAttribute()	//构造一个临时属性,不在符号表中使用
+	$0.type = type
+	$0.val = int
+	push(<$0,is,ig>)
+}
+2.
+Reducing EXPRESSION -> number 
+{
+	$0 = makeAttribute()
+	$0.type = int
+	$0.imval = number.lexval	//对立即数赋值
+	push(<$0,is,ig>)
+}
+3.
+Reducing VAR_DECLARATION -> TYPE id = EXPRESSION 
+{
+	$2=pop()
+	$1=pop()
+//	pid = findSymbol($id.string) //需要用到id的string表达式
+//	if(pid!=NULL) error("redefinition")		//现在,定义总是成功的,检查重定义要留到后面进行
+	if($1.type!=$2.type ) error("invalid assignment between conflicting types")
+	else
+		pid=genSymbol($id.name)  //with desired name
+		pid.type = $1.type
+		genCode('=',id.name,$2,_)
+		push(<makeAttribute(type=var_declare),is,gs>)
+}
+4.
+Reducing TYPE -> int 
+{
+	$0 = makeAttribute()	//构造一个临时属性,不在符号表中使用
+	$0.type = type
+	$0.val = int
+	push(<$0,is,ig>)
+}
+5.
+Reducing TYPE -> int 
+{
+	$0 = makeAttribute()	//构造一个临时属性,不在符号表中使用
+	$0.type = type
+	$0.val = int
+	push(<$0,is,ig>)
+}
+6.
+Reducing TYPE -> int 
+{
+	$0 = makeAttribute()	//构造一个临时属性,不在符号表中使用
+	$0.type = type
+	$0.val = int
+	push(<$0,is,ig>)
+}
+7.
+Reducing EXPRESSION -> stringval 
+{
+	$0=genTemp()
+	$0.type=string
+	$0.val=stringval.strRefIndex
+	push(<$0.name,is,gs>)
+}
+8.
+Reducing EXPRESSION -> id 
+{
+//	pid = findNearstSymbol(id.string)		//不需要查找符号表的位置,我们只知道有这个引用即可
+//	if(pid==NULL) //  === error("undefined reference")  ==> 修改成 下面的样式
+//	{
+//		pid=requirePredefinedSymbol(id.string)
+//	}
+	push(<id.name,is,gs>)
+}
+9.
+Reducing CALL_STATEMENT -> id ( EXPRESSION , EXPRESSION ) 
+{
+		$2=pop()
+		$1=pop()
+		args=[$2,$1]
+		hasError=false
+		for(i=0;i<pid.args.length;i++)
+			if(args[i][0].type!=pid.args[i])
+				hasError=true
+				error(....)
+				break
+			else
+				genCode(param,args[i].addr,_,_)
+		if(!hasError)
+			if(pid.hasreturn)
+				res=genTemp()
+				copy(pid.rtype,res.type)
+				genCode(call,pid,_,res)
+				push(<res,is,gs>)
+			else
+				res=makeAttribute()
+				res.type=void
+				genCode(call,pid.addr,_,_)
+				push(<res,is,gs>) //无论如何,总是要在值栈中push一个变量的值
+}
+		
+10.		
+Reducing EXPRESSION -> CALL_STATEMENT 
+{
+	$1=pop()
+	$0=makeAttribute()
+	copy($1,$0)
+	push($0)
+	//可以优化为
+	// do nothing
+}
+11.
+Reducing VAR_DECLARATION -> TYPE id = EXPRESSION 
+{
+	$2=pop()
+	$1=pop()
+	pid = findSymbol($id.string) //需要用到id的string表达式
+	if(pid!=NULL) error("redefinition")
+	else if($1.type!=$2.type ) error("invalid assignment between conflicting types")
+	else
+		pid=genSymbol($id.string)
+		pid.type = $1.type
+		genCode('=',pid.addr,$1.imval,_)
+		push(makeAttribute(type=var_declare))
+}
+12.
+Reducing EXPRESSION -> id 
+13.
+Reducing EXPRESSION -> number 
+14.
+Reducing EXPRESSION -> EXPRESSION - EXPRESSION 
+15.
+Reducing ASSIGNMENT -> id = EXPRESSION 
+{
+	$1=pop()
+	pid = findSymbol(id.name)
+	if(pid==NULL)error("undefined reference")
+	else if(pid.type!=$1.type)error("assignment between conficting types")
+	else
+		genCode(=,$1.addr,_,pid.addr)
+		push(pid)
+}
+16.
+Reducing EXPRESSION -> id 
+17.
+Reducing RETURN_STATEMENT -> return EXPRESSION 
+{
+	//参数不匹配怎么办,后面再检查
+	$1=pop()
+	$0=makeAttribute()
+	copy($1,$0)
+	genCode('return',_,_,$0.addr)
+	push($0)
+}
+18.
+Reducing FUN_DEFINITION -> TYPE id ( TYPE id ) { VAR_DECLARATION ; ASSIGNMENT ; RETURN_STATEMENT ; } 
+{
+	$5=pop()
+	$4=pop()
+	$3=pop()
+	$2=pop()
+	$1=pop()
+	
+	if($5.type!=$1.type)error("return conficted type,expected not returned")
+	else
+		$0=makeAttribute()
+		$0.type=fundeclare
+	push($0)
+}
+19.
+Reducing C -> VAR_DECLARATION ; FUN_DEFINITION 
+{
+	//nothing
+}
+20.
+ACCEPT

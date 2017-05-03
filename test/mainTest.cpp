@@ -17,6 +17,7 @@
 #include <FAUtils.h>
 #include <StringUtils.h>
 #include <GrammarTranslateUtils.h>
+#include <SimpleCppTranslator.h>
 
 #include <macros/all.h>
 using namespace std;
@@ -47,7 +48,7 @@ void testGrammarDefineIsAdding();
 void testVerifiedGrammarTranslation();
 void testMutualMapInt();
 void testLexicalStream();
-void testCombineLexicalGrammarTranslation();
+void testCombinedLexicalGrammarTranslation();
 
 int main()
 {
@@ -64,13 +65,14 @@ int main()
 //	testVerifiedGrammarTranslation();
 //	testMutualMapInt();
 //	testLexicalStream();
-	testCombineLexicalGrammarTranslation();
+	testCombinedLexicalGrammarTranslation();
 }
 /**
- * a united test, this will test the combination/cooperation between
+ * @brief test as an united process
+ * @detail  a united test, this will test the combination/cooperation between
  * these tools.
  */
-void testCombineLexicalGrammarTranslation()
+void testCombinedLexicalGrammarTranslation()
 {
 	//== define a grammar
 	LR1Gramma lr1g(Gramma("examples/normal_test3.grammar"),
@@ -88,8 +90,8 @@ void testCombineLexicalGrammarTranslation()
 	auto lr1info = lr1g.getAllClosures();
 	auto lr1table = lr1g.constructAnalyzeTable(lr1info);
 	auto goodTable = Gramma::convertCorruptToStandardSimply(lr1table);
-	std::cout << lr1g.toString(lr1info) << std::endl
-				<<lr1g.toString(goodTable) << std::endl;
+//	std::cout << lr1g.toString(lr1info) << std::endl
+//				<<lr1g.toString(goodTable) << std::endl;
 
 	//== output the lexical stream
 	while(!myStream.eof())
@@ -99,10 +101,15 @@ void testCombineLexicalGrammarTranslation()
 	std::cout << std::endl;
 	myStream.goHead();//reset to head
 
-	//== a translator working
-	DemoTranslator demoTrans(lr1g, lr1info, goodTable, lr1g.gsyms.get("$"), 0);
-	DefaultSemanticAction	myAction;//default action
-	demoTrans.translate(myStream, myAction);
+	//== a default translator
+//	DemoTranslator demoTrans(lr1g, lr1info, goodTable, lr1g.gsyms.get("$"), 0);
+//	demoTrans.translate(myStream);
+
+	//== define your own translator
+	myStream.goHead();
+	SimpleCppTranslator simpleTrans(lr1g,lr1info,goodTable,lr1g.gsyms.get("$"),0);
+	simpleTrans.translate(myStream);
+
 
 }
 /**
@@ -227,8 +234,6 @@ void testVerifiedGrammarTranslation()
 //	}
 	goodTable = Gramma::convertCorruptToStandardSimply(table);
 	std::cout << lr1g.toString(goodTable)<<std::endl;
-
-	DefaultSemanticAction myAction;
 	DemoTranslator demotrans(lr1g,lr1info,goodTable,lr1g.gsyms.get("$"),0);
 	/**
 	 * ( id + id ) * id + id
@@ -257,7 +262,7 @@ void testVerifiedGrammarTranslation()
 		std::cout << lr1g.gsyms.getString(i)<< " ";
 	}
 	std::cout << std::endl;
-	demotrans.translate(input, myAction);
+	demotrans.translate(input);
 }
 /**
  * the idea is simple, when I add a grammar rule, I don't have to define it at first.

@@ -21,18 +21,23 @@
 
 namespace x2{
 /**
- * \brief A convert word stream, it converts any input type to integer(int)
+ * @brief A convertor from WordStream to a valid stream, it converts any input type(T) to integer(int)
  *
- * a stream is an ordered input sequence, which can move backward or move forward randomly.
+ * @detail a stream is an ordered input sequence, which can move backward or move forward randomly.
  * the stream is not consumed,so it can be repeatly traversed.
  *
  * It cannot be put,but only be taken.
  *
+ * It must provide a method to get the original lexical parsed pair
+ *
  */
+template <class T>
 class StreamConvertor
 {
 public:
-	typedef std::vector<std::pair<std::string,int> > WordStream;
+	typedef T StreamWordType;
+	using SizeType=std::size_t;
+
 	StreamConvertor()=default;
 	virtual ~StreamConvertor()=default;
 	virtual void goBackward();
@@ -57,16 +62,33 @@ public:
 	 *  judge if the stream is coming its ending
 	 */
 	virtual bool			eof()const=0;
+
+	/**
+	 * @detail	retrieve the original word
+	 * @param i	the index of the desired word
+	 */
+	virtual const T&				getStreamWord(SizeType i)const=0;
+
+	/**
+	 * @detail	retrieve current  word
+	 */
+	virtual const T&				getCurrentStreamWord()const=0;
+
+	/**
+	 * @detail get current offset
+	 */
+	virtual SizeType					getOffset()const=0;
 };
 
 /**
  * @detail at every get,peek or >> operation,it's the user's obligation to check if the
  * stream reaches its eof.
  */
-class LexicalToGrammarStream : public StreamConvertor,public std::vector<int>{
+class LexicalToGrammarStream : public StreamConvertor<std::pair<std::string,int>>,public std::vector<int>{
 public:
 	typedef LexicalToGrammarStream This;
-	typedef StreamConvertor Father;
+	typedef StreamConvertor<std::pair<std::string,int>> Father;
+	typedef std::vector<StreamWordType> WordStream;
 	using SizeType=std::vector<int>::size_type;
 
 	LexicalToGrammarStream();
@@ -84,11 +106,14 @@ public:
 	 * The 3 following getting operations do not check the index,so it may cause
 	 * index out of range exception
 	 */
-	virtual StreamConvertor& operator>>(int &i);
+	virtual StreamConvertor<StreamWordType>& operator>>(int &i);
 	virtual int				peek()const;
 	virtual int				get();
 
 	virtual bool			eof()const;
+	virtual const StreamWordType&				getStreamWord(SizeType i)const;
+	virtual const StreamWordType&				getCurrentStreamWord()const;
+	virtual SizeType							getOffset()const;
 
 protected:
 	 SizeType curIndex;
@@ -261,7 +286,12 @@ public:
 		 * 			为true/false,返回
 		 *
 		 */
-		DefaultLexcialToGrammarStream(const StreamConvertor::WordStream & wdstream,const Gramma &g);
+		DefaultLexcialToGrammarStream(const WordStream & wdstream,const Gramma &g);
+		virtual const StreamWordType & getStreamWord(SizeType i)const;
+
+protected:
+		const WordStream & wdstream;
+		std::vector<int>	keptIndexes;
 
 };
 
@@ -369,12 +399,14 @@ public:
 
 
 //====class : StreamConvertor
-inline void StreamConvertor::goBackward()
+template <class T>
+inline void StreamConvertor<T>::goBackward()
 {
 	this->move(-1);
 }
 
-inline void StreamConvertor::goForward()
+template <class T>
+inline void StreamConvertor<T>::goForward()
 {
 	this->move(1);
 }
@@ -402,10 +434,6 @@ inline LexicalToGrammarStream::LexicalToGrammarStream(const vector<int>& list):
 {
 }
 
-
-
-
-
 inline void LexicalToGrammarStream::move(int i)
 {
 	this->curIndex +=(SizeType)i;
@@ -421,7 +449,7 @@ inline void LexicalToGrammarStream::goEnd()
 	this->curIndex=this->size();
 }
 
-inline StreamConvertor& LexicalToGrammarStream::operator>>(int& i)
+inline StreamConvertor<typename LexicalToGrammarStream::StreamWordType>& LexicalToGrammarStream::operator>>(int& i)
 {
 	i=(*this)[this->curIndex++];
 	return *this;
@@ -440,6 +468,24 @@ inline bool			LexicalToGrammarStream::eof()const
 {
 	return this->curIndex >= this->size();
 }
+inline const typename LexicalToGrammarStream::StreamWordType& LexicalToGrammarStream::getStreamWord(
+		SizeType i) const
+{
+	static StreamWordType s;
+	return s;
+}
+
+
+inline const typename LexicalToGrammarStream::StreamWordType& LexicalToGrammarStream::getCurrentStreamWord() const
+{
+	return this->getStreamWord(curIndex);
+}
+
+inline typename LexicalToGrammarStream::SizeType LexicalToGrammarStream::getOffset() const
+{
+	return this->curIndex;
+}
+
 
 //=====class : LexicalStream
 bool	LexicalParser::registerTypeString(int type,const std::string& s)
@@ -456,8 +502,11 @@ bool	LexicalParser::registerTypeString(int type,const std::string& s)
 
  //======class : DefaultLexcialToGrammarStream
  inline DefaultLexcialToGrammarStream::DefaultLexcialToGrammarStream(
- 		const StreamConvertor::WordStream& wdstream, const Gramma& g)
+ 		const WordStream& wdstream, const Gramma& g):
+ 				wdstream(wdstream)
  {
+	 	 int effectiveIndex=0;
+	 	 bool pass=false;
  		for(auto & p : wdstream)
  		{
  			if(p.second==LexicalParser::TYPE_ID)
@@ -480,13 +529,37 @@ bool	LexicalParser::registerTypeString(int type,const std::string& s)
  				this->push_back(g.gsyms.get("charval"));
  			}else if(p.second == LexicalParser::TYPE_NOTE){
  				//pass
+ 				pass=true;
  			}else if(p.second == LexicalParser::TYPE_END){
  				this->push_back(g.gsyms.get("$"));
  			}else{
  				std::cout << "ERROR :" << LexicalParser::humanInfo[p.second] << std::endl;
  			}
+ 			if(!pass)
+ 			{
+ 				this->keptIndexes.push_back(effectiveIndex);
+ 			}else{
+ 				pass=false;
+ 			}
+ 			effectiveIndex++;
  		}
  }
+ /**
+  * @detail 由于转换后的流某些东西(如注释)被省略掉,所以它的下标和原来的流下标不等价.
+  * 		这种不等价是由于删除导致的,所以需要记录那些被删除的点,然后做便宜调整
+  * 		如果在i出删除了一个原始的输入符号,则所有大于i的都应当减1
+  *
+  * 		设T[i]表示在i之前删除的符号总数
+  * 		设D表示那些被删除的下标集合;寻址i时,按照顺序查找找到i所处的位置的左边界上被删除的,记录经历的个数
+  *
+  * 		或者复制一个新的下标流,记录原来的索引即可
+  */
+ inline const typename DefaultLexcialToGrammarStream::StreamWordType& DefaultLexcialToGrammarStream::getStreamWord(
+ 		SizeType i) const
+ {
+	 return this->wdstream.at(this->keptIndexes.at(i));
+ }
+
 
 } /* namespace x2 */
 #endif /* LEXICALPARSER_H_ */

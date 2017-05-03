@@ -99,6 +99,10 @@ public:
 	IndexedMap(const T& failedT);
 	IndexedMap(const T& failedT,std::initializer_list<T> list);
 	IndexedMap(const T& failedT,const std::vector<T>& list);
+	/**
+	 * @brief retrive by T
+	 * @detaile	if failed,return UNDEFINED_INDEX(=-2)
+	 */
 	int get(const T& t)const;
 	const T& get(int i)const;
 	int getAdd(const T& t);
@@ -111,7 +115,9 @@ public:
 
 protected:
 	int max;
-	static int UNDEFINED_INDEX;
+public:
+	const static int UNDEFINED_INDEX;
+	const static T	DEFAULT_FAILEDT;
 
 };
 /**
@@ -123,7 +129,9 @@ template <> class IndexedMap<int>{
 
 //===static members
 template <class T>
-	int	IndexedMap<T>::UNDEFINED_INDEX=-2;
+	const int	IndexedMap<T>::UNDEFINED_INDEX=-2;
+template <class T>
+	const T	IndexedMap<T>::DEFAULT_FAILEDT = T();
 
 
 
@@ -279,7 +287,9 @@ inline std::string MutualMap<T1, T2>::toString()const
 
 //=======class IndexedMap<T>
 template<class T>
-inline IndexedMap<T>::IndexedMap():max(0)
+inline IndexedMap<T>::IndexedMap():
+	Father(UNDEFINED_INDEX,DEFAULT_FAILEDT),
+	max(0)
 {
 }
 

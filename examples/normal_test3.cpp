@@ -9,7 +9,7 @@
 int a=0;
 int print(int a)
 {
-	int num=printf("%d\n",a);
-	num = num -1;
+	int num=printf("%d",a);
+	num = num - 100;
 	return num;
 }

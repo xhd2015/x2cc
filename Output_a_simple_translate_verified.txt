@@ -1,0 +1,57 @@
+﻿S符号表集合:
+
+T符号栈:
+
+G生成代码流:
+
+预定义的函数:<"printf",type=func,args=(string,int),hasreturn=int>
+1.
+T:<type=type,val=int>
+
+2.
+T:<type=type,val=int>,  <type=int,val=0>
+
+3.
+S: <"a",type=int>
+T:<var_declare>
+G:<=,"a",0,_>
+
+4.
+S: <"a",type=int>
+T:<var_declare>, <type=type,val=int>
+G:<=,"a",0,_>
+
+5.
+S: <"a",type=int>
+T:<var_declare>, <type=type,val=int>, <type=type,val=int>
+G:<=,"a",0,_>
+
+6.
+S: <"a",type=int>
+T:<var_declare>, <type=type,val=int>, <type=type,val=int>, <type=type,val=int>
+G:<=,"a",0,_>
+
+7.
+S: <"a",type=int>, <"temp_1",type=string,val=string_ref_1>
+T:<var_declare>, <type=type,val=int>, <type=type,val=int>, <type=type,val=int>, <"temp_1">
+G:<=,"a",0,_>
+
+8.
+S: <"a",type=int>, <"temp_1",type=string,val=string_ref_1>
+T:<var_declare>, <type=type,val=int>, <type=type,val=int>, <type=type,val=int>, <"temp_1"> <"a">
+G:<=,"a",0,_>
+
+9.
+S: <"a",type=int>, <"temp_1",type=string,val=string_ref_1>, <"temp_2",type=int>
+T:<var_declare>, <type=type,val=int>, <type=type,val=int>, <type=type,val=int>, <"temp_2">
+G:<=,"a",0,_>, <param,"a",_,_>, <param, "temp_1",_,_>, <call,"printf",_,_"temp_2">
+
+10.
+//do nothing
+
+
+11.//存在的问题: 在a被引用的时候,a还没有被定义,所以肯定需要使用回填技术来确定一个在函数内部出现的变量名
+	//以此确定符号表的位置
+S: <"a",type=int>, <"temp_1",type=string,val=string_ref_1>, <"temp_2",type=int>
+T:<var_declare>, <type=type,val=int>, <type=type,val=int>, <type=type,val=int>, <"temp_2">
+G:<=,"a",0,_>, <param,"a",_,_>, <param, "temp_1",_,_>, <call,"printf",_,_"temp_2">

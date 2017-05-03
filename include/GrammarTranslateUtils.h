@@ -12,65 +12,47 @@
 #include <GrammaUtils.h>
 #include <stack>
 #include <LexicalParser.h>
+#include <x2def.h>
+#include <string>
 
 namespace x2
 {
 
-/**
- * 语法制导的翻译 SSD
- *    产生式需要与另一个规则相互连接起来，构成SSD的语义规则
- *
- *
- */
-class SSDTranslator
-{
-public:
-	SSDTranslator();
-	~SSDTranslator();
-};
-/**
- * 语义动作(也就是语义规则)
- * 使用者应当根据自己的需求来实现onReduce方法
- *
- */
-class SemanticAction{
-public:
-	/**
-	 * 在产生一个归约式的时候调用.
-	 *  \param i
-	 *  \param j
-	 *  <i,j>指定使用的产生式,因为它只是个索引,所以你必须知道它所使用的文法实体
-	 */
-	virtual void onReduce(int i,int j)=0;
-	/**
-	 * 在GOTO[state,A]没有对应表项的时候调用
-	 */
-	virtual void onNoGotoError()=0;
-	/**
-	 * 在Action[state,a]没有对应的转移的时候调用
-	 */
-	virtual void onNoActionError()=0;
-};
-/**
- * @brief 根据提议，应当为某些可有可无的适配器提供一个默认实现
- */
-class DefaultSemanticAction:public SemanticAction{
-public:
-		virtual ~DefaultSemanticAction()=default;
 
-		virtual void onReduce(int i,int j)
-		{
-			std::cout << "Reducing <"<<i<<","<<j<<">"<<std::endl;
-		}
-		virtual void onNoGotoError()
-		{
-			std::cout << "ERROR : no goto." << std::endl;
-		}
-		virtual void onNoActionError()
-		{
-			std::cout << "ERROR : no action." << std::endl;
-		}
-};
+/////////////====DEPRECATED
+////////////=====之所以不把语义动作和翻译过程分开实现,是因为翻译动作和语义是紧密相关的
+/////////////=====语义会使用到许多翻译所使用的数据
+///**
+// * 语义动作(也就是语义规则)
+// * 使用者应当根据自己的需求来实现onReduce方法
+// *
+// */
+//class SemanticAction{
+//public:
+//	/**
+//	 * 在产生一个归约式的时候调用.
+//	 *  \param i
+//	 *  \param j
+//	 *  <i,j>指定使用的产生式,因为它只是个索引,所以你必须知道它所使用的文法实体
+//	 */
+//	virtual void onReduce(int i,int j)=0;
+//	/**
+//	 * 在GOTO[state,A]没有对应表项的时候调用
+//	 */
+//	virtual void onNoGotoError()=0;
+//	/**
+//	 * 在Action[state,a]没有对应的转移的时候调用
+//	 */
+//	virtual void onNoActionError()=0;
+//};
+///**
+// * @brief 根据提议，应当为某些可有可无的适配器提供一个默认实现
+// */
+//class DefaultSemanticAction:public SemanticAction{
+//public:
+//		virtual ~DefaultSemanticAction()=default;
+//
+//};
 
 /*! \brief A Grammar Translation Demonstrate to Clarify Some Concepts
  *
@@ -110,13 +92,16 @@ public:
  *		翻译器是通用的,因此只定义所有翻译器公用的部分.
  *		包括文法引用,分析表引用
  *		语义动作是一个单独的类,指明了某个归约式产生的时候进行某种动作
+ *		翻译器是不可重入的,所以它必须与某个输入流结合起来
+ *
+ *	Why:
+ *		到了翻译这一步,基本上已经没有通用的东西了,必须针对具体的语义进行翻译动作
  *
  */
 class DemoTranslator{
 public:
 	using ACTION_TYPE=LR1Gramma::ACTION_TYPE;
-	typedef std::tuple<int,int,int,int>	QuadType;
-	typedef std::vector<QuadType>	TranslationType;
+	typedef std::pair<std::string,int>	StreamWordType;
 
 	/**
 	 * @param grammar	待翻译输入流中使用的文法
@@ -129,11 +114,42 @@ public:
 			const LR1Gramma::LRAnalyzeTableType & analyzeTable,int endingSym,int initState=0);
 	DemoTranslator(const DemoTranslator & t)=default;
 	DemoTranslator(DemoTranslator && t)=default;
+	virtual ~DemoTranslator()=default;
 
 	/**
-	 *  在
+	 *  @brief 翻译输入流
+	 *  @detail 翻译过程中栈会被设置
+	 *
 	 */
-	virtual TranslationType translate(StreamConvertor& input,SemanticAction &action)const;
+	virtual void translate(StreamConvertor<StreamWordType>& input);
+protected:
+
+	/**
+	 * @brief 初始化时调用
+	 */
+	virtual void onInit();
+	/**
+	 * @brief called when a reduce is produced
+	 */
+	virtual void onReduce(int i,int j);
+
+	virtual void onNoGoto();
+
+	virtual void onNoAction();
+
+	virtual void onAccept();
+
+	virtual void onShift();
+
+	virtual void onInputNotTerminator();
+
+	/**
+	 * @brief	结束时调用
+	 * @detail	建议的动作是清空状态栈
+	 */
+	virtual void onEnd();
+
+	void terminate();
 
 
 protected:
@@ -142,28 +158,40 @@ protected:
 	const Gramma::LRAnalyzeTableType & analyzeTable;
 	int endingSym;
 	int initState;
-
-
+	const StreamConvertor<StreamWordType> * currentInput;
+	std::stack<int>			ss;
+	bool					terminated;
 };
 
 //=========class : DemoTranslator
 inline DemoTranslator::DemoTranslator(const LR1Gramma & grammar,const LR1Gramma::InfoType & closuresInfo,
 		const LR1Gramma::LRAnalyzeTableType & analyzeTable,int endingSym,int initState):
-				grammar(grammar),closuresInfo(closuresInfo),analyzeTable(analyzeTable),endingSym(endingSym),initState(initState)
+				grammar(grammar),closuresInfo(closuresInfo),
+				analyzeTable(analyzeTable),
+				endingSym(endingSym),
+				initState(initState),
+				currentInput(NULL),
+				terminated(false)
 {
 }
-/**
- *
- */
-inline typename DemoTranslator::TranslationType DemoTranslator::translate(
-		StreamConvertor& input,SemanticAction &action) const
+inline void DemoTranslator::translate(
+		StreamConvertor<StreamWordType>& input)
 {
+	//==set GOTO
 	const LR1Gramma::GotoInfoType & GOTO=std::get<2>(closuresInfo);
-	std::stack<int>	ss;
+	//==set currentInput
+	this->currentInput=&input;
+
+	//== call onInit()
+	this->onInit();
+
+	//== push initSym & initState
 	ss.push(endingSym);
 	ss.push(initState);
-	while(!input.eof())
+
+	while(!input.eof() && !terminated)
 	{
+		//== get current state & input
 		std::pair<int,int> gokey={ss.top(),input.peek()};
 //		std::cout << "key is "<<gokey.first << ","<<grammar.gsyms.getString(gokey.second) <<std::endl;
 		int type=grammar.gsyms.getSymbolType(gokey.second);
@@ -173,13 +201,21 @@ inline typename DemoTranslator::TranslationType DemoTranslator::translate(
 			auto actionit=analyzeTable.find(gokey);
 			if(actionit!=analyzeTable.end())
 			{
+				//== get ActionType
 				int actiontype=std::get<2>(actionit->second);
+				//== do SHIFT
 				if(actiontype==ACTION_TYPE::ACTION_SHIFT_IN)
 				{
 //					std::cout << "\t\tSHIFT " << grammar.gsyms.getString(gokey.second) << " going "<<std::get<0>(actionit->second)<<std::endl;
 					ss.push(gokey.second);
 					ss.push(std::get<0>(actionit->second));
+
+					//== call onShift
+					this->onShift();
+
 					input.goForward();
+
+				//== do REDUCE
 				}else if(actiontype==ACTION_TYPE::ACTION_REDUCE){
 					int i=std::get<0>(actionit->second),j=std::get<1>(actionit->second);
 					int len=2*grammar.getRightSentences(i).at(j).getLength();
@@ -195,29 +231,82 @@ inline typename DemoTranslator::TranslationType DemoTranslator::translate(
 					if(tempit!=GOTO.end())
 					{
 						ss.push(tempit->second);
-					}else action.onNoGotoError();
-					std::cout << "\t\treducing "<<grammar.Gramma::toString(i, j)<<std::endl;
-					action.onReduce(i,j);
+					}else this->onNoGoto();
+//					std::cout << "\t\treducing "<<grammar.Gramma::toString(i, j)<<std::endl;
+
+					//=== call onReduce
+					this->onReduce(i,j);
 				}else if(actiontype==ACTION_TYPE::ACTION_ACCEPT){
-					std::cout << "ACCEPT" << std::endl;
+
+					//=== call onAccept,plus one default action: exit the translation process
+					this->onAccept();
 					break;
 				}
 			}else{
-				action.onNoActionError();
-				while(getchar()!='\n');
+
+				//=== call onNoAction
+				this->onNoAction();
 			}
-		}else if(type==GrammaSymbols::TYPE_VAR){
-			auto goit=GOTO.find(gokey);
-			if(goit!=GOTO.end())
-			{
-//				std::cout << "GOTO " << goit->second <<std::endl;
-				ss.push(goit->second);
-			}else{
-				action.onNoGotoError();
-			}
+		}else{
+
+			//=== call onInputNotTerminator
+			this->onInputNotTerminator();
 		}
+//		else if(type==GrammaSymbols::TYPE_VAR){
+//			auto goit=GOTO.find(gokey);
+//			if(goit!=GOTO.end())
+//			{
+//				ss.push(goit->second);
+//			}else{
+//				this->onNoGoto();
+//			}
+//		}
 	}
-	return TranslationType();
+
+	//=== call onEnd
+	this->onEnd();
+}
+inline void DemoTranslator::onInit()
+{
+	std::cout << "Init " << std::endl;
+}
+inline void DemoTranslator::onReduce(int i, int j)
+{
+	std::cout << "Reducing "<<this->grammar.Gramma::toString(i, j) << std::endl;
+}
+
+inline void DemoTranslator::onNoGoto()
+{
+	std::cout << "ERROR : no goto." << std::endl;
+}
+
+inline void DemoTranslator::onNoAction()
+{
+	std::cout << "ERROR : no action." << std::endl;
+}
+inline void DemoTranslator::onAccept()
+{
+	std::cout << "ACCEPT" << std::endl;
+}
+
+inline void DemoTranslator::onShift()
+{
+	std::cout << "SHIFT IN"<<std::endl;
+}
+
+inline void DemoTranslator::onInputNotTerminator()
+{
+	std::cout << "input is not terminator"<<std::endl;
+}
+
+inline void DemoTranslator::onEnd()
+{
+	std::cout << "Ended"<<std::endl;
+	while(!ss.empty())ss.pop();
+}
+inline void DemoTranslator::terminate()
+{
+	this->terminated=true;
 }
 
 
